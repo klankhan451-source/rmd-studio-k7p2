@@ -106,10 +106,10 @@ body {
 /* ---------- Cover design picker (settings panel) ---------- */
 .picker-block { margin-bottom: 14px; }
 .picker-title { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #33505c; }
-.cover-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.cover-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 10px; }
 .design-card {
   border: 2px solid #c8d6dc; border-radius: 10px; background: #fff;
-  padding: 5px; cursor: pointer; font-family: inherit; text-align: center;
+  padding: 6px; cursor: pointer; font-family: inherit; text-align: center;
 }
 .design-card:hover { border-color: #2c5364; }
 .design-card.selected { border-color: #b98a1d; box-shadow: 0 0 0 2px #ffd166; background: #fffaf0; }
@@ -120,6 +120,61 @@ body {
 }
 .design-swatch svg { display: block; }
 .design-name { display: block; font-size: 10.5px; font-weight: 600; color: #33505c; line-height: 1.25; }
+/* Real miniature covers in the picker + the live cover preview:
+   a true-size sheet (816x1056) rendered by render.js, scaled to
+   fit its viewport by app.js (transform scale). Screen only —
+   the whole app is hidden when printing. */
+.mini-viewport {
+  position: relative; width: 100%; aspect-ratio: 8.5 / 11;
+  overflow: hidden; border-radius: 6px; margin-bottom: 5px;
+  border: 1px solid rgba(20, 35, 43, .18); background: #fff;
+}
+.mini-sheet {
+  position: absolute; top: 0; left: 0; width: 816px; height: 1056px;
+  transform-origin: top left; pointer-events: none;
+}
+.mini-sheet .book-page { margin: 0; box-shadow: none; }
+.cover-preview-wrap { margin-bottom: 16px; }
+.cover-preview-viewport {
+  position: relative; width: 100%; max-width: 320px; margin: 0 auto;
+  aspect-ratio: 8.5 / 11; overflow: hidden; border-radius: 10px;
+  background: #fff; box-shadow: 0 10px 26px rgba(15,32,39,.28);
+}
+.cover-preview-name { text-align: center; margin-top: 10px; }
+
+/* ---------- Guided steps + value strip (2026-11-17) ---------- */
+.steps-bar { display: flex; gap: 8px; margin-bottom: 16px; }
+.step-chip {
+  flex: 1; text-align: center; padding: 8px 4px; border-radius: 999px;
+  background: #eef6f8; border: 1.5px solid #c8d6dc; color: #33505c;
+  font-size: 12.5px; font-weight: 700;
+}
+.step-chip b { color: #b98a1d; margin-right: 4px; }
+.step-head {
+  font-size: 12.5px; font-weight: 800; letter-spacing: 1.4px;
+  text-transform: uppercase; color: #b98a1d; margin: 20px 0 10px;
+}
+.step-head.first { margin-top: 2px; }
+.get-strip {
+  display: flex; flex-wrap: wrap; gap: 8px; justify-content: center;
+  background: #0f2027; padding: 10px 14px;
+}
+.get-strip span {
+  border: 1px solid rgba(255,209,102,.5); background: rgba(255,209,102,.12);
+  color: #ffe9a8; border-radius: 999px; padding: 5px 13px;
+  font-size: 13px; font-weight: 600;
+}
+.brand-icon svg, .lock-logo svg { display: block; margin: 0 auto; }
+/* Designed selects (brand chevron) + gold focus ring. */
+.controls select {
+  appearance: none; -webkit-appearance: none;
+  background: #fbfdfe url("data:image/svg+xml;charset=utf8,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='8' viewBox='0 0 12 8'%3E%3Cpath d='M1 1.5 L6 6.5 L11 1.5' fill='none' stroke='%232c5364' stroke-width='2' stroke-linecap='round'/%3E%3C/svg%3E") no-repeat right 11px center;
+  padding-right: 34px;
+}
+.controls input:focus, .controls select:focus {
+  outline: none; border-color: #b98a1d;
+  box-shadow: 0 0 0 3px rgba(255,209,102,.35);
+}
 .stage { min-height: 300px; }
 .output .placeholder { color: #7d97a1; text-align: center; padding: 60px 10px; }
 .site-footer { text-align: center; color: #7d97a1; font-size: 13px; padding: 0 20px 26px; }
@@ -139,12 +194,37 @@ body {
 .book-page .page-body { flex: 1; min-height: 0; }
 .book-page .page-footer {
   font-size: 11px; color: #8aa0a9; text-align: center; margin: 12px 0 0;
-  border-top: 1px solid #e1eaed; padding-top: 8px;
+  border-top: 1px solid var(--theme-line, #e1eaed); padding-top: 8px;
 }
+
+/* ---------- Interior themes (2026-11-17) ----------
+   The chosen cover design's palette flows into the book: book.js
+   stamps book-theme-<palette> on every inside page, and the page
+   furniture (titles, dua card, table header bands, footer rule,
+   kids accents) reads these variables. Colours only — no sizes
+   or spacing — so the layout model in tests/test_layout.js is
+   unaffected. The defaults ARE the original interior colours, so
+   a midnight book (the original design) is unchanged. */
+.book-page {
+  --theme-accent: #b98a1d;
+  --theme-title: #0f2027;
+  --theme-band: #eef6f8;
+  --theme-soft: #fffaf0;
+  --theme-line: #e1eaed;
+}
+.book-theme-emerald { --theme-accent: #047857; --theme-title: #065f46; --theme-band: #e6f4ec; --theme-soft: #effaf3; --theme-line: #c2e2d0; }
+.book-theme-purple { --theme-accent: #6d28d9; --theme-title: #4c1d95; --theme-band: #efe9fb; --theme-soft: #f5f0fd; --theme-line: #d9cbf5; }
+.book-theme-sand { --theme-accent: #9a6a14; --theme-title: #5b3a1e; --theme-band: #faf0da; --theme-soft: #fdf6e3; --theme-line: #e8d5ac; }
+.book-theme-burgundy { --theme-accent: #9f1d3a; --theme-title: #6d1226; --theme-band: #f9e8ea; --theme-soft: #fdf0f1; --theme-line: #efc3c9; }
+.book-theme-teal { --theme-accent: #0a7c86; --theme-title: #07444c; --theme-band: #e2f2f4; --theme-soft: #eefafb; --theme-line: #bfe0e4; }
+.book-theme-charcoal { --theme-accent: #8a6d1f; --theme-title: #26262b; --theme-band: #eeeedd; --theme-soft: #f7f3e3; --theme-line: #d8d8ce; }
+.book-theme-rose { --theme-accent: #b76e79; --theme-title: #822659; --theme-band: #fbeeee; --theme-soft: #fdf3f1; --theme-line: #f0d2cb; }
+.book-theme-olive { --theme-accent: #5c742f; --theme-title: #3c4c1e; --theme-band: #eef2df; --theme-soft: #f5f8ea; --theme-line: #d3ddb8; }
+.book-theme-navy { --theme-accent: #33549e; --theme-title: #16295c; --theme-band: #e8edf7; --theme-soft: #eef2fa; --theme-line: #c3cee6; }
 
 /* ---------- Shared page pieces ---------- */
 .pg-head { margin-bottom: 8px; }
-.pg-title { font-size: 22px; margin: 0; color: #0f2027; line-height: 1.45; }
+.pg-title { font-size: 22px; margin: 0; color: var(--theme-title, #0f2027); line-height: 1.45; }
 .pg-sub { font-size: 14.5px; color: #48626e; margin-top: 3px; }
 .l-en { font-size: 0.78em; color: #48626e; font-weight: 600; }
 /* Stacked bilingual display lines (see LStack in render.js). */
@@ -152,7 +232,7 @@ body {
 .bi-en { font-size: 0.85em; }
 .intro-line { font-size: 13.5px; line-height: 1.45; color: #48626e; margin: 0 0 8px; }
 .blk { margin-top: 8px; }
-.blk-title { font-size: 15px; margin: 0 0 6px; color: #0f2027; }
+.blk-title { font-size: 15px; margin: 0 0 6px; color: var(--theme-title, #0f2027); }
 .cb {
   display: inline-block; width: 15px; height: 15px; flex: none;
   border: 2px solid #2c5364; border-radius: 4px; vertical-align: -2px;
@@ -299,6 +379,89 @@ body {
   --cover-line: #c0c8d8;
   --cover-note-bg: #101c40;
 }
+/* Hero scene designs (2026-11-17): the scene artwork itself is
+   drawn by render.js (coverSceneSVG); these blocks carry the
+   text colours that sit on top of each scene. */
+.cover-theme-scene-nightsky {
+  --cover-bg: #060d24;
+  --cover-title: #f3d27a;
+  --cover-accent: #d4af37;
+  --cover-deco: #ffd166;
+  --cover-sub: #c3cee6;
+  --cover-name: #fff6dd;
+  --cover-line: #d4af37;
+  --cover-note-bg: #101c40;
+}
+.cover-theme-scene-arch-emerald {
+  --cover-bg: linear-gradient(155deg, #03231b, #065f46);
+  --cover-title: #ffd166;
+  --cover-accent: #ffd166;
+  --cover-deco: #ffd166;
+  --cover-sub: #cdeee0;
+  --cover-name: #fff6dd;
+  --cover-line: #ffd166;
+  --cover-note-bg: #0a4a38;
+}
+.cover-theme-scene-arch-ivory {
+  --cover-bg: linear-gradient(155deg, #fbf3e1, #f0dcb4);
+  --cover-title: #5b3a1e;
+  --cover-accent: #9a6a14;
+  --cover-deco: #dfa32e;
+  --cover-sub: #7a5c38;
+  --cover-name: #5b3a1e;
+  --cover-line: #b98a1d;
+  --cover-note-bg: #fffaf0;
+}
+.cover-theme-scene-arabesque {
+  --cover-bg: linear-gradient(155deg, #02262e, #0a5c63);
+  --cover-title: #ffe9a8;
+  --cover-accent: #ffd166;
+  --cover-deco: #ffd166;
+  --cover-sub: #cdeef2;
+  --cover-name: #fff6dd;
+  --cover-line: #ffd166;
+  --cover-note-bg: #07444c;
+}
+.cover-theme-scene-calligraphy {
+  --cover-bg: #060d24;
+  --cover-title: #e8edf7;
+  --cover-accent: #d4af37;
+  --cover-deco: #ffd166;
+  --cover-sub: #c3cee6;
+  --cover-name: #ffffff;
+  --cover-line: #d4af37;
+  --cover-note-bg: #101c40;
+}
+.cover-theme-scene-mandala {
+  --cover-bg: linear-gradient(155deg, #101012, #2e2e33);
+  --cover-title: #f5c542;
+  --cover-accent: #d9a62e;
+  --cover-deco: #ffd166;
+  --cover-sub: #d8d8dc;
+  --cover-name: #fff6dd;
+  --cover-line: #d9a62e;
+  --cover-note-bg: #1d1d21;
+}
+.cover-theme-scene-pastel-skyline {
+  --cover-bg: linear-gradient(155deg, #fdf1ec, #f6d7ce);
+  --cover-title: #57293e;
+  --cover-accent: #b76e79;
+  --cover-deco: #d99a5c;
+  --cover-sub: #7c4a5e;
+  --cover-name: #57293e;
+  --cover-line: #c98a6a;
+  --cover-note-bg: #fff8f4;
+}
+.cover-theme-scene-pastel-arch {
+  --cover-bg: linear-gradient(155deg, #f4f6ec, #e2e9d2);
+  --cover-title: #43511f;
+  --cover-accent: #7d8c46;
+  --cover-deco: #ffd166;
+  --cover-sub: #68754a;
+  --cover-name: #43511f;
+  --cover-line: #a3a86b;
+  --cover-note-bg: #f8faf0;
+}
 /* The cover ornaments + pattern are drawn by render.js in the
    palette's deco colour, baked into the SVG markup (print
    engines do not reliably recolour SVG presentation attributes
@@ -338,21 +501,79 @@ body {
 .deco-svg { display: block; margin: 0 auto; }
 .cover-page .deco-svg { height: 240px; }
 .cover-title { font-size: 34px; margin: 12px 0 6px; color: var(--cover-title, #0f2027); line-height: 1.25; }
+/* The book cover's display title (2026-11-17): large serif, ~1.5x
+   the old sans title. The Arabic half keeps the Amiri stack via
+   .l-ar / the RTL page rule — only the Latin face is serif here.
+   Solid foil colour, NOT gradient-clipped text: background-clip
+   renders text invisible in the WeasyPrint PDF pipeline
+   (probe-verified), so the gradient lives in the SVG artwork. */
+.cover-title-main {
+  font-family: Georgia, 'Times New Roman', 'Nimbus Roman No. 9 L', serif;
+  font-size: 52px; line-height: 1.18; margin: 14px 0 8px;
+  color: var(--cover-title, #0f2027);
+}
 .cover-year { font-size: 20px; color: var(--cover-accent, #b98a1d); font-weight: 700; margin: 0 0 26px; }
 /* Centred measure via percentage side margins, NOT max-width +
    margin:auto — in RTL pages some print engines mis-resolve auto
    side margins and shove the block off the sheet. */
 .cover-sub { font-size: 15px; color: var(--cover-sub, #48626e); line-height: 1.5; margin: 0 10%; }
-.cover-name { margin: 0 15% 30px; }
+/* The name sits in a ruled band (2026-11-17): fine rules above
+   and below, like a manufactured retail planner. */
+.cover-name {
+  margin: 0 16% 26px; padding: 12px 0 10px;
+  border-top: 1px solid var(--cover-line, #7d97a1);
+  border-bottom: 1px solid var(--cover-line, #7d97a1);
+}
 .cover-name-label { display: block; font-size: 14px; color: var(--cover-sub, #48626e); margin-bottom: 8px; }
 .cover-name-value { font-size: 26px; font-weight: 700; color: var(--cover-name, #0f2027); }
 .cover-name-line { display: block; height: 34px; border-bottom-color: var(--cover-line, #7d97a1); }
+/* The moon-sighting note no longer sits on the cover; it keeps
+   its dashed styling on the Khatma page (.book-note), themed by
+   the interior accent. */
 .moon-note {
-  border: 1.5px dashed var(--cover-accent, #b98a1d); border-radius: 12px; background: var(--cover-note-bg, #fffaf0);
-  padding: 10px 14px; font-size: 13px; line-height: 1.45; color: var(--cover-sub, #48626e);
+  border: 1.5px dashed var(--theme-accent, #b98a1d); border-radius: 12px; background: var(--theme-soft, #fffaf0);
+  padding: 10px 14px; font-size: 13px; line-height: 1.45; color: #48626e;
   margin: 0 6%;
 }
+.book-note { margin: 16px 0 0; }
 .cover-brand { margin-top: 30px; letter-spacing: 4px; font-weight: 800; color: var(--cover-accent, #b98a1d); font-size: 15px; }
+
+/* ---------- Hero scene covers (2026-11-17) ---------- */
+.cover-scene {
+  position: absolute; inset: 0; z-index: 0;
+  pointer-events: none;
+}
+.cover-scene-svg { display: block; width: 100%; height: 100%; }
+/* Plain BLOCK layout, deliberately not flex: WeasyPrint
+   misplaces an absolutely-positioned flex container (the whole
+   column collapses toward one edge and the brand line runs off
+   the sheet — render-verified 2026-11-17), while the classic
+   cover's block layout (.cover-inner) prints perfectly. All
+   children are blocks centred by text-align / % margins, and
+   each scene offsets its text with padding-top instead. */
+.scene-inner {
+  position: absolute; inset: 0; z-index: 1; margin: 0;
+  text-align: center; padding: 6% 9%;
+}
+.scene-inner .cover-name { margin: 0 13% 24px; }
+.scene-inner-nightsky { padding-top: 47%; }
+.scene-inner-pastelskyline { padding-top: 44%; }
+.scene-inner-arch, .scene-inner-pastelarch { padding-top: 50%; }
+.scene-inner-arch .cover-name, .scene-inner-pastelarch .cover-name { margin-top: 20px; }
+.scene-inner-arabesque { padding-top: 4%; }
+.scene-inner-calligraphy { padding-top: 22%; }
+.scene-inner-mandala { padding-top: 30%; }
+.calligraphy-word {
+  font-family: 'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic',
+    'Scheherazade New', serif;
+  font-size: 128px; line-height: 1.55; color: #dcb84e; margin-bottom: 6px;
+}
+.scene-crescent { height: 84px; margin-bottom: 4px; }
+/* Kids' divider title: chunkier than the book title. */
+.kids-title {
+  font-size: 42px; font-weight: 800; letter-spacing: .5px;
+  margin: 12px 0 6px; color: var(--cover-title, #0f2027); line-height: 1.25;
+}
 .cert-page .deco-svg { height: 170px; }
 .cert-inner {
   border: 3px double #b98a1d; border-radius: 18px; padding: 28px 30px;
@@ -394,12 +615,12 @@ body {
 }
 .water-cap { font-size: 12px; color: #48626e; margin-top: 3px; }
 .dua-blk {
-  border: 1.5px solid #b98a1d; border-radius: 12px; background: #fffaf0;
+  border: 1.5px solid var(--theme-accent, #b98a1d); border-radius: 12px; background: var(--theme-soft, #fffaf0);
   padding: 8px 12px;
 }
 .dua-ar { font-size: 18px; line-height: 1.7; margin: 0; color: #14232b; text-align: right; }
 .dua-en { font-size: 13px; line-height: 1.45; margin: 5px 0 0; color: #33505c; direction: ltr; unicode-bidi: isolate; }
-.dua-src { font-size: 11.5px; color: #b98a1d; font-weight: 700; margin: 5px 0 0; }
+.dua-src { font-size: 11.5px; color: var(--theme-accent, #b98a1d); font-weight: 700; margin: 5px 0 0; }
 
 /* ---------- Weekly ---------- */
 .week-rows { border-top: 1px solid #e1eaed; }
@@ -424,7 +645,7 @@ body {
 .plan-table th, .plan-table td {
   border: 1px solid #c8d6dc; text-align: center; font-size: 13px;
 }
-.plan-table th { padding: 3px 6px; background: #eef6f8; color: #0f2027; }
+.plan-table th { padding: 3px 6px; background: var(--theme-band, #eef6f8); color: var(--theme-title, #0f2027); }
 .plan-table td { padding: 2px 6px; }
 
 /* ---------- Tables (last-ten, deeds, meals, kids, eid) ---------- */
@@ -439,7 +660,7 @@ body {
   border: 1px solid #c8d6dc; font-size: 13px;
 }
 .nights-table th, .deeds-table th, .meals-table th, .kids-table th, .eid-table th {
-  background: #eef6f8; color: #0f2027; padding: 3px 6px;
+  background: var(--theme-band, #eef6f8); color: var(--theme-title, #0f2027); padding: 3px 6px;
 }
 .nights-table td { padding: 4px; text-align: center; }
 .nights-table .act-name { text-align: start; font-size: 12.5px; font-weight: 600; color: #0f2027; }
@@ -459,7 +680,7 @@ body {
 .kids-table th { font-size: 12.5px; padding: 2px 4px; }
 .kids-table td { padding: 0 4px; font-size: 12.5px; text-align: center; }
 .kids-table .k-day { width: 64px; font-weight: 700; color: #0f2027; }
-.kids-table .star-cell { font-size: 12.5px; color: #b98a1d; }
+.kids-table .star-cell { font-size: 12.5px; color: var(--theme-accent, #b98a1d); }
 .eid-table td { padding: 5px 6px; font-size: 13.5px; }
 .eid-table .e-time { width: 110px; }
 .eid-head { text-align: center; }
@@ -473,12 +694,12 @@ body {
 /* ---------- Kids cards + colouring ---------- */
 .cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
 .deed-card {
-  border: 2px dashed #b98a1d; border-radius: 14px; padding: 10px;
+  border: 2px dashed var(--theme-accent, #b98a1d); border-radius: 14px; padding: 10px;
   background: #fffdf6;
 }
 .card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
-.card-day { font-size: 13px; font-weight: 800; color: #b98a1d; }
-.card-star { font-size: 20px; color: #b98a1d; }
+.card-day { font-size: 13px; font-weight: 800; color: var(--theme-accent, #b98a1d); }
+.card-star { font-size: 20px; color: var(--theme-accent, #b98a1d); }
 .card-text { margin: 0; }
 .card-ar { display: block; font-size: 14.5px; line-height: 1.5; }
 .card-en { display: block; font-size: 13px; line-height: 1.45; color: #33505c; margin-top: 2px; }
