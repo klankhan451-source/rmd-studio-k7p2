@@ -1549,6 +1549,51 @@
     return h;
   }
 
+  /* ---------- Learn extras (2026-11-17) ----------
+   * The two printable pages of the tool's Learn tab: a prep
+   * checklist and a Quran reading plan. Instructional text only —
+   * they explain and point at content that already exists in the
+   * book (the settings, the khatma tracker on page 3, the surah
+   * tracker extra); they add no religious text of their own. */
+
+  var PREP_ITEMS = ['prepItem1', 'prepItem2', 'prepItem3', 'prepItem4',
+    'prepItem5', 'prepItem6', 'prepItem7'];
+
+  function prepBody(page, ctx) {
+    var h = pageHead(ctx, L(ctx, 'prepTitle'));
+    h += '<p class="intro-line">' + L(ctx, 'prepIntro') + '</p>';
+    h += '<div class="prep-list">';
+    PREP_ITEMS.forEach(function (k) {
+      h += '<div class="prep-row">' + cb() +
+        '<span class="prep-text">' + L(ctx, k) + '</span></div>';
+    });
+    h += '</div>';
+    h += '<section class="blk">' + blkTitle(ctx, 'notes');
+    for (var i = 0; i < 4; i++) h += ruled();
+    return h + '</section>';
+  }
+
+  function readplanBody(page, ctx) {
+    var h = pageHead(ctx, L(ctx, 'planTitle'));
+    h += '<p class="intro-line">' + L(ctx, 'planIntro') + '</p>';
+    ['planStep1', 'planStep2', 'planStep3'].forEach(function (k, i) {
+      h += '<div class="plan-step"><span class="plan-step-n">' + N(ctx, i + 1) + '</span>' +
+        '<span class="plan-step-text">' + L(ctx, k) + '</span></div>';
+    });
+    h += '<section class="blk">' + blkTitle(ctx, 'planMilesTitle');
+    [[1, 7], [2, 14], [3, 21], [4, 28]].forEach(function (m) {
+      h += '<div class="plan-mile">' + cb() + '<span>' +
+        L(ctx, 'week', { n: N(ctx, m[0]) }) + ' — ' +
+        L(ctx, 'juz') + ' ' + N(ctx, m[1]) + '</span></div>';
+    });
+    h += '<div class="plan-mile">' + cb() + '<span>' +
+      L(ctx, 'dayOfRamadan', { n: N(ctx, 30) }) + ' — ' +
+      L(ctx, 'juz') + ' ' + N(ctx, 30) + ' ✓</span></div>';
+    h += '</section>';
+    h += '<p class="intro-line plan-closing">' + L(ctx, 'planClosing') + '</p>';
+    return h;
+  }
+
   var BODIES = {
     cover: coverBody, overview: overviewBody, daily: dailyBody,
     weekly: weeklyBody, khatma: khatmaBody, lastten: lastTenBody,
@@ -1558,7 +1603,8 @@
     kidscards: kidsCardsBody, coloring: coloringBody,
     certificate: certificateBody,
     duacards: duaCardsBody, bookmarks: bookmarksBody, notes: notesBody,
-    quranduas: quranDuasBody, surahtracker: surahTrackerBody
+    quranduas: quranDuasBody, surahtracker: surahTrackerBody,
+    prep: prepBody, readplan: readplanBody
   };
 
   function pageBodyHTML(page, ctx) {
