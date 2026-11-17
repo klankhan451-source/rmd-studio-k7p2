@@ -188,6 +188,37 @@ body {
 .output .placeholder { color: #7d97a1; text-align: center; padding: 60px 10px; }
 .site-footer { text-align: center; color: #7d97a1; font-size: 13px; padding: 0 20px 26px; }
 
+/* ---------- Learn tab (screen only — inside #app, never prints) ----------
+ * Five teaching cards that show buyers what the book contains and
+ * how to use it. The two printable Learn pages (prep checklist +
+ * reading plan) live in the book itself, under Extras. */
+.learn-tabs {
+  display: flex; gap: 8px; justify-content: center; flex-wrap: wrap;
+  max-width: 1180px; margin: 0 auto; padding: 16px 20px 0;
+}
+.tab-btn {
+  font: inherit; font-size: 14.5px; font-weight: 700; cursor: pointer;
+  padding: 9px 18px; border-radius: 999px;
+  border: 2px solid #0f2027; background: #fff; color: #0f2027;
+}
+.tab-btn.active { background: #0f2027; color: #ffd166; }
+.learn-wrap { max-width: 1180px; margin: 0 auto; padding: 18px 20px 30px; }
+.learn-card { margin-bottom: 18px; }
+.learn-card h2 { margin: 0 0 8px; color: #0f2027; font-size: 20px; }
+.learn-card h3 { margin: 14px 0 6px; color: #0f2027; font-size: 16px; }
+.learn-card p { margin: 0 0 8px; font-size: 14.5px; line-height: 1.55; color: #33505c; }
+.learn-card ol, .learn-card ul { margin: 0 0 8px; padding-left: 22px; font-size: 14.5px; line-height: 1.55; color: #33505c; }
+.learn-card li { margin-bottom: 5px; }
+.learn-cols { display: flex; gap: 20px; align-items: flex-start; flex-wrap: wrap; }
+.learn-mini { flex: none; width: 300px; max-width: 100%; }
+.learn-mini .picker-title { display: block; margin-bottom: 6px; }
+.learn-legend { flex: 1; min-width: 260px; }
+.learn-tag {
+  display: inline-block; font-size: 12px; font-weight: 700; color: #7a5a10;
+  background: rgba(255,209,102,.25); border: 1px solid rgba(185,138,29,.45);
+  border-radius: 999px; padding: 2px 10px; margin-bottom: 8px;
+}
+
 /* ---------- Book preview (screen) ---------- */
 #book-preview { background: #37474f; padding: 28px 12px; }
 #book-preview[hidden] { display: none; }
@@ -899,6 +930,34 @@ body {
 .st-verses { width: 36px; text-align: center; }
 .st-date { width: 62px; }
 .st-date .wline { display: block; border-bottom: 1.2px solid #9db4bc; min-height: 12px; }
+
+/* ---------- Learn extras: prep checklist + reading plan pages ----------
+ * Instructional pages (2026-11-17), appended only when the buyer
+ * ticks the extras. Sizes mirror the layout model in
+ * tests/test_layout.js (MODELS.prep / MODELS.readplan). */
+.prep-row {
+  display: flex; gap: 10px; align-items: flex-start;
+  padding: 6px 0; border-bottom: 1px solid #e1eaed;
+  font-size: 13.5px; line-height: 1.45;
+}
+.prep-row .cb { margin-top: 2px; }
+.prep-text { flex: 1; }
+.plan-step {
+  display: flex; gap: 10px; align-items: flex-start;
+  margin: 7px 0; font-size: 13.5px; line-height: 1.45;
+}
+.plan-step-n {
+  flex: none; width: 22px; height: 22px; border-radius: 50%;
+  background: var(--theme-band, #fdf3e3); color: var(--theme-title, #0f2027);
+  border: 1.5px solid var(--theme-accent, #b98a1d);
+  font-weight: 700; font-size: 13px; line-height: 20px; text-align: center;
+}
+.plan-step-text { flex: 1; }
+.plan-mile {
+  display: flex; gap: 10px; align-items: center;
+  padding: 5px 0; border-bottom: 1px solid #e1eaed; font-size: 14px;
+}
+.plan-closing { margin-top: 10px; }
 /* Kids' divider title: chunkier than the book title. */
 .kids-title {
   font-size: 42px; font-weight: 800; letter-spacing: .5px;
