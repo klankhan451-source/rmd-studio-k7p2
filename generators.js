@@ -152,6 +152,27 @@
       });
     });
   });
+
+  /* ---------- Hero scene designs (added 2026-11-17) ----------
+   * Full-composition covers drawn by render.js as layered SVG
+   * scenes (sky + star field + skyline / arch / arabesque /
+   * calligraphy / mandala), in the style of the best-selling
+   * Etsy/Canva Ramadan covers. Each scene design borrows one of
+   * the 10 palettes for its interior theme (book.js stamps the
+   * palette's book-theme class on the inside pages); the cover's
+   * own colours live in its cover-theme-<id> block in styles.css.
+   * Scene designs carry { scene } instead of { ornament }. */
+  var COVER_SCENES = [
+    { id: 'scene-nightsky', name: 'Night Sky Skyline', palette: 'navy', scene: 'nightsky' },
+    { id: 'scene-arch-emerald', name: 'Golden Arch — Emerald', palette: 'emerald', scene: 'arch' },
+    { id: 'scene-arch-ivory', name: 'Golden Arch — Ivory', palette: 'sand', scene: 'arch' },
+    { id: 'scene-arabesque', name: 'Arabesque Crescent', palette: 'teal', scene: 'arabesque' },
+    { id: 'scene-calligraphy', name: 'Calligraphy — Ramadan', palette: 'navy', scene: 'calligraphy' },
+    { id: 'scene-mandala', name: 'Corner Mandala', palette: 'charcoal', scene: 'mandala' },
+    { id: 'scene-pastel-skyline', name: 'Pastel Sisters — Skyline', palette: 'rose', scene: 'pastelskyline' },
+    { id: 'scene-pastel-arch', name: 'Pastel Sisters — Arch', palette: 'olive', scene: 'pastelarch' }
+  ];
+  COVER_DESIGNS = COVER_DESIGNS.concat(COVER_SCENES);
   var DEFAULT_COVER_DESIGN = 'midnight-lantern';
 
   function coverDesign(id) {
@@ -243,6 +264,7 @@
     DEFAULT_START: DEFAULT_START,
     COVER_PALETTES: COVER_PALETTES,
     COVER_ORNAMENTS: COVER_ORNAMENTS,
+    COVER_SCENES: COVER_SCENES,
     COVER_DESIGNS: COVER_DESIGNS,
     DEFAULT_COVER_DESIGN: DEFAULT_COVER_DESIGN,
     coverDesign: coverDesign,
