@@ -52,6 +52,12 @@
            cover-theme-* variables); the kids divider shares the
            cover-page layout class but keeps the default design */
         (page.type === 'cover' ? ' cover-theme-' + spec.coverTheme : '') +
+        /* cover title font choice (2026-11-17): styles.css swaps
+           the .cover-title-main face per class */
+        (page.type === 'cover' ? ' cover-font-' + spec.titleFont : '') +
+        /* ink-saver printing (2026-11-17): styles.css lightens
+           the cover + interior accents under this class */
+        (spec.inkSaver ? ' ink-saver' : '') +
         /* interior theming (2026-11-17): the chosen design's
            palette also stamps every inside page, so styles.css can
            flow its accent into page titles, dua cards, table
