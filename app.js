@@ -57,6 +57,9 @@ if (typeof module !== 'undefined' && module.exports) {
   var CODE_KEY = 'ramadan_license_code';
   var THEME_KEY = 'ramadan_cover_theme';
   var appStarted = false;
+  /* the currently chosen cover design id (one of RP.COVER_DESIGNS);
+     initApp restores it from localStorage (with migration) */
+  var currentTheme = 'midnight-lantern';
 
   function unlock() {
     document.getElementById('lock-screen').hidden = true;
@@ -146,7 +149,7 @@ if (typeof module !== 'undefined' && module.exports) {
       lang: $('pl-lang').value,
       numerals: $('pl-numerals').value,
       paper: $('pl-paper').value,
-      coverTheme: $('pl-theme') ? $('pl-theme').value : 'midnight',
+      coverTheme: currentTheme,
       includeKids: $('pl-kids').checked,
       name: $('pl-name').value
     };
@@ -175,23 +178,69 @@ if (typeof module !== 'undefined' && module.exports) {
     }, 30);
   }
 
+  /* Tiny ornament marks for the picker cards (screen only,
+     drawn in the palette's deco colour via currentColor). */
+  function ornamentMark(ornament) {
+    if (ornament === 'mosque') {
+      return '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<path d="M12 2.5 C13.8 5 15.5 6 15.5 9 L8.5 9 C8.5 6 10.2 5 12 2.5 Z" fill="currentColor"/>' +
+        '<rect x="6" y="9" width="12" height="8" fill="currentColor"/>' +
+        '<rect x="2.6" y="7" width="1.8" height="10" fill="currentColor"/>' +
+        '<rect x="19.6" y="7" width="1.8" height="10" fill="currentColor"/>' +
+        '<rect x="4" y="17.6" width="16" height="1.4" fill="currentColor"/></svg>';
+    }
+    if (ornament === 'star') {
+      return '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">' +
+        '<polygon points="12,1.5 14.5,6 19.4,4.6 18,9.5 22.5,12 18,14.5 19.4,19.4 14.5,18 12,22.5 9.5,18 4.6,19.4 6,14.5 1.5,12 6,9.5 4.6,4.6 9.5,6" fill="currentColor"/></svg>';
+    }
+    /* lantern: crescent + star + hanging fanoos */
+    return '<svg width="26" height="26" viewBox="0 0 24 24" aria-hidden="true">' +
+      '<path d="M7 2.8 A6.2 6.2 0 1 0 7 15.2 A7.7 7.7 0 0 1 7 2.8 Z" fill="currentColor"/>' +
+      '<polygon points="12.8,3.6 13.4,5.4 15.3,5.4 13.8,6.5 14.3,8.3 12.8,7.2 11.3,8.3 11.8,6.5 10.3,5.4 12.2,5.4" fill="currentColor"/>' +
+      '<path d="M18.4 5.6 L19.6 5.6 L19.6 7.6 L21.2 9.4 L21.2 17.2 L16.8 17.2 L16.8 9.4 Z M17.6 18.2 L20.4 18.2 L19 20.6 Z" fill="currentColor"/></svg>';
+  }
+
   function initApp() {
     BookBuilder.init(build);
-    /* cover design: restore the buyer's saved choice (if it is
-       still one of the offered designs) and remember changes */
-    var themeSel = $('pl-theme');
-    if (themeSel) {
-      try {
-        var savedTheme = localStorage.getItem(THEME_KEY);
-        if (savedTheme) {
-          for (var i = 0; i < themeSel.options.length; i++) {
-            if (themeSel.options[i].value === savedTheme) { themeSel.value = savedTheme; break; }
-          }
+    /* cover design picker: build the 30 design cards, restore the
+       buyer's saved choice (migrating 4-design-era palette ids to
+       that palette's lantern design) and remember changes */
+    var picker = $('pl-theme');
+    if (picker && typeof RP !== 'undefined' && RP.COVER_DESIGNS) {
+      var savedTheme = null;
+      try { savedTheme = localStorage.getItem(THEME_KEY); } catch (e) { /* private mode */ }
+      currentTheme = RP.migrateCoverTheme(savedTheme || currentTheme);
+      if (savedTheme && savedTheme !== currentTheme) {
+        try { localStorage.setItem(THEME_KEY, currentTheme); } catch (e) { /* ignore */ }
+      }
+      picker.innerHTML = RP.COVER_DESIGNS.map(function (d) {
+        var p = RP.COVER_PALETTES[d.palette];
+        return '<button type="button" class="design-card" role="option" data-design="' + d.id + '" aria-label="' + d.name + '">' +
+          '<span class="design-swatch" style="background:' + p.grad + ';color:' + p.deco + '">' +
+          ornamentMark(d.ornament) + '</span>' +
+          '<span class="design-name">' + d.name + '</span></button>';
+      }).join('');
+      var nameEl = $('pl-theme-name');
+      function markSelected() {
+        var cards = picker.querySelectorAll('.design-card');
+        for (var i = 0; i < cards.length; i++) {
+          var on = cards[i].getAttribute('data-design') === currentTheme;
+          cards[i].classList.toggle('selected', on);
+          cards[i].setAttribute('aria-selected', on ? 'true' : 'false');
         }
-      } catch (e) { /* private mode */ }
-      themeSel.addEventListener('change', function () {
-        try { localStorage.setItem(THEME_KEY, themeSel.value); } catch (e) { /* ignore */ }
+        var d = RP.coverDesign(currentTheme);
+        if (nameEl && d) {
+          nameEl.textContent = 'Selected cover: ' + d.name + ' — it will be page 1 of your planner.';
+        }
+      }
+      picker.addEventListener('click', function (ev) {
+        var card = ev.target && ev.target.closest ? ev.target.closest('.design-card') : null;
+        if (!card) return;
+        currentTheme = RP.migrateCoverTheme(card.getAttribute('data-design'));
+        try { localStorage.setItem(THEME_KEY, currentTheme); } catch (e) { /* ignore */ }
+        markSelected();
       });
+      markSelected();
     }
     /* changing the start date or language re-labels the hint */
     $('pl-start').addEventListener('change', function () {
