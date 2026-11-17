@@ -1,0 +1,108 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+<meta charset="UTF-8">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+<meta name="robots" content="noindex, nofollow">
+<title>Ramadan Planner Generator — Songlap Deals</title>
+<link rel="stylesheet" href="styles.css">
+</head>
+<body>
+
+<!-- ============ ACCESS GATE ============ -->
+<div id="lock-screen">
+  <div class="lock-card">
+    <div class="lock-logo">🌙</div>
+    <h1>Ramadan Planner Generator</h1>
+    <p class="lock-sub">A Songlap Deals tool for creating a complete, print-ready
+    Ramadan planner — Arabic, English or bilingual.<br>
+    Enter your name and your access code to unlock.</p>
+    <form id="lock-form">
+      <input type="text" id="lock-name" placeholder="Your name" autocomplete="name" spellcheck="false">
+      <input type="text" id="lock-input" placeholder="Your access code" autocomplete="off"
+             autocapitalize="characters" spellcheck="false">
+      <button type="submit" class="btn btn-gold" id="lock-submit">Unlock</button>
+    </form>
+    <p id="lock-error" class="lock-error" hidden></p>
+    <p class="lock-note">Your name and code were included with your purchase delivery.</p>
+  </div>
+</div>
+
+<!-- ============ APP (hidden until unlocked) ============ -->
+<div id="app" hidden>
+
+<div id="license-bar" class="license-bar" hidden>Licensed to: <span id="license-name"></span> · <span id="license-code"></span></div>
+
+<header class="site-header">
+  <div class="header-inner">
+    <div class="brand">
+      <span class="brand-icon">🌙</span>
+      <div>
+        <div class="brand-name">SONGLAP DEALS</div>
+        <div class="brand-tag">Ramadan Planner Generator</div>
+      </div>
+    </div>
+    <div class="header-note">A complete Ramadan 1448 / 2027 planner in minutes: 30 daily pages with a dua for every day, prayer &amp; Qur’an trackers, weekly reviews, a khatma plan, meal planner, Eid pages — plus a Kids’ Ramadan Pack. Arabic, English or bilingual, on A4 or US Letter.</div>
+  </div>
+</header>
+
+<main class="layout">
+  <section class="panel">
+    <div class="controls card">
+      <h2>Planner Settings</h2>
+      <label>Ramadan start date (Day 1)
+        <input type="date" id="pl-start" value="2027-02-08">
+      </label>
+      <p class="hint" id="pl-start-note">Day 1 of Ramadan = 2027-02-08. Every page date is worked out from this day.</p>
+      <p class="hint">🌙 <strong>Moon-sighting note:</strong> the real start of Ramadan depends on the sighting of the moon and may be a day earlier or later where you live. Just change the date above and generate again — all 30 days shift automatically.</p>
+      <label>Your name (printed on the cover &amp; the kids’ certificate)
+        <input type="text" id="pl-name" placeholder="e.g. Fatima Rahman" autocomplete="name">
+      </label>
+      <label>Language
+        <select id="pl-lang">
+          <option value="bi" selected>Bilingual — Arabic + English</option>
+          <option value="ar">Arabic only (العربية)</option>
+          <option value="en">English only</option>
+        </select>
+      </label>
+      <label>Numbers
+        <select id="pl-numerals">
+          <option value="west" selected>Western (123)</option>
+          <option value="east">Eastern Arabic (١٢٣)</option>
+        </select>
+      </label>
+      <label>Paper size
+        <select id="pl-paper">
+          <option value="letter" selected>US Letter (8.5 × 11 in)</option>
+          <option value="a4">A4 (210 × 297 mm)</option>
+        </select>
+      </label>
+      <label class="check">
+        <input type="checkbox" id="pl-kids" checked> Include the Kids’ Ramadan Pack (star chart, good-deed cards, colouring pages &amp; certificate)
+      </label>
+      <div class="btn-row">
+        <button class="btn btn-primary" id="pl-build">Generate Planner</button>
+        <button class="btn btn-gold" id="pl-print" disabled>⬇ Download / Print PDF</button>
+      </div>
+      <p class="hint" id="pl-status">The planner has a cover, a 30-day overview, a Qur’an khatma tracker, 30 daily pages with weekly reviews, the last-ten-nights page, a good-deeds tracker, a meal planner + shopping list, and Eid pages.
+      In the print dialog choose <strong>Save as PDF</strong> and set margins to <strong>None</strong> — the page size is set automatically.</p>
+    </div>
+    <div class="stage card">
+      <div id="pl-output" class="output"><p class="placeholder">Set your options and click Generate Planner. The full planner preview appears below the tool.</p></div>
+    </div>
+  </section>
+</main>
+
+<footer class="site-footer">Songlap Deals</footer>
+</div><!-- /#app -->
+
+<!-- Planner pages render here for screen preview AND print -->
+<div id="book-preview" hidden></div>
+
+<script src="data.js"></script>
+<script src="generators.js"></script>
+<script src="render.js"></script>
+<script src="book.js"></script>
+<script src="app.js"></script>
+</body>
+</html>
