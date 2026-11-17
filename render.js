@@ -1101,6 +1101,1052 @@
       s += starSVG(110, 120, 20, SW);
       s += starSVG(492, 110, 24, SW);
       return s;
+    },
+    /* ---- 44 further designs (2026-11-17 pool expansion) ---- */
+    lanterntrio: function () {
+      var s = '<g ' + SWN + '>';
+      /* strings */
+      s += '<line x1="130" y1="30" x2="130" y2="120"/>';
+      s += '<line x1="300" y1="30" x2="300" y2="80"/>';
+      s += '<line x1="470" y1="30" x2="470" y2="165"/>';
+      /* left lantern (small) */
+      s += '<circle cx="130" cy="136" r="13"/>';
+      s += '<path d="M100 156 L160 156 L146 188 L114 188 Z"/>';
+      s += '<path d="M112 188 L148 188 L148 300 L112 300 Z"/>';
+      s += '<line x1="130" y1="188" x2="130" y2="300"/>';
+      s += '<path d="M118 300 L142 300 L130 338 Z"/>';
+      /* centre lantern (big) */
+      s += '<circle cx="300" cy="97" r="16"/>';
+      s += '<path d="M252 122 L348 122 L322 168 L278 168 Z"/>';
+      s += '<rect x="264" y="168" width="72" height="22"/>';
+      s += '<path d="M272 190 L328 190 L328 420 L272 420 Z"/>';
+      s += '<line x1="300" y1="190" x2="300" y2="420"/>';
+      s += '<line x1="272" y1="266" x2="328" y2="266"/>';
+      s += '<line x1="272" y1="344" x2="328" y2="344"/>';
+      s += '<circle cx="300" cy="305" r="24"/>';
+      s += '<rect x="264" y="420" width="72" height="22"/>';
+      s += '<path d="M278 442 L322 442 L300 500 Z"/>';
+      /* right lantern (small, lower) */
+      s += '<circle cx="470" cy="181" r="13"/>';
+      s += '<path d="M440 201 L500 201 L486 233 L454 233 Z"/>';
+      s += '<path d="M452 233 L488 233 L488 345 L452 345 Z"/>';
+      s += '<line x1="470" y1="233" x2="470" y2="345"/>';
+      s += '<path d="M458 345 L482 345 L470 383 Z"/>';
+      s += '</g>';
+      s += starSVG(215, 480, 20, SW);
+      s += starSVG(395, 500, 24, SW);
+      s += starSVG(60, 430, 16, SW);
+      s += starSVG(545, 440, 16, SW);
+      return s;
+    },
+    biglantern: function () {
+      var s = '<g ' + SWN + '>';
+      /* hanging chain of rings */
+      s += '<circle cx="300" cy="42" r="12"/>';
+      s += '<circle cx="300" cy="72" r="12"/>';
+      s += '<circle cx="300" cy="102" r="12"/>';
+      /* dome cap + crown points */
+      s += '<path d="M228 168 C228 128 262 118 300 118 C338 118 372 128 372 168 Z"/>';
+      s += '<path d="M214 168 L386 168 L362 204 L238 204 Z"/>';
+      s += '<rect x="226" y="204" width="148" height="26"/>';
+      /* wide panelled body */
+      s += '<path d="M238 230 L362 230 L362 452 L238 452 Z"/>';
+      s += '<line x1="275" y1="230" x2="275" y2="452"/>';
+      s += '<line x1="325" y1="230" x2="325" y2="452"/>';
+      s += '<line x1="238" y1="300" x2="362" y2="300"/>';
+      s += '<line x1="238" y1="382" x2="362" y2="382"/>';
+      s += '<path d="' + crescentD(300, 341, 34) + '"/>';
+      s += '<rect x="226" y="452" width="148" height="26"/>';
+      s += '<path d="M246 478 L354 478 L300 540 Z"/>';
+      /* finial beads */
+      s += '<circle cx="300" cy="556" r="10"/>';
+      s += '</g>';
+      s += starSVG(120, 200, 24, SW);
+      s += starSVG(482, 190, 20, SW);
+      s += starSVG(140, 430, 20, SW);
+      s += starSVG(465, 440, 26, SW);
+      return s;
+    },
+    lanternarch: function () {
+      var s = '<g ' + SWN + '>';
+      /* pointed arch window frame */
+      s += '<path d="M150 545 L150 260 C150 160 235 130 300 55 C365 130 450 160 450 260 L450 545 Z"/>';
+      s += '<path d="M182 545 L182 268 C182 182 252 150 300 92 C348 150 418 182 418 268 L418 545 Z"/>';
+      s += '<line x1="118" y1="545" x2="482" y2="545"/>';
+      /* hanging lantern inside */
+      s += '<line x1="300" y1="92" x2="300" y2="180"/>';
+      s += '<circle cx="300" cy="196" r="14"/>';
+      s += '<path d="M254 218 L346 218 L322 256 L278 256 Z"/>';
+      s += '<path d="M266 256 L334 256 L334 400 L266 400 Z"/>';
+      s += '<line x1="300" y1="256" x2="300" y2="400"/>';
+      s += '<line x1="266" y1="328" x2="334" y2="328"/>';
+      s += '<path d="M278 400 L322 400 L300 448 Z"/>';
+      s += '</g>';
+      s += starSVG(228, 480, 18, SW);
+      s += starSVG(375, 480, 18, SW);
+      s += starSVG(300, 505, 14, SW);
+      return s;
+    },
+    minaret: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="60" y1="545" x2="540" y2="545"/>';
+      /* base + shaft */
+      s += '<rect x="252" y="470" width="96" height="75"/>';
+      s += '<rect x="264" y="330" width="72" height="140"/>';
+      s += '<rect x="264" y="205" width="72" height="80"/>';
+      /* two balconies */
+      s += '<rect x="240" y="285" width="120" height="20"/>';
+      s += '<line x1="252" y1="285" x2="252" y2="262"/>';
+      s += '<line x1="276" y1="285" x2="276" y2="262"/>';
+      s += '<line x1="300" y1="285" x2="300" y2="262"/>';
+      s += '<line x1="324" y1="285" x2="324" y2="262"/>';
+      s += '<line x1="348" y1="285" x2="348" y2="262"/>';
+      s += '<line x1="240" y1="262" x2="360" y2="262"/>';
+      s += '<rect x="240" y="410" width="120" height="20"/>';
+      /* conical cap + crescent finial */
+      s += '<path d="M252 205 C252 160 278 148 300 108 C322 148 348 160 348 205 Z"/>';
+      s += '<line x1="300" y1="108" x2="300" y2="82"/>';
+      s += '<path d="' + crescentD(300, 62, 17) + '"/>';
+      /* arched window + door */
+      s += '<path d="M285 390 L285 350 C285 332 315 332 315 350 L315 390 Z"/>';
+      s += '<path d="M282 545 L282 492 C282 474 318 474 318 492 L318 545 Z"/>';
+      /* bushes */
+      s += '<path d="M120 545 C120 505 190 505 190 545"/>';
+      s += '<path d="M410 545 C410 505 480 505 480 545"/>';
+      s += '</g>';
+      s += starSVG(110, 130, 22, SW);
+      s += starSVG(490, 110, 26, SW);
+      s += starSVG(150, 280, 16, SW);
+      s += starSVG(455, 300, 16, SW);
+      return s;
+    },
+    domes: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="40" y1="520" x2="560" y2="520"/>';
+      /* base band */
+      s += '<rect x="70" y="430" width="460" height="90"/>';
+      /* big central dome */
+      s += '<path d="M195 430 C195 340 250 320 300 255 C350 320 405 340 405 430 Z"/>';
+      s += '<line x1="300" y1="255" x2="300" y2="222"/>';
+      s += '<path d="' + crescentD(300, 202, 18) + '"/>';
+      /* two side domes */
+      s += '<path d="M85 430 C85 372 118 358 150 318 C182 358 215 372 215 430 Z"/>';
+      s += '<line x1="150" y1="318" x2="150" y2="292"/>';
+      s += starSVG(150, 272, 14, SW);
+      s += '<path d="M385 430 C385 372 418 358 450 318 C482 358 515 372 515 430 Z"/>';
+      s += '<line x1="450" y1="318" x2="450" y2="292"/>';
+      s += starSVG(450, 272, 14, SW);
+      /* arched windows along the band */
+      [120, 210, 300, 390, 480].forEach(function (x) {
+        s += '<path d="M' + (x - 18) + ' 500 L' + (x - 18) + ' 468 C' + (x - 18) + ' 450 ' + (x + 18) + ' 450 ' + (x + 18) + ' 468 L' + (x + 18) + ' 500 Z"/>';
+      });
+      s += '</g>';
+      s += starSVG(80, 120, 20, SW);
+      s += starSVG(520, 130, 22, SW);
+      s += starSVG(300, 90, 16, SW);
+      return s;
+    },
+    mosquefront: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="50" y1="545" x2="550" y2="545"/>';
+      /* facade */
+      s += '<rect x="110" y="215" width="380" height="330"/>';
+      /* dome on top */
+      s += '<path d="M215 215 C215 150 258 132 300 88 C342 132 385 150 385 215 Z"/>';
+      s += '<line x1="300" y1="88" x2="300" y2="62"/>';
+      s += '<path d="' + crescentD(300, 46, 14) + '"/>';
+      /* big arched double door */
+      s += '<path d="M240 545 L240 360 C240 300 360 300 360 360 L360 545 Z"/>';
+      s += '<line x1="300" y1="312" x2="300" y2="545"/>';
+      s += '<circle cx="282" cy="450" r="7"/>';
+      s += '<circle cx="318" cy="450" r="7"/>';
+      /* two arched windows */
+      s += '<path d="M150 430 L150 330 C150 302 192 302 192 330 L192 430 Z"/>';
+      s += '<path d="M408 430 L408 330 C408 302 450 302 450 330 L450 430 Z"/>';
+      /* steps */
+      s += '<line x1="215" y1="560" x2="385" y2="560"/>';
+      s += '</g>';
+      /* hanging lanterns flanking the door */
+      s += starSVG(171, 262, 16, SW);
+      s += starSVG(429, 262, 16, SW);
+      s += starSVG(80, 110, 20, SW);
+      s += starSVG(522, 100, 18, SW);
+      return s;
+    },
+    kaaba: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="40" y1="530" x2="560" y2="530"/>';
+      /* front face + right side face */
+      s += '<path d="M140 250 L400 250 L400 530 L140 530 Z"/>';
+      s += '<path d="M400 250 L480 205 L480 485 L400 530 Z"/>';
+      s += '<path d="M140 250 L220 205 L480 205 L400 250 Z"/>';
+      /* the gold band (hizam) with its pattern blocks */
+      s += '<line x1="140" y1="305" x2="400" y2="305"/>';
+      s += '<line x1="400" y1="282" x2="480" y2="237"/>';
+      [185, 245, 305, 365].forEach(function (x) {
+        s += '<rect x="' + (x - 18) + '" y="262" width="36" height="30"/>';
+      });
+      /* door on the front face */
+      s += '<rect x="318" y="380" width="52" height="150"/>';
+      s += '<line x1="344" y1="380" x2="344" y2="530"/>';
+      s += '</g>';
+      s += starSVG(90, 110, 22, SW);
+      s += starSVG(515, 90, 20, SW);
+      s += starSVG(300, 110, 16, SW);
+      return s;
+    },
+    mihrab: function () {
+      var s = '<g ' + SWN + '>';
+      /* outer + inner arch niche */
+      s += '<path d="M120 550 L120 250 C120 140 210 105 300 40 C390 105 480 140 480 250 L480 550 Z"/>';
+      s += '<path d="M165 550 L165 262 C165 172 238 138 300 86 C362 138 435 172 435 262 L435 550 Z"/>';
+      /* side columns */
+      s += '<line x1="205" y1="240" x2="205" y2="550"/>';
+      s += '<line x1="395" y1="240" x2="395" y2="550"/>';
+      /* hanging lantern in the niche */
+      s += '<line x1="300" y1="86" x2="300" y2="150"/>';
+      s += '<path d="M262 168 L338 168 L318 200 L282 200 Z"/>';
+      s += '<path d="M272 200 L328 200 L328 292 L272 292 Z"/>';
+      s += '<line x1="300" y1="200" x2="300" y2="292"/>';
+      s += '<path d="M284 292 L316 292 L300 326 Z"/>';
+      /* prayer mat on the floor of the niche */
+      s += '<path d="M232 550 L252 430 L348 430 L368 550 Z"/>';
+      s += '<path d="M262 500 L270 462 C272 448 328 448 330 462 L338 500"/>';
+      s += '</g>';
+      s += starSVG(300, 385, 16, SW);
+      s += starSVG(80, 90, 18, SW);
+      s += starSVG(522, 90, 18, SW);
+      return s;
+    },
+    starrynight: function () {
+      var s = '<g ' + SWN + '>';
+      /* rooftops along the bottom: houses + domes silhouettes */
+      s += '<path d="M40 560 L40 470 L110 470 L110 560"/>';
+      s += '<path d="M110 470 C110 430 145 420 165 395 C185 420 220 430 220 470"/>';
+      s += '<rect x="220" y="450" width="90" height="110"/>';
+      s += '<path d="M310 470 C310 425 348 412 375 382 C402 412 440 425 440 470"/>';
+      s += '<path d="M440 560 L440 480 L500 480 L500 430 L560 430 L560 560"/>';
+      s += '<line x1="30" y1="560" x2="570" y2="560"/>';
+      s += '</g>';
+      s += '<path d="' + crescentD(140, 140, 62) + '" ' + SW + '/>';
+      s += starSVG(300, 100, 30, SW);
+      s += starSVG(440, 160, 24, SW);
+      s += starSVG(520, 70, 18, SW);
+      s += starSVG(230, 220, 18, SW);
+      s += starSVG(370, 280, 20, SW);
+      s += starSVG(90, 300, 16, SW);
+      s += starSVG(520, 320, 16, SW);
+      s += starSVG(160, 380, 14, SW);
+      s += '<circle cx="265" cy="330" r="7" ' + SW + '/>';
+      s += '<circle cx="470" cy="250" r="6" ' + SW + '/>';
+      s += '<circle cx="60" cy="200" r="6" ' + SW + '/>';
+      return s;
+    },
+    moonphases: function () {
+      var s = '<g ' + SWN + '>';
+      var xs = [92, 194, 300, 406, 508];
+      xs.forEach(function (x) { s += '<circle cx="' + x + '" cy="290" r="52"/>'; });
+      /* crescent in the 2nd circle, half in the 3rd, gibbous 4th, full 5th */
+      s += '<path d="' + crescentD(186, 290, 36) + '"/>';
+      s += '<path d="M300 238 L300 342 A 52 52 0 0 1 300 238 Z"/>';
+      s += '<path d="M406 238 A 52 52 0 0 1 406 342 A 30 52 0 0 0 406 238 Z"/>';
+      s += '<circle cx="488" cy="272" r="7"/>';
+      s += '<circle cx="524" cy="302" r="5"/>';
+      s += '<circle cx="496" cy="318" r="4"/>';
+      /* wavy ground + labels line */
+      s += '<line x1="60" y1="420" x2="540" y2="420"/>';
+      s += '</g>';
+      s += starSVG(110, 120, 22, SW);
+      s += starSVG(300, 90, 26, SW);
+      s += starSVG(492, 120, 22, SW);
+      s += starSVG(190, 480, 16, SW);
+      s += starSVG(410, 480, 16, SW);
+      return s;
+    },
+    crescentflowers: function () {
+      var s = '<path d="' + crescentD(255, 285, 185) + '" ' + SW + '/>';
+      function flower(cx, cy, r) {
+        var f = '';
+        for (var i = 0; i < 5; i++) {
+          var a = (Math.PI * 2 * i) / 5 - Math.PI / 2;
+          var px = Math.round(cx + Math.cos(a) * r);
+          var py = Math.round(cy + Math.sin(a) * r);
+          f += '<circle cx="' + px + '" cy="' + py + '" r="' + Math.round(r * 0.72) + '"/>';
+        }
+        return f + '<circle cx="' + cx + '" cy="' + cy + '" r="' + Math.round(r * 0.5) + '"/>';
+      }
+      s += '<g ' + SWN + '>';
+      s += flower(430, 170, 30);
+      s += flower(480, 300, 24);
+      s += flower(415, 420, 28);
+      s += flower(150, 490, 22);
+      /* leaves on stems */
+      s += '<path d="M430 200 C425 250 420 300 428 345"/>';
+      s += '<path d="M428 260 C400 250 385 232 382 208 C406 214 422 234 428 260 Z"/>';
+      s += '<path d="M426 310 C452 300 466 284 470 260 C446 266 430 286 426 310 Z"/>';
+      s += '</g>';
+      s += starSVG(400, 90, 20, SW);
+      s += starSVG(90, 110, 18, SW);
+      s += starSVG(540, 480, 18, SW);
+      return s;
+    },
+    hangingstars: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="40" y1="45" x2="560" y2="45"/>';
+      s += '<line x1="90" y1="45" x2="90" y2="150"/>';
+      s += '<line x1="190" y1="45" x2="190" y2="230"/>';
+      s += '<line x1="300" y1="45" x2="300" y2="120"/>';
+      s += '<line x1="405" y1="45" x2="405" y2="260"/>';
+      s += '<line x1="505" y1="45" x2="505" y2="180"/>';
+      s += '<path d="' + crescentD(190, 300, 42) + '"/>';
+      s += '<path d="' + crescentD(505, 245, 34) + '"/>';
+      s += '</g>';
+      s += starSVG(90, 195, 34, SW);
+      s += starSVG(300, 168, 30, SW);
+      s += starSVG(405, 330, 38, SW);
+      s += starSVG(120, 420, 22, SW);
+      s += starSVG(520, 430, 20, SW);
+      s += starSVG(255, 470, 24, SW);
+      return s;
+    },
+    tasbih: function () {
+      var s = '<g ' + SWN + '>';
+      /* a loop of 33 beads on an ellipse */
+      for (var i = 0; i < 33; i++) {
+        var a = (Math.PI * 2 * i) / 33;
+        var bx = Math.round(300 + Math.cos(a) * 165);
+        var by = Math.round(255 + Math.sin(a) * 175);
+        s += '<circle cx="' + bx + '" cy="' + by + '" r="15"/>';
+      }
+      /* the imam bead + tassel */
+      s += '<circle cx="300" cy="445" r="13"/>';
+      s += '<path d="M288 470 L312 470 L306 505 L294 505 Z"/>';
+      s += '<line x1="282" y1="505" x2="280" y2="552"/>';
+      s += '<line x1="294" y1="505" x2="294" y2="558"/>';
+      s += '<line x1="306" y1="505" x2="308" y2="552"/>';
+      s += '<line x1="318" y1="505" x2="322" y2="548"/>';
+      s += '</g>';
+      s += starSVG(300, 255, 30, SW);
+      s += starSVG(80, 90, 18, SW);
+      s += starSVG(522, 90, 18, SW);
+      return s;
+    },
+    tasbihcrescent: function () {
+      var s = '<path d="' + crescentD(265, 275, 180) + '" ' + SW + '/>';
+      s += '<g ' + SWN + '>';
+      /* a small bead loop hanging at the crescent's lower tip */
+      for (var i = 0; i < 15; i++) {
+        var a = (Math.PI * 2 * i) / 15;
+        var bx = Math.round(408 + Math.cos(a) * 62);
+        var by = Math.round(428 + Math.sin(a) * 62);
+        s += '<circle cx="' + bx + '" cy="' + by + '" r="11"/>';
+      }
+      s += '<line x1="408" y1="490" x2="408" y2="520"/>';
+      s += '<line x1="396" y1="520" x2="394" y2="552"/>';
+      s += '<line x1="408" y1="520" x2="408" y2="556"/>';
+      s += '<line x1="420" y1="520" x2="422" y2="552"/>';
+      s += '</g>';
+      s += starSVG(420, 165, 40, SW);
+      s += starSVG(110, 90, 18, SW);
+      s += starSVG(130, 480, 16, SW);
+      return s;
+    },
+    charitybox: function () {
+      var s = '<g ' + SWN + '>';
+      /* box body + lid with a coin slot */
+      s += '<path d="M170 240 L430 240 L430 520 L170 520 Z"/>';
+      s += '<path d="M150 240 L450 240 L430 195 L170 195 Z"/>';
+      s += '<rect x="262" y="208" width="76" height="14"/>';
+      s += '<line x1="170" y1="290" x2="430" y2="290"/>';
+      /* crescent emblem on the front */
+      s += '<path d="' + crescentD(300, 385, 52) + '"/>';
+      /* coins dropping in + a small pile beside the box */
+      s += '<circle cx="300" cy="130" r="24"/>';
+      s += '<circle cx="300" cy="66" r="24"/>';
+      s += '<circle cx="478" cy="490" r="22"/>';
+      s += '<circle cx="512" cy="505" r="18"/>';
+      s += '<circle cx="452" cy="512" r="16"/>';
+      s += '<line x1="60" y1="540" x2="560" y2="540"/>';
+      s += '</g>';
+      s += starSVG(110, 130, 20, SW);
+      s += starSVG(495, 130, 22, SW);
+      s += starSVG(335, 378, 14, SW);
+      return s;
+    },
+    waterjug: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="50" y1="530" x2="550" y2="530"/>';
+      /* jug: neck, belly, spout, handle */
+      s += '<path d="M258 120 L342 120 L342 175 C342 205 395 235 395 330 C395 445 350 505 300 505 C250 505 205 445 205 330 C205 235 258 205 258 175 Z"/>';
+      s += '<ellipse cx="300" cy="120" rx="42" ry="13"/>';
+      s += '<path d="M212 265 C160 250 140 200 165 165 C180 145 205 140 222 150"/>';
+      s += '<path d="M388 255 C440 235 462 285 445 330 C432 362 405 375 388 368"/>';
+      s += '<path d="M238 395 C270 415 330 415 362 395"/>';
+      /* cup beside the jug */
+      s += '<path d="M448 420 L532 420 L520 505 L460 505 Z"/>';
+      s += '<path d="M530 440 C560 440 560 478 522 480"/>';
+      /* water drops */
+      s += '<path d="M120 200 C105 228 102 244 120 258 C138 244 135 228 120 200 Z"/>';
+      s += '<path d="M90 300 C79 320 77 332 90 342 C103 332 101 320 90 300 Z"/>';
+      s += '</g>';
+      s += starSVG(490, 180, 22, SW);
+      s += starSVG(105, 90, 18, SW);
+      return s;
+    },
+    teapot: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="50" y1="520" x2="550" y2="520"/>';
+      /* teapot body */
+      s += '<path d="M205 330 C205 245 250 205 300 205 C350 205 395 245 395 330 C395 405 355 450 300 450 C245 450 205 405 205 330 Z"/>';
+      s += '<ellipse cx="300" cy="205" rx="52" ry="14"/>';
+      s += '<circle cx="300" cy="182" r="13"/>';
+      /* spout + handle */
+      s += '<path d="M212 290 C160 275 138 235 150 195 C172 215 195 240 214 262 Z"/>';
+      s += '<path d="M392 275 C445 260 468 305 448 350 C434 380 408 392 390 385"/>';
+      s += '<path d="M238 380 C268 398 332 398 362 380"/>';
+      /* two cups in front */
+      s += '<path d="M130 450 L215 450 L205 505 L140 505 Z"/>';
+      s += '<path d="M385 450 L470 450 L460 505 L395 505 Z"/>';
+      s += '<line x1="118" y1="520" x2="228" y2="520"/>';
+      s += '<line x1="372" y1="520" x2="482" y2="520"/>';
+      /* steam curls */
+      s += '<path d="M160 160 C145 140 175 128 162 105 C152 88 168 76 175 62"/>';
+      s += '</g>';
+      s += starSVG(300, 90, 20, SW);
+      s += starSVG(505, 250, 18, SW);
+      s += starSVG(80, 300, 16, SW);
+      return s;
+    },
+    dallah: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="50" y1="535" x2="550" y2="535"/>';
+      /* dallah body: slim waist, flared base */
+      s += '<path d="M268 205 C268 260 252 300 252 360 C252 450 262 500 246 535 L354 535 C338 500 348 450 348 360 C348 300 332 260 332 205"/>';
+      s += '<path d="M252 360 C280 378 320 378 348 360"/>';
+      /* lid + crescent finial */
+      s += '<path d="M262 205 C262 178 338 178 338 205 Z"/>';
+      s += '<line x1="300" y1="178" x2="300" y2="152"/>';
+      s += '<path d="' + crescentD(300, 134, 15) + '"/>';
+      /* long beak spout + handle */
+      s += '<path d="M258 250 C190 235 150 180 148 118 C188 150 228 195 254 232 Z"/>';
+      s += '<path d="M342 245 C395 230 420 280 405 330 C393 368 362 385 344 376"/>';
+      /* a small coffee cup */
+      s += '<path d="M440 460 L520 460 L510 520 L450 520 Z"/>';
+      s += '<path d="M455 488 L505 488"/>';
+      s += '</g>';
+      s += starSVG(120, 300, 20, SW);
+      s += starSVG(480, 200, 22, SW);
+      s += starSVG(140, 480, 16, SW);
+      return s;
+    },
+    prayercap: function () {
+      var s = '<g ' + SWN + '>';
+      /* the cap: a rounded dome with patterned bands */
+      s += '<path d="M130 430 C130 265 205 185 300 185 C395 185 470 265 470 430 Z"/>';
+      s += '<line x1="118" y1="430" x2="482" y2="430"/>';
+      s += '<line x1="118" y1="462" x2="482" y2="462"/>';
+      /* rows of small arches as the woven pattern */
+      [250, 315, 380].forEach(function (y) {
+        for (var x = 168; x <= 420; x += 42) {
+          s += '<path d="M' + x + ' ' + y + ' C' + x + ' ' + (y - 26) + ' ' + (x + 42) + ' ' + (y - 26) + ' ' + (x + 42) + ' ' + y + '"/>';
+        }
+      });
+      s += '<circle cx="300" cy="160" r="12"/>';
+      /* stand line + tassel strings at the sides */
+      s += '<line x1="90" y1="510" x2="510" y2="510"/>';
+      s += '</g>';
+      s += starSVG(300, 300, 22, SW);
+      s += starSVG(85, 150, 18, SW);
+      s += starSVG(518, 150, 18, SW);
+      return s;
+    },
+    datespalm: function () {
+      var s = '<g ' + SWN + '>';
+      /* curved trunk with ring bands */
+      s += '<path d="M268 545 C275 450 282 340 268 235"/>';
+      s += '<path d="M332 545 C330 450 322 340 300 240"/>';
+      [300, 355, 410, 465].forEach(function (y) {
+        s += '<path d="M' + (272 - (y - 300) / 22) + ' ' + y + ' C290 ' + (y - 12) + ' 312 ' + (y - 12) + ' ' + (330 - (y - 300) / 18) + ' ' + y + '"/>';
+      });
+      /* fronds fanning from the crown */
+      s += '<path d="M285 235 C230 160 150 130 70 150"/>';
+      s += '<path d="M285 232 C250 140 180 90 95 85"/>';
+      s += '<path d="M288 228 C285 130 240 70 175 40"/>';
+      s += '<path d="M295 228 C320 125 375 70 445 45"/>';
+      s += '<path d="M298 232 C350 145 430 105 515 115"/>';
+      s += '<path d="M298 238 C360 175 445 155 525 180"/>';
+      /* two hanging bunches of dates */
+      [[215, 265], [385, 275]].forEach(function (b) {
+        s += '<line x1="288" y1="238" x2="' + b[0] + '" y2="' + (b[1] - 18) + '"/>';
+        [[0, 0], [-20, 22], [20, 22], [-10, 48], [12, 48], [0, 72]].forEach(function (o) {
+          s += '<ellipse cx="' + (b[0] + o[0]) + '" cy="' + (b[1] + o[1]) + '" rx="13" ry="18"/>';
+        });
+      });
+      /* ground mound */
+      s += '<path d="M150 545 C220 520 380 520 450 545"/>';
+      s += '</g>';
+      s += starSVG(80, 300, 16, SW);
+      s += starSVG(525, 320, 16, SW);
+      return s;
+    },
+    palmfronds: function () {
+      var s = '<g ' + SWN + '>';
+      /* three big fronds fanning from the bottom centre */
+      function frond(x2, y2, bend) {
+        var mx = 300 + (x2 - 300) * 0.5 + bend, my = (560 + y2) / 2 - 40;
+        var f = '<path d="M300 560 Q' + mx + ' ' + my + ' ' + x2 + ' ' + y2 + '"/>';
+        for (var t = 0.18; t < 0.95; t += 0.13) {
+          var px = Math.round((1 - t) * (1 - t) * 300 + 2 * (1 - t) * t * mx + t * t * x2);
+          var py = Math.round((1 - t) * (1 - t) * 560 + 2 * (1 - t) * t * my + t * t * y2);
+          var dir = x2 >= 300 ? 1 : -1;
+          f += '<line x1="' + px + '" y1="' + py + '" x2="' + (px + dir * 44) + '" y2="' + (py + 26) + '"/>';
+          f += '<line x1="' + px + '" y1="' + py + '" x2="' + (px + dir * 40) + '" y2="' + (py - 20) + '"/>';
+        }
+        return f;
+      }
+      s += frond(85, 150, -30);
+      s += frond(300, 70, 0);
+      s += frond(515, 150, 30);
+      /* a cluster of dates at the base of the fronds */
+      [[268, 520], [300, 505], [332, 520], [284, 545], [316, 545]].forEach(function (d) {
+        s += '<ellipse cx="' + d[0] + '" cy="' + d[1] + '" rx="15" ry="21"/>';
+      });
+      s += '</g>';
+      s += starSVG(105, 430, 18, SW);
+      s += starSVG(495, 430, 18, SW);
+      return s;
+    },
+    olivebranch: function () {
+      var s = '<g ' + SWN + '>';
+      /* main curving branch */
+      s += '<path d="M90 500 C200 380 330 300 505 130"/>';
+      /* leaves along the branch */
+      [[150, 430], [205, 385], [262, 338], [322, 292], [385, 240], [445, 185]].forEach(function (p, i) {
+        var flip = i % 2 ? 1 : -1;
+        s += '<path d="M' + p[0] + ' ' + p[1] + ' C' + (p[0] - 8 * flip) + ' ' + (p[1] - 42) + ' ' + (p[0] + 30 * flip) + ' ' + (p[1] - 55) + ' ' + (p[0] + 52 * flip) + ' ' + (p[1] - 48) + ' C' + (p[0] + 34 * flip) + ' ' + (p[1] - 22) + ' ' + (p[0] + 14 * flip) + ' ' + (p[1] - 6) + ' ' + p[0] + ' ' + p[1] + ' Z"/>';
+      });
+      /* olives */
+      [[185, 452], [290, 352], [410, 238], [468, 168]].forEach(function (o) {
+        s += '<circle cx="' + o[0] + '" cy="' + o[1] + '" r="17"/>';
+        s += '<circle cx="' + (o[0] + 5) + '" cy="' + (o[1] - 5) + '" r="3"/>';
+      });
+      /* a second small sprig */
+      s += '<path d="M120 520 C170 500 215 505 258 532"/>';
+      s += '<path d="M175 505 C172 478 184 460 205 452 C212 476 202 496 175 505 Z"/>';
+      s += '<path d="M222 512 C226 486 242 470 264 466 C268 490 254 508 222 512 Z"/>';
+      s += '</g>';
+      s += starSVG(510, 480, 20, SW);
+      s += starSVG(90, 110, 18, SW);
+      return s;
+    },
+    pomegranate: function () {
+      var s = '<g ' + SWN + '>';
+      /* whole fruit with its crown */
+      s += '<path d="M205 240 L228 195 L252 228 L276 192 L300 228 L322 198 L338 242 C385 275 400 330 388 395 C372 478 320 530 258 522 C190 513 148 445 152 362 C155 300 172 262 205 240 Z"/>';
+      /* a cut wedge showing the seeds */
+      s += '<path d="M385 330 C440 320 490 355 495 415 C500 478 450 525 395 515 C355 508 330 470 338 420 C343 378 358 345 385 330 Z"/>';
+      [[395, 385], [430, 372], [462, 392], [388, 428], [425, 420], [460, 438], [402, 472], [440, 470]].forEach(function (sd) {
+        s += '<circle cx="' + sd[0] + '" cy="' + sd[1] + '" r="13"/>';
+      });
+      /* leaves */
+      s += '<path d="M262 190 C235 150 195 138 160 148 C172 185 210 205 262 190 Z"/>';
+      s += '<path d="M300 185 C315 142 352 122 390 128 C382 168 345 192 300 185 Z"/>';
+      s += '</g>';
+      s += starSVG(90, 110, 18, SW);
+      s += starSVG(520, 130, 20, SW);
+      s += starSVG(85, 470, 16, SW);
+      return s;
+    },
+    grapes: function () {
+      var s = '<g ' + SWN + '>';
+      /* stem + leaf + curly tendril */
+      s += '<path d="M300 130 C300 105 312 85 335 72"/>';
+      s += '<path d="M300 132 C255 100 205 105 178 140 C215 168 268 162 300 132 Z"/>';
+      s += '<path d="M335 72 C365 60 385 78 372 100 C362 116 340 112 342 96 C343 84 358 82 362 92"/>';
+      /* the bunch: rows of grapes */
+      var rows = [[248, 190, 3], [228, 245, 4], [238, 300, 4], [255, 355, 3], [272, 408, 2], [300, 458, 1]];
+      rows.forEach(function (r) {
+        for (var i = 0; i < r[2]; i++) {
+          s += '<circle cx="' + (r[0] + i * 52 + (r[2] === 1 ? 0 : 0)) + '" cy="' + r[1] + '" r="27"/>';
+        }
+      });
+      s += '</g>';
+      s += starSVG(110, 200, 18, SW);
+      s += starSVG(490, 210, 20, SW);
+      s += starSVG(130, 470, 16, SW);
+      s += starSVG(478, 460, 16, SW);
+      return s;
+    },
+    melon: function () {
+      var s = '<g ' + SWN + '>';
+      /* big half-melon: rind arcs */
+      s += '<path d="M80 260 C80 430 180 520 300 520 C420 520 520 430 520 260 Z"/>';
+      s += '<path d="M112 260 C112 405 195 488 300 488 C405 488 488 405 488 260"/>';
+      s += '<line x1="80" y1="260" x2="520" y2="260"/>';
+      /* seeds in the flesh */
+      [[210, 330], [300, 345], [390, 330], [255, 395], [345, 395], [300, 440]].forEach(function (sd) {
+        s += '<ellipse cx="' + sd[0] + '" cy="' + sd[1] + '" rx="9" ry="15"/>';
+      });
+      /* a small triangular slice in front */
+      s += '<path d="M235 545 L365 545 L300 460 Z"/>';
+      s += '<ellipse cx="300" cy="512" rx="6" ry="10"/>';
+      s += '</g>';
+      s += starSVG(105, 120, 20, SW);
+      s += starSVG(498, 118, 20, SW);
+      s += starSVG(300, 130, 16, SW);
+      return s;
+    },
+    honeyjar: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="60" y1="540" x2="540" y2="540"/>';
+      /* jar */
+      s += '<path d="M215 190 L385 190 C405 260 410 330 398 410 C388 485 350 525 300 525 C250 525 212 485 202 410 C190 330 195 260 215 190 Z"/>';
+      s += '<rect x="205" y="150" width="190" height="42" rx="10"/>';
+      s += '<line x1="215" y1="262" x2="385" y2="262"/>';
+      /* label with a flower */
+      s += '<ellipse cx="300" cy="390" rx="62" ry="48"/>';
+      s += '<circle cx="300" cy="378" r="10"/>';
+      [[282, 356], [318, 356], [282, 402], [318, 402]].forEach(function (p) {
+        s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="9"/>';
+      });
+      /* honey dipper leaning on the jar */
+      s += '<line x1="415" y1="120" x2="352" y2="268"/>';
+      s += '<ellipse cx="342" cy="288" rx="20" ry="30"/>';
+      s += '<line x1="328" y1="272" x2="356" y2="272"/>';
+      s += '<line x1="325" y1="290" x2="359" y2="290"/>';
+      /* drips */
+      s += '<path d="M338 330 C330 348 330 358 338 366 C346 358 346 348 338 330 Z"/>';
+      s += '</g>';
+      s += starSVG(105, 140, 20, SW);
+      s += starSVG(498, 330, 18, SW);
+      s += starSVG(120, 420, 16, SW);
+      return s;
+    },
+    iftartable: function () {
+      var s = '<g ' + SWN + '>';
+      /* table: top, cloth edge, legs */
+      s += '<line x1="70" y1="360" x2="530" y2="360"/>';
+      s += '<path d="M85 360 L85 405 C130 388 175 405 220 388 C265 405 310 388 355 405 C400 388 445 405 490 388 L515 405 L515 360"/>';
+      s += '<line x1="110" y1="405" x2="110" y2="530"/>';
+      s += '<line x1="490" y1="405" x2="490" y2="530"/>';
+      s += '<line x1="70" y1="530" x2="530" y2="530"/>';
+      /* on the table: lantern centre, jug, plates, dates bowl */
+      s += '<path d="M272 300 L328 300 L316 268 L284 268 Z"/>';
+      s += '<path d="M280 268 L320 268 L320 215 L280 215 Z"/>';
+      s += '<line x1="300" y1="188" x2="300" y2="215"/>';
+      s += '<circle cx="300" cy="178" r="9"/>';
+      s += '<path d="M150 360 C150 320 168 300 185 300 C202 300 220 320 220 360"/>';
+      s += '<ellipse cx="185" cy="298" rx="16" ry="8"/>';
+      s += '<ellipse cx="140" cy="352" rx="42" ry="10"/>';
+      s += '<ellipse cx="462" cy="352" rx="42" ry="10"/>';
+      s += '<path d="M368 360 C368 332 392 322 410 322 C428 322 452 332 452 360"/>';
+      [[392, 306], [410, 298], [428, 306]].forEach(function (d) {
+        s += '<ellipse cx="' + d[0] + '" cy="' + d[1] + '" rx="11" ry="15"/>';
+      });
+      s += '</g>';
+      s += '<path d="' + crescentD(300, 82, 30) + '" ' + SW + '/>';
+      s += starSVG(110, 130, 18, SW);
+      s += starSVG(492, 128, 18, SW);
+      return s;
+    },
+    iftarplate: function () {
+      var s = '<g ' + SWN + '>';
+      /* the big round plate */
+      s += '<circle cx="300" cy="300" r="215"/>';
+      s += '<circle cx="300" cy="300" r="172"/>';
+      /* a small bowl in the middle */
+      s += '<circle cx="300" cy="300" r="58"/>';
+      s += '<circle cx="300" cy="300" r="40"/>';
+      /* dates at the top */
+      [[258, 168], [300, 156], [342, 168]].forEach(function (d) {
+        s += '<ellipse cx="' + d[0] + '" cy="' + d[1] + '" rx="17" ry="24"/>';
+      });
+      /* samosa triangles at the sides */
+      s += '<path d="M148 268 L208 240 L200 312 Z"/>';
+      s += '<path d="M452 268 L392 240 L400 312 Z"/>';
+      s += '<path d="M168 368 L228 348 L214 416 Z"/>';
+      s += '<path d="M432 368 L372 348 L386 416 Z"/>';
+      /* spring rolls at the bottom */
+      s += '<rect x="248" y="408" width="46" height="24" rx="11"/>';
+      s += '<rect x="306" y="408" width="46" height="24" rx="11"/>';
+      s += '</g>';
+      s += starSVG(82, 84, 18, SW);
+      s += starSVG(520, 84, 18, SW);
+      s += starSVG(300, 555, 16, SW);
+      return s;
+    },
+    datesbox: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="60" y1="520" x2="540" y2="520"/>';
+      /* open box */
+      s += '<path d="M150 300 L450 300 L430 520 L170 520 Z"/>';
+      s += '<path d="M150 300 L118 218 L262 218 L300 300"/>';
+      s += '<path d="M450 300 L482 218 L338 218 L300 300"/>';
+      /* rows of dates inside */
+      for (var r = 0; r < 3; r++) {
+        for (var i = 0; i < 5; i++) {
+          s += '<ellipse cx="' + (205 + i * 48) + '" cy="' + (345 + r * 52) + '" rx="19" ry="26"/>';
+        }
+      }
+      /* ribbon cross on the front */
+      s += '<line x1="300" y1="452" x2="300" y2="512"/>';
+      s += '</g>';
+      s += starSVG(90, 120, 20, SW);
+      s += starSVG(512, 118, 20, SW);
+      s += starSVG(300, 130, 16, SW);
+      return s;
+    },
+    sweets: function () {
+      var s = '<g ' + SWN + '>';
+      /* the tray */
+      s += '<ellipse cx="300" cy="430" rx="215" ry="52"/>';
+      s += '<path d="M85 430 C85 490 190 525 300 525 C410 525 515 490 515 430"/>';
+      /* ma'amoul cookies: patterned rounds, some stacked */
+      function cookie(cx, cy, r) {
+        var c = '<circle cx="' + cx + '" cy="' + cy + '" r="' + r + '"/>';
+        c += '<circle cx="' + cx + '" cy="' + cy + '" r="' + Math.round(r * 0.55) + '"/>';
+        c += '<circle cx="' + cx + '" cy="' + cy + '" r="4"/>';
+        [[-0.38, -0.38], [0.38, -0.38], [-0.38, 0.38], [0.38, 0.38]].forEach(function (o) {
+          c += '<circle cx="' + Math.round(cx + o[0] * r) + '" cy="' + Math.round(cy + o[1] * r) + '" r="3.5"/>';
+        });
+        return c;
+      }
+      s += cookie(205, 385, 52);
+      s += cookie(300, 360, 58);
+      s += cookie(398, 388, 50);
+      s += cookie(255, 300, 44);
+      s += cookie(350, 302, 42);
+      /* star cookies at the back */
+      s += '</g>';
+      s += starSVG(150, 205, 26, SW);
+      s += starSVG(452, 200, 24, SW);
+      s += starSVG(300, 150, 20, SW);
+      return s;
+    },
+    drum: function () {
+      var s = '<g ' + SWN + '>';
+      /* drum body, slightly tilted */
+      s += '<path d="M165 215 L435 175 L455 420 L185 460 Z"/>';
+      s += '<ellipse cx="300" cy="195" rx="137" ry="30"/>';
+      s += '<path d="M185 460 A 137 30 0 0 0 455 420"/>';
+      /* rope zigzag around the body */
+      s += '<path d="M172 268 L228 330 L282 262 L338 322 L392 252 L442 308"/>';
+      s += '<path d="M178 392 L234 330 L288 398 L344 332 L398 392 L448 330"/>';
+      /* two drumsticks crossed above */
+      s += '<line x1="150" y1="90" x2="268" y2="168"/>';
+      s += '<circle cx="140" cy="82" r="15"/>';
+      s += '<line x1="450" y1="70" x2="338" y2="152"/>';
+      s += '<circle cx="462" cy="62" r="15"/>';
+      s += '</g>';
+      s += starSVG(95, 300, 18, SW);
+      s += starSVG(512, 300, 18, SW);
+      s += starSVG(300, 530, 16, SW);
+      return s;
+    },
+    giftbox: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="60" y1="535" x2="540" y2="535"/>';
+      /* box + lid */
+      s += '<rect x="165" y="285" width="270" height="250"/>';
+      s += '<rect x="145" y="235" width="310" height="52"/>';
+      /* ribbon cross */
+      s += '<line x1="285" y1="235" x2="285" y2="535"/>';
+      s += '<line x1="315" y1="235" x2="315" y2="535"/>';
+      /* the bow: two loops + tails */
+      s += '<path d="M300 235 C245 175 165 180 172 225 C178 262 255 258 300 235 Z"/>';
+      s += '<path d="M300 235 C355 175 435 180 428 225 C422 262 345 258 300 235 Z"/>';
+      s += '<circle cx="300" cy="232" r="15"/>';
+      /* gift tag with a crescent */
+      s += '<path d="M345 330 L410 330 L410 395 L345 395 Z"/>';
+      s += '<path d="' + crescentD(377, 362, 16) + '"/>';
+      s += '</g>';
+      s += starSVG(105, 120, 20, SW);
+      s += starSVG(498, 118, 20, SW);
+      s += starSVG(105, 430, 16, SW);
+      s += starSVG(498, 430, 16, SW);
+      return s;
+    },
+    balloons: function () {
+      var s = '<g ' + SWN + '>';
+      /* three balloons */
+      s += '<ellipse cx="180" cy="185" rx="78" ry="98"/>';
+      s += '<ellipse cx="330" cy="140" rx="88" ry="110"/>';
+      s += '<ellipse cx="462" cy="200" rx="70" ry="88"/>';
+      s += '<path d="M172 283 L188 283 L180 300 Z"/>';
+      s += '<path d="M322 250 L338 250 L330 268 Z"/>';
+      s += '<path d="M454 288 L470 288 L462 304 Z"/>';
+      /* strings converging to one hand point */
+      s += '<path d="M180 300 C220 380 270 430 305 478"/>';
+      s += '<path d="M330 268 C330 350 322 420 308 478"/>';
+      s += '<path d="M462 304 C420 390 350 440 312 478"/>';
+      /* bow at the gathering point */
+      s += '<path d="M308 482 C275 460 245 472 252 495 C258 515 292 508 308 482 Z"/>';
+      s += '<path d="M308 482 C340 458 372 470 366 494 C360 515 324 508 308 482 Z"/>';
+      s += '</g>';
+      s += starSVG(330, 140, 30, SW);
+      s += '<path d="' + crescentD(180, 180, 26) + '" ' + SW + '/>';
+      s += starSVG(462, 198, 20, SW);
+      s += starSVG(90, 480, 16, SW);
+      s += starSVG(515, 500, 16, SW);
+      return s;
+    },
+    banner: function () {
+      var s = '<g ' + SWN + '>';
+      /* two swags of bunting across the top */
+      s += '<path d="M45 70 C180 165 420 165 555 70"/>';
+      s += '<path d="M45 225 C180 320 420 320 555 225"/>';
+      /* flags on the first swag */
+      [[120, 108], [215, 128], [310, 132], [405, 122], [485, 100]].forEach(function (f) {
+        s += '<path d="M' + (f[0] - 30) + ' ' + f[1] + ' L' + (f[0] + 30) + ' ' + f[1] + ' L' + f[0] + ' ' + (f[1] + 52) + ' Z"/>';
+      });
+      /* flags on the second swag */
+      [[140, 263], [245, 283], [350, 283], [450, 258]].forEach(function (f) {
+        s += '<path d="M' + (f[0] - 30) + ' ' + f[1] + ' L' + (f[0] + 30) + ' ' + f[1] + ' L' + f[0] + ' ' + (f[1] + 52) + ' Z"/>';
+      });
+      s += '</g>';
+      /* crescents + stars drawn on some flags */
+      s += '<path d="' + crescentD(215, 152, 13) + '" ' + SW + '/>';
+      s += '<path d="' + crescentD(350, 308, 13) + '" ' + SW + '/>';
+      s += starSVG(405, 148, 13, SW);
+      s += starSVG(245, 308, 13, SW);
+      s += starSVG(120, 460, 26, SW);
+      s += starSVG(480, 460, 26, SW);
+      s += starSVG(300, 490, 20, SW);
+      return s;
+    },
+    kite: function () {
+      var s = '<g ' + SWN + '>';
+      /* diamond kite + spars */
+      s += '<path d="M300 60 L430 240 L300 430 L170 240 Z"/>';
+      s += '<line x1="170" y1="240" x2="430" y2="240"/>';
+      s += '<line x1="300" y1="60" x2="300" y2="430"/>';
+      s += '<path d="M300 430 C280 480 340 495 315 535 C300 562 340 572 355 590"/>';
+      /* bows on the tail */
+      [[322, 492], [312, 540]].forEach(function (b) {
+        s += '<path d="M' + b[0] + ' ' + b[1] + ' L' + (b[0] - 20) + ' ' + (b[1] - 10) + ' L' + (b[0] - 16) + ' ' + (b[1] + 14) + ' Z"/>';
+        s += '<path d="M' + b[0] + ' ' + b[1] + ' L' + (b[0] + 22) + ' ' + (b[1] - 8) + ' L' + (b[0] + 18) + ' ' + (b[1] + 16) + ' Z"/>';
+      });
+      /* string down to the corner */
+      s += '<path d="M300 430 C240 500 160 540 70 570"/>';
+      /* wind swirls */
+      s += '<path d="M95 130 C75 110 100 88 120 104 C136 117 124 138 108 132"/>';
+      s += '<path d="M492 130 C472 110 497 88 517 104 C533 117 521 138 505 132"/>';
+      s += '</g>';
+      s += '<path d="' + crescentD(300, 165, 38) + '" ' + SW + '/>';
+      s += starSVG(300, 330, 26, SW);
+      s += starSVG(105, 300, 16, SW);
+      s += starSVG(500, 320, 16, SW);
+      return s;
+    },
+    tent: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="40" y1="530" x2="560" y2="530"/>';
+      /* tent roof + walls */
+      s += '<path d="M300 90 L530 380 L70 380 Z"/>';
+      s += '<path d="M300 90 L395 380"/>';
+      s += '<path d="M300 90 L205 380"/>';
+      s += '<line x1="70" y1="380" x2="530" y2="380"/>';
+      s += '<path d="M70 380 L70 530 L530 530 L530 380"/>';
+      /* open front flap */
+      s += '<path d="M300 250 L385 530 L215 530 Z"/>';
+      s += '<path d="M300 250 L215 530"/>';
+      /* flag on the peak */
+      s += '<line x1="300" y1="90" x2="300" y2="48"/>';
+      s += '<path d="M300 48 L345 60 L300 74 Z"/>';
+      /* lantern hanging inside the doorway */
+      s += '<line x1="300" y1="250" x2="300" y2="300"/>';
+      s += '<path d="M278 318 L322 318 L314 344 L286 344 Z"/>';
+      s += '<path d="M284 344 L316 344 L316 396 L284 396 Z"/>';
+      s += '</g>';
+      s += starSVG(105, 130, 20, SW);
+      s += starSVG(498, 130, 20, SW);
+      s += starSVG(140, 460, 16, SW);
+      s += starSVG(462, 460, 16, SW);
+      return s;
+    },
+    candles: function () {
+      var s = '<g ' + SWN + '>';
+      /* tray */
+      s += '<ellipse cx="300" cy="500" rx="200" ry="34"/>';
+      s += '<path d="M100 500 C100 535 190 552 300 552 C410 552 500 535 500 500"/>';
+      /* three candles, tall centre */
+      s += '<rect x="262" y="215" width="76" height="272"/>';
+      s += '<rect x="150" y="300" width="64" height="187"/>';
+      s += '<rect x="386" y="285" width="64" height="202"/>';
+      /* wax drips */
+      s += '<path d="M262 240 C275 258 285 240 296 258 C308 240 322 256 338 238"/>';
+      s += '<path d="M150 322 C162 336 172 320 182 336 C194 320 204 334 214 320"/>';
+      s += '<path d="M386 307 C398 321 408 305 418 321 C430 305 440 319 450 305"/>';
+      /* wicks + flames */
+      s += '<line x1="300" y1="215" x2="300" y2="192"/>';
+      s += '<line x1="182" y1="300" x2="182" y2="280"/>';
+      s += '<line x1="418" y1="285" x2="418" y2="265"/>';
+      s += '<path d="M300 192 C282 160 288 132 300 108 C312 132 318 160 300 192 Z"/>';
+      s += '<path d="M182 280 C168 254 172 232 182 214 C192 232 196 254 182 280 Z"/>';
+      s += '<path d="M418 265 C404 239 408 217 418 199 C428 217 432 239 418 265 Z"/>';
+      s += '</g>';
+      s += starSVG(105, 120, 18, SW);
+      s += starSVG(498, 115, 20, SW);
+      s += starSVG(85, 330, 14, SW);
+      s += starSVG(518, 340, 14, SW);
+      return s;
+    },
+    incense: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="70" y1="535" x2="530" y2="535"/>';
+      /* stand + stem */
+      s += '<path d="M225 535 C240 505 360 505 375 535"/>';
+      s += '<line x1="285" y1="512" x2="285" y2="455"/>';
+      s += '<line x1="315" y1="512" x2="315" y2="455"/>';
+      /* the burner cup */
+      s += '<path d="M215 455 C215 395 255 372 300 372 C345 372 385 395 385 455 C385 472 340 482 300 482 C260 482 215 472 215 455 Z"/>';
+      /* domed lid with holes */
+      s += '<path d="M232 385 C245 330 355 330 368 385"/>';
+      [[268, 356], [300, 344], [332, 356], [284, 372], [316, 372]].forEach(function (h) {
+        s += '<circle cx="' + h[0] + '" cy="' + h[1] + '" r="5"/>';
+      });
+      s += '<circle cx="300" cy="322" r="9"/>';
+      /* smoke swirls */
+      s += '<path d="M255 300 C230 260 275 235 252 195 C235 162 262 140 258 108"/>';
+      s += '<path d="M305 305 C285 262 330 238 308 196 C292 164 320 142 314 105"/>';
+      s += '<path d="M352 298 C332 262 372 236 352 198 C338 168 362 146 358 116"/>';
+      s += '</g>';
+      s += starSVG(110, 150, 18, SW);
+      s += starSVG(492, 150, 18, SW);
+      return s;
+    },
+    oillamp: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<line x1="60" y1="520" x2="540" y2="520"/>';
+      /* lamp body in profile */
+      s += '<path d="M120 420 C120 375 175 350 260 345 L420 338 C465 336 495 355 498 378 C500 400 470 415 425 418 L250 428 C175 432 120 445 120 420 Z"/>';
+      s += '<path d="M120 420 C200 405 420 398 498 378"/>';
+      /* lid + knob */
+      s += '<path d="M215 348 C230 318 300 312 322 342"/>';
+      s += '<circle cx="270" cy="308" r="12"/>';
+      /* handle ring at the back */
+      s += '<path d="M128 385 C80 375 62 330 88 300 C108 277 140 285 146 308 C151 328 132 340 118 330"/>';
+      /* flame at the spout */
+      s += '<path d="M498 352 C488 322 496 296 512 276 C526 300 528 330 512 354"/>';
+      s += '</g>';
+      s += starSVG(300, 140, 24, SW);
+      s += starSVG(150, 160, 18, SW);
+      s += starSVG(440, 130, 16, SW);
+      s += starSVG(105, 500, 14, SW);
+      return s;
+    },
+    clock: function () {
+      var s = '<g ' + SWN + '>';
+      /* hanging ring + clock body */
+      s += '<circle cx="300" cy="62" r="18"/>';
+      s += '<line x1="300" y1="80" x2="300" y2="105"/>';
+      s += '<circle cx="300" cy="310" r="205"/>';
+      s += '<circle cx="300" cy="310" r="168"/>';
+      /* hour markers */
+      for (var i = 0; i < 12; i++) {
+        var a = (Math.PI * 2 * i) / 12;
+        var x1 = Math.round(300 + Math.cos(a) * 148), y1 = Math.round(310 + Math.sin(a) * 148);
+        var x2 = Math.round(300 + Math.cos(a) * 128), y2 = Math.round(310 + Math.sin(a) * 128);
+        s += '<line x1="' + x1 + '" y1="' + y1 + '" x2="' + x2 + '" y2="' + y2 + '"/>';
+      }
+      /* hands: ten past ten, and the centre pin */
+      s += '<line x1="300" y1="310" x2="238" y2="248"/>';
+      s += '<line x1="300" y1="310" x2="392" y2="262"/>';
+      s += '<circle cx="300" cy="310" r="11"/>';
+      s += '</g>';
+      s += '<path d="' + crescentD(300, 205, 24) + '" ' + SW + '/>';
+      s += starSVG(105, 130, 18, SW);
+      s += starSVG(498, 130, 18, SW);
+      return s;
+    },
+    calendar: function () {
+      var s = '<g ' + SWN + '>';
+      /* hanging string + rings */
+      s += '<path d="M180 78 L300 30 L420 78"/>';
+      s += '<circle cx="215" cy="86" r="13"/>';
+      s += '<circle cx="385" cy="86" r="13"/>';
+      /* calendar sheet */
+      s += '<rect x="130" y="86" width="340" height="440"/>';
+      s += '<rect x="130" y="86" width="340" height="86"/>';
+      s += '<path d="' + crescentD(178, 129, 22) + '"/>';
+      /* day grid: 5 rows of 7 */
+      for (var r = 0; r < 5; r++) {
+        for (var c = 0; c < 7; c++) {
+          s += '<rect x="' + (148 + c * 44) + '" y="' + (192 + r * 62) + '" width="36" height="48"/>';
+        }
+      }
+      s += '</g>';
+      s += starSVG(300, 128, 20, SW);
+      s += starSVG(258, 285, 11, SW);
+      s += starSVG(390, 409, 11, SW);
+      s += starSVG(85, 300, 16, SW);
+      s += starSVG(518, 300, 16, SW);
+      return s;
+    },
+    eidcard: function () {
+      var s = '<g ' + SWN + '>';
+      /* the card sliding out at the back */
+      s += '<rect x="185" y="90" width="230" height="300"/>';
+      s += '<path d="' + crescentD(300, 168, 40) + '"/>';
+      s += '<line x1="225" y1="262" x2="375" y2="262"/>';
+      s += '<line x1="240" y1="298" x2="360" y2="298"/>';
+      s += '<line x1="255" y1="334" x2="345" y2="334"/>';
+      /* the envelope in front */
+      s += '<path d="M105 330 L495 330 L495 545 L105 545 Z"/>';
+      s += '<path d="M105 330 L300 470 L495 330"/>';
+      s += '<path d="M105 545 L262 408"/>';
+      s += '<path d="M495 545 L338 408"/>';
+      s += '</g>';
+      s += starSVG(300, 240, 16, SW);
+      s += starSVG(90, 130, 18, SW);
+      s += starSVG(512, 140, 18, SW);
+      return s;
+    },
+    tilepattern: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<rect x="55" y="55" width="490" height="490"/>';
+      s += '<rect x="78" y="78" width="444" height="444"/>';
+      /* a 3x3 grid of eight-point stars with circles between */
+      [155, 300, 445].forEach(function (cy) {
+        [155, 300, 445].forEach(function (cx) {
+          s += '<polygon points="' + star8Points(cx, cy, 52, 22) + '"/>';
+          s += '<circle cx="' + cx + '" cy="' + cy + '" r="13"/>';
+        });
+      });
+      [[228, 228], [372, 228], [228, 372], [372, 372]].forEach(function (p) {
+        s += '<circle cx="' + p[0] + '" cy="' + p[1] + '" r="17"/>';
+      });
+      s += '</g>';
+      return s;
+    },
+    mandala: function () {
+      var s = '<g ' + SWN + '>';
+      s += '<circle cx="300" cy="300" r="238"/>';
+      s += '<circle cx="300" cy="300" r="218"/>';
+      /* outer ring of pointed petals */
+      for (var i = 0; i < 16; i++) {
+        var a = (Math.PI * 2 * i) / 16;
+        var px = Math.round(300 + Math.cos(a) * 186), py = Math.round(300 + Math.sin(a) * 186);
+        var tx = Math.round(300 + Math.cos(a) * 214), ty = Math.round(300 + Math.sin(a) * 214);
+        var lx = Math.round(300 + Math.cos(a - 0.17) * 168), ly = Math.round(300 + Math.sin(a - 0.17) * 168);
+        var rx = Math.round(300 + Math.cos(a + 0.17) * 168), ry = Math.round(300 + Math.sin(a + 0.17) * 168);
+        s += '<path d="M' + lx + ' ' + ly + ' Q' + px + ' ' + py + ' ' + tx + ' ' + ty + ' Q' + px + ' ' + py + ' ' + rx + ' ' + ry + ' Z"/>';
+      }
+      /* ring of small circles */
+      for (var j = 0; j < 12; j++) {
+        var a2 = (Math.PI * 2 * j) / 12;
+        s += '<circle cx="' + Math.round(300 + Math.cos(a2) * 138) + '" cy="' + Math.round(300 + Math.sin(a2) * 138) + '" r="15"/>';
+      }
+      s += '<circle cx="300" cy="300" r="102"/>';
+      /* inner ring of petals */
+      for (var k = 0; k < 8; k++) {
+        var a3 = (Math.PI * 2 * k) / 8;
+        var qx = Math.round(300 + Math.cos(a3) * 66), qy = Math.round(300 + Math.sin(a3) * 66);
+        s += '<circle cx="' + qx + '" cy="' + qy + '" r="24"/>';
+      }
+      s += '</g>';
+      s += starSVG(300, 300, 34, SW);
+      return s;
     }
   };
 
