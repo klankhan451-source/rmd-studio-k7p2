@@ -123,13 +123,22 @@ body {
 /* Real miniature covers in the picker + the live cover preview:
    a true-size sheet (816x1056) rendered by render.js, scaled to
    fit its viewport by app.js (transform scale). Screen only —
-   the whole app is hidden when printing. */
+   the whole app is hidden when printing.
+   REGRESSION GUARD (2026-11-17): display:block on BOTH classes is
+   load-bearing. The picker markup once used inline <span>s for
+   these classes; width/aspect-ratio/overflow are ignored on
+   inline boxes, so nothing clipped, fitMiniSheets measured a
+   ~0-wide parent and skipped scaling, and all 54 sheets rendered
+   at full 816px size stacked over the phone screen. Locked by
+   tests/test_layout.js. */
 .mini-viewport {
+  display: block;
   position: relative; width: 100%; aspect-ratio: 8.5 / 11;
   overflow: hidden; border-radius: 6px; margin-bottom: 5px;
   border: 1px solid rgba(20, 35, 43, .18); background: #fff;
 }
 .mini-sheet {
+  display: block;
   position: absolute; top: 0; left: 0; width: 816px; height: 1056px;
   transform-origin: top left; pointer-events: none;
 }
@@ -182,6 +191,13 @@ body {
 /* ---------- Book preview (screen) ---------- */
 #book-preview { background: #37474f; padding: 28px 12px; }
 #book-preview[hidden] { display: none; }
+/* Screen only: the sheets are a fixed 816px wide, so on a phone
+   the preview scrolls sideways INSIDE its own box instead of
+   blowing out the page width. @media screen keeps this out of
+   print and out of the WeasyPrint model entirely. */
+@media screen {
+  #book-preview { overflow-x: auto; }
+}
 .book-page {
   background: #fff; margin: 0 auto 26px; position: relative; overflow: hidden;
   box-shadow: 0 6px 28px rgba(0,0,0,.45); color: #14232b;
