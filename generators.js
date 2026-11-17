@@ -106,6 +106,11 @@
 
   var DEFAULT_START = '2027-02-08';
 
+  /* Selectable cover designs (styles.css carries a cover-theme-*
+   * class with the colours for each). 'midnight' is the original
+   * cover design and stays the default. */
+  var COVER_THEMES = ['midnight', 'emerald', 'purple', 'sand'];
+
   function normalizeSpec(spec) {
     spec = spec || {};
     var start = parseISODate(spec.startDate) ? spec.startDate : DEFAULT_START;
@@ -114,6 +119,7 @@
       lang: ['ar', 'en', 'bi'].indexOf(spec.lang) !== -1 ? spec.lang : 'bi',
       numerals: spec.numerals === 'east' ? 'east' : 'west',
       paper: spec.paper === 'a4' ? 'a4' : 'letter',
+      coverTheme: COVER_THEMES.indexOf(spec.coverTheme) !== -1 ? spec.coverTheme : 'midnight',
       includeKids: spec.includeKids !== false,
       name: String(spec.name || '').trim()
     };
@@ -175,6 +181,7 @@
 
   var api = {
     DEFAULT_START: DEFAULT_START,
+    COVER_THEMES: COVER_THEMES,
     EASTERN: EASTERN,
     toEasternArabic: toEasternArabic,
     num: num,
