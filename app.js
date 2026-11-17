@@ -184,6 +184,7 @@ if (typeof module !== 'undefined' && module.exports) {
     setTimeout(function () {
       try {
         var total = BookBuilder.renderBook(spec);
+        fitBookPreview();
         $('pl-print').disabled = false;
         status.textContent = 'Planner ready: ' + total + ' pages (' +
           BookBuilder.SIZES[spec.paper].label + '). Scroll down to preview, ' +
@@ -226,6 +227,52 @@ if (typeof module !== 'undefined' && module.exports) {
       if (!vp || !vp.clientWidth) continue;
       sheets[i].style.transform = 'scale(' + (vp.clientWidth / 816) + ')';
     }
+  }
+
+  /* Fit the generated book preview to the screen (2026-11-17).
+     book.js renders every sheet at its true size (816px wide for
+     Letter, ~794px for A4) — on a phone that is more than twice
+     the screen width, so the owner saw the preview "big, and I
+     can't zoom it out" (sideways scrolling inside #book-preview).
+     Screen only: when the preview box is narrower than a sheet,
+     zoom every sheet by the same measured factor so a whole page
+     fits the width. CSS zoom takes part in layout (unlike a
+     transform scale), so heights and gaps shrink with the pages —
+     no overlap, no dead space. On a wide-enough screen the zoom
+     is simply removed and pages show at natural size, exactly as
+     before. Print safety is triple-locked: this fit only ever
+     runs on screen, 'beforeprint' clears it (clearBookPreviewFit)
+     and 'afterprint' refits, and styles.css @media print forces
+     zoom: 1 !important — the printed book is always true size. */
+  function fitBookPreview() {
+    var preview = $('book-preview');
+    if (!preview || preview.hidden) return;
+    var pages = preview.querySelectorAll('.book-page');
+    if (!pages.length) return;
+    /* every sheet in one book shares the paper width, so measure
+       the first sheet with any fit zoom temporarily removed
+       (offsetWidth is reported post-zoom in zoom-aware browsers) */
+    var first = pages[0];
+    var prevZoom = first.style.zoom;
+    first.style.zoom = '';
+    var natural = first.offsetWidth;
+    first.style.zoom = prevZoom;
+    if (!natural) return;
+    var cs = window.getComputedStyle ? getComputedStyle(preview) : null;
+    var padX = cs ? (parseFloat(cs.paddingLeft) || 0) + (parseFloat(cs.paddingRight) || 0) : 0;
+    var avail = preview.clientWidth - padX;
+    var factor = avail > 0 && avail < natural ? avail / natural : 0;
+    for (var i = 0; i < pages.length; i++) {
+      pages[i].style.zoom = factor ? String(factor) : '';
+    }
+  }
+
+  /* Remove the screen fit (used before printing). */
+  function clearBookPreviewFit() {
+    var preview = $('book-preview');
+    if (!preview) return;
+    var pages = preview.querySelectorAll('.book-page');
+    for (var i = 0; i < pages.length; i++) pages[i].style.zoom = '';
   }
 
   function updateCoverPreview() {
@@ -318,6 +365,22 @@ if (typeof module !== 'undefined' && module.exports) {
         for (var vi = 0; vi < miniVps.length; vi++) miniRO.observe(miniVps[vi]);
       }
     }
+    /* book preview fit (2026-11-17): refit the generated sheets
+       whenever the viewport changes (window resize, phone
+       rotation), and keep printing at true size — 'beforeprint'
+       clears the screen zoom, 'afterprint' refits the preview.
+       styles.css @media print also forces zoom: 1 !important, so
+       the printed book cannot inherit the screen fit even if a
+       print event is missed. */
+    var bookFitTimer = null;
+    function refitBookSoon() {
+      clearTimeout(bookFitTimer);
+      bookFitTimer = setTimeout(fitBookPreview, 120);
+    }
+    window.addEventListener('resize', refitBookSoon);
+    window.addEventListener('orientationchange', refitBookSoon);
+    window.addEventListener('beforeprint', clearBookPreviewFit);
+    window.addEventListener('afterprint', fitBookPreview);
     /* cover text + print options follow the live preview; the
        live page count follows the kids pack + extras toggles */
     if ($('pl-subtitle')) $('pl-subtitle').addEventListener('input', updateCoverPreview);
