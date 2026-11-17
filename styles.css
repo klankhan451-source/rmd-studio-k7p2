@@ -154,25 +154,89 @@ body {
    footer to its text width and displace it off the sheet when the
    page's flex items are centre-aligned. Locked by visual checks. */
 .cover-page, .cert-page { align-items: stretch; }
+
+/* Cover colour themes — the buyer picks a design in Planner
+   Settings (persisted as ramadan_cover_theme); book.js stamps the
+   matching cover-theme-* class on the cover sheet only, and the
+   cover's colours flow through these variables. 'midnight' IS the
+   original design: the defaults below are exactly the colours the
+   cover always had, so an unthemed book is unchanged. Only colours
+   live here — no sizes or spacing — so the print layout model in
+   tests/test_layout.js is unaffected. Elements that reuse the
+   cover classes elsewhere (the certificate) read the variables
+   with the original colours as fallbacks. */
+.cover-page {
+  --cover-bg: #ffffff;
+  --cover-title: #0f2027;
+  --cover-accent: #b98a1d;
+  --cover-deco: #ffd166;
+  --cover-sub: #48626e;
+  --cover-name: #0f2027;
+  --cover-line: #7d97a1;
+  --cover-note-bg: #fffaf0;
+  background: var(--cover-bg);
+}
+.cover-theme-midnight { /* original design = the defaults above */ }
+.cover-theme-emerald {
+  --cover-bg: linear-gradient(155deg, #03231b, #065f46);
+  --cover-title: #ffd166;
+  --cover-accent: #ffd166;
+  --cover-sub: #cdeee0;
+  --cover-name: #fff6dd;
+  --cover-line: #ffd166;
+  --cover-note-bg: #0a4a38;
+}
+.cover-theme-purple {
+  --cover-bg: linear-gradient(155deg, #1e0a3d, #4c1d95);
+  --cover-title: #ffd166;
+  --cover-accent: #ffd166;
+  --cover-sub: #e2d6f8;
+  --cover-name: #fff6dd;
+  --cover-line: #ffd166;
+  --cover-note-bg: #2d1454;
+}
+.cover-theme-sand {
+  --cover-bg: linear-gradient(155deg, #fbf3e1, #f0dcb4);
+  --cover-title: #5b3a1e;
+  --cover-accent: #9a6a14;
+  --cover-deco: #dfa32e;
+  --cover-sub: #7a5c38;
+  --cover-name: #5b3a1e;
+  --cover-line: #b98a1d;
+  --cover-note-bg: #fffaf0;
+}
+/* The cover ornament (crescent, stars, lantern) is drawn in the
+   original gold #ffd166 via SVG presentation attributes; a CSS
+   fill/stroke declaration beats a presentation attribute, so a
+   themed cover recolours its ornament through the variable. */
+.cover-theme-midnight .deco-svg [fill="#ffd166"],
+.cover-theme-emerald .deco-svg [fill="#ffd166"],
+.cover-theme-purple .deco-svg [fill="#ffd166"],
+.cover-theme-sand .deco-svg [fill="#ffd166"] { fill: var(--cover-deco); }
+.cover-theme-midnight .deco-svg [stroke="#ffd166"],
+.cover-theme-emerald .deco-svg [stroke="#ffd166"],
+.cover-theme-purple .deco-svg [stroke="#ffd166"],
+.cover-theme-sand .deco-svg [stroke="#ffd166"] { stroke: var(--cover-deco); }
+
 .cover-inner, .cert-inner { margin: auto; text-align: center; width: 100%; }
 .deco-svg { display: block; margin: 0 auto; }
 .cover-page .deco-svg { height: 240px; }
-.cover-title { font-size: 34px; margin: 12px 0 6px; color: #0f2027; line-height: 1.25; }
-.cover-year { font-size: 20px; color: #b98a1d; font-weight: 700; margin: 0 0 26px; }
+.cover-title { font-size: 34px; margin: 12px 0 6px; color: var(--cover-title, #0f2027); line-height: 1.25; }
+.cover-year { font-size: 20px; color: var(--cover-accent, #b98a1d); font-weight: 700; margin: 0 0 26px; }
 /* Centred measure via percentage side margins, NOT max-width +
    margin:auto — in RTL pages some print engines mis-resolve auto
    side margins and shove the block off the sheet. */
-.cover-sub { font-size: 15px; color: #48626e; line-height: 1.5; margin: 0 10%; }
+.cover-sub { font-size: 15px; color: var(--cover-sub, #48626e); line-height: 1.5; margin: 0 10%; }
 .cover-name { margin: 0 15% 30px; }
-.cover-name-label { display: block; font-size: 14px; color: #48626e; margin-bottom: 8px; }
-.cover-name-value { font-size: 26px; font-weight: 700; color: #0f2027; }
-.cover-name-line { display: block; height: 34px; }
+.cover-name-label { display: block; font-size: 14px; color: var(--cover-sub, #48626e); margin-bottom: 8px; }
+.cover-name-value { font-size: 26px; font-weight: 700; color: var(--cover-name, #0f2027); }
+.cover-name-line { display: block; height: 34px; border-bottom-color: var(--cover-line, #7d97a1); }
 .moon-note {
-  border: 1.5px dashed #b98a1d; border-radius: 12px; background: #fffaf0;
-  padding: 10px 14px; font-size: 13px; line-height: 1.45; color: #48626e;
+  border: 1.5px dashed var(--cover-accent, #b98a1d); border-radius: 12px; background: var(--cover-note-bg, #fffaf0);
+  padding: 10px 14px; font-size: 13px; line-height: 1.45; color: var(--cover-sub, #48626e);
   margin: 0 6%;
 }
-.cover-brand { margin-top: 30px; letter-spacing: 4px; font-weight: 800; color: #b98a1d; font-size: 15px; }
+.cover-brand { margin-top: 30px; letter-spacing: 4px; font-weight: 800; color: var(--cover-accent, #b98a1d); font-size: 15px; }
 .cert-page .deco-svg { height: 170px; }
 .cert-inner {
   border: 3px double #b98a1d; border-radius: 18px; padding: 28px 30px;
