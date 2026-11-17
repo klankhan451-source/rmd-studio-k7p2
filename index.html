@@ -77,14 +77,11 @@
           <option value="a4">A4 (210 × 297 mm)</option>
         </select>
       </label>
-      <label>Cover design
-        <select id="pl-theme">
-          <option value="midnight" selected>Midnight Gold</option>
-          <option value="emerald">Emerald Night</option>
-          <option value="purple">Royal Purple</option>
-          <option value="sand">Desert Sand</option>
-        </select>
-      </label>
+      <div class="picker-block">
+        <span class="picker-title">Cover design — tap a design to choose it (30 designs)</span>
+        <div id="pl-theme" class="cover-picker" role="listbox" aria-label="Cover design"></div>
+        <p class="hint" id="pl-theme-name"></p>
+      </div>
       <label class="check">
         <input type="checkbox" id="pl-kids" checked> Include the Kids’ Ramadan Pack (star chart, good-deed cards, colouring pages &amp; certificate)
       </label>
