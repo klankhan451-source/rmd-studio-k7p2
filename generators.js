@@ -229,6 +229,20 @@
     return DEFAULT_COVER_DESIGN;
   }
 
+  /* How many colouring pages the Kids' Pack carries (2026-11-17):
+     the buyer picks from the design pool; the standard book has
+     always had 6, so 6 stays the default and anything missing or
+     non-numeric falls back to it. Clamped to the pool size. */
+  var DEFAULT_COLORING_COUNT = 6;
+  function normalizeColoringCount(value) {
+    var n = (typeof value === 'number' || (typeof value === 'string' && value.trim() !== ''))
+      ? Number(value) : NaN;
+    if (!isFinite(n)) return DEFAULT_COLORING_COUNT;
+    n = Math.floor(n);
+    if (n < 0) return 0;
+    return Math.min(n, DATA.COLORING_IDS.length);
+  }
+
   function normalizeSpec(spec) {
     spec = spec || {};
     var start = parseISODate(spec.startDate) ? spec.startDate : DEFAULT_START;
@@ -240,6 +254,7 @@
       paper: spec.paper === 'a4' ? 'a4' : 'letter',
       coverTheme: migrateCoverTheme(spec.coverTheme),
       includeKids: spec.includeKids !== false,
+      coloringCount: normalizeColoringCount(spec.coloringCount),
       name: String(spec.name || '').trim(),
       /* Cover text + print options (2026-11-17). All optional and
          defaulted so older saved specs and the default book are
@@ -268,7 +283,8 @@
      review after each week, last-ten-nights, deeds tracker, meal
      planner, shopping list, Eid prep, Eid day, and (optionally) the
      kids' pack: divider, star chart, deed cards (3 pages), colouring
-     pages (6), certificate. */
+     pages (the buyer's chosen count from the design pool — 6 by
+     default), certificate. */
   function buildPages(specIn) {
     var spec = normalizeSpec(specIn);
     var pages = [];
@@ -306,7 +322,7 @@
       for (var c = 0; c < 3; c++) {
         pages.push({ type: 'kidscards', chunk: c, deeds: DATA.KIDS_DEEDS.slice(c * 10, c * 10 + 10), firstDay: c * 10 + 1 });
       }
-      DATA.COLORING_IDS.forEach(function (id) {
+      DATA.COLORING_IDS.slice(0, spec.coloringCount).forEach(function (id) {
         pages.push({ type: 'coloring', designId: id });
       });
       pages.push({ type: 'certificate', name: spec.name });
@@ -408,7 +424,9 @@
     parseISODate: parseISODate, addDays: addDays, weekdayOf: weekdayOf,
     dateForDay: dateForDay, toISO: toISO,
     formatDate: formatDate, formatDateShort: formatDateShort,
-    normalizeSpec: normalizeSpec, buildPages: buildPages, pageCount: pageCount
+    normalizeSpec: normalizeSpec, buildPages: buildPages, pageCount: pageCount,
+    DEFAULT_COLORING_COUNT: DEFAULT_COLORING_COUNT,
+    normalizeColoringCount: normalizeColoringCount
   };
 
   if (typeof module !== 'undefined' && module.exports) module.exports = api;
