@@ -15,7 +15,7 @@ body {
   color: #14232b;
 }
 
-.ar-font, .dua-ar, .l-ar, .card-ar,
+.ar-font, .dua-ar, .l-ar, .card-ar, .bi-ar,
 .book-page[dir="rtl"] {
   font-family: 'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic',
     'Scheherazade New', 'Segoe UI', Tahoma, sans-serif;
@@ -129,6 +129,9 @@ body {
 .pg-title { font-size: 22px; margin: 0; color: #0f2027; line-height: 1.45; }
 .pg-sub { font-size: 14.5px; color: #48626e; margin-top: 3px; }
 .l-en { font-size: 0.78em; color: #48626e; font-weight: 600; }
+/* Stacked bilingual display lines (see LStack in render.js). */
+.bi-ar, .bi-en { display: block; }
+.bi-en { font-size: 0.85em; }
 .intro-line { font-size: 13.5px; line-height: 1.45; color: #48626e; margin: 0 0 8px; }
 .blk { margin-top: 8px; }
 .blk-title { font-size: 15px; margin: 0 0 6px; color: #0f2027; }
@@ -147,21 +150,27 @@ body {
 }
 
 /* ---------- Cover / divider / certificate ---------- */
-.cover-page, .cert-page { align-items: center; }
+/* stretch, not center: in RTL pages some print engines shrink the
+   footer to its text width and displace it off the sheet when the
+   page's flex items are centre-aligned. Locked by visual checks. */
+.cover-page, .cert-page { align-items: stretch; }
 .cover-inner, .cert-inner { margin: auto; text-align: center; width: 100%; }
 .deco-svg { display: block; margin: 0 auto; }
 .cover-page .deco-svg { height: 240px; }
 .cover-title { font-size: 34px; margin: 12px 0 6px; color: #0f2027; line-height: 1.25; }
 .cover-year { font-size: 20px; color: #b98a1d; font-weight: 700; margin: 0 0 26px; }
-.cover-sub { font-size: 15px; color: #48626e; line-height: 1.5; max-width: 80%; margin: 0 auto; }
-.cover-name { margin: 0 auto 30px; max-width: 70%; }
+/* Centred measure via percentage side margins, NOT max-width +
+   margin:auto — in RTL pages some print engines mis-resolve auto
+   side margins and shove the block off the sheet. */
+.cover-sub { font-size: 15px; color: #48626e; line-height: 1.5; margin: 0 10%; }
+.cover-name { margin: 0 15% 30px; }
 .cover-name-label { display: block; font-size: 14px; color: #48626e; margin-bottom: 8px; }
 .cover-name-value { font-size: 26px; font-weight: 700; color: #0f2027; }
 .cover-name-line { display: block; height: 34px; }
 .moon-note {
   border: 1.5px dashed #b98a1d; border-radius: 12px; background: #fffaf0;
   padding: 10px 14px; font-size: 13px; line-height: 1.45; color: #48626e;
-  max-width: 88%; margin: 0 auto;
+  margin: 0 6%;
 }
 .cover-brand { margin-top: 30px; letter-spacing: 4px; font-weight: 800; color: #b98a1d; font-size: 15px; }
 .cert-page .deco-svg { height: 170px; }
@@ -171,8 +180,8 @@ body {
 }
 .cert-presented { font-size: 16px; color: #48626e; margin: 14px 0 6px; }
 .cert-name { font-size: 30px; font-weight: 800; color: #0f2027; margin: 6px 0; }
-.cert-name-line { height: 40px; border-bottom: 2px solid #7d97a1; max-width: 65%; margin: 10px auto 4px; }
-.cert-for { font-size: 15px; color: #33505c; line-height: 1.5; max-width: 82%; margin: 10px auto 0; }
+.cert-name-line { height: 40px; border-bottom: 2px solid #7d97a1; margin: 10px 17.5% 4px; }
+.cert-for { font-size: 15px; color: #33505c; line-height: 1.5; margin: 10px 9% 0; }
 .cert-welldone { font-size: 19px; font-weight: 700; color: #b98a1d; margin: 20px 0 0; }
 
 /* ---------- Overview ---------- */
