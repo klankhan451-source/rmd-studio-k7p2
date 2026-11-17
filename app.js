@@ -56,6 +56,7 @@ if (typeof module !== 'undefined' && module.exports) {
   var NAME_KEY = 'ramadan_license_name';
   var CODE_KEY = 'ramadan_license_code';
   var THEME_KEY = 'ramadan_cover_theme';
+  var COLORING_KEY = 'ramadan_coloring_count';
   var appStarted = false;
   /* the currently chosen cover design id (one of RP.COVER_DESIGNS);
      initApp restores it from localStorage (with migration) */
@@ -151,6 +152,7 @@ if (typeof module !== 'undefined' && module.exports) {
       paper: $('pl-paper').value,
       coverTheme: currentTheme,
       includeKids: $('pl-kids').checked,
+      coloringCount: $('pl-coloring-count') ? parseInt($('pl-coloring-count').value, 10) : NaN,
       name: $('pl-name').value,
       subtitle: $('pl-subtitle') ? $('pl-subtitle').value : '',
       titleFont: $('pl-titlefont') ? $('pl-titlefont').value : 'serif',
@@ -169,13 +171,17 @@ if (typeof module !== 'undefined' && module.exports) {
 
   /* Live page count under the extras toggles: the default book
      is 56 pages (44 without the Kids' Pack); each extra adds its
-     pages, and the count follows every toggle immediately. */
+     pages, and the count follows every toggle immediately. The
+     header "What you get" pill shows the same live number. */
   function updatePageCount() {
     var el = $('pl-pagecount');
     if (!el || typeof RP === 'undefined') return;
     var spec = readSpec();
-    el.textContent = 'Your planner: ' + RP.pageCount(spec) + ' pages' +
+    var count = RP.pageCount(spec);
+    el.textContent = 'Your planner: ' + count + ' pages' +
       (spec.includeKids ? ' (Kids’ Pack included)' : '') + '.';
+    var pill = $('pl-pill-pages');
+    if (pill) pill.textContent = '📖 ' + count + ' pages';
   }
 
   function build() {
@@ -433,11 +439,25 @@ if (typeof module !== 'undefined' && module.exports) {
     if ($('pl-titlefont')) $('pl-titlefont').addEventListener('change', updateCoverPreview);
     if ($('pl-inksaver')) $('pl-inksaver').addEventListener('change', updateCoverPreview);
     ['pl-kids', 'pl-inksaver', 'pl-extra-duacards', 'pl-extra-bookmarks', 'pl-extra-notes',
-     'pl-extra-quranduas', 'pl-extra-surahtracker', 'pl-extra-prep', 'pl-extra-readplan']
+     'pl-extra-quranduas', 'pl-extra-surahtracker', 'pl-extra-prep', 'pl-extra-readplan',
+     'pl-coloring-count']
       .forEach(function (id) {
         var el = $(id);
         if (el) el.addEventListener('change', updatePageCount);
       });
+    /* the colouring-page count is remembered like the cover
+       design: restore the buyer's saved choice, keep it saved */
+    var coloringSel = $('pl-coloring-count');
+    if (coloringSel && typeof RP !== 'undefined') {
+      var savedColoring = null;
+      try { savedColoring = localStorage.getItem(COLORING_KEY); } catch (e) { /* private mode */ }
+      if (savedColoring !== null) {
+        coloringSel.value = String(RP.normalizeColoringCount(savedColoring));
+      }
+      coloringSel.addEventListener('change', function () {
+        try { localStorage.setItem(COLORING_KEY, coloringSel.value); } catch (e) { /* ignore */ }
+      });
+    }
     updatePageCount();
     /* changing the start date or language re-labels the hint */
     $('pl-start').addEventListener('change', function () {
