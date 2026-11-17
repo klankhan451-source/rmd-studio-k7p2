@@ -151,8 +151,29 @@ if (typeof module !== 'undefined' && module.exports) {
       paper: $('pl-paper').value,
       coverTheme: currentTheme,
       includeKids: $('pl-kids').checked,
-      name: $('pl-name').value
+      name: $('pl-name').value,
+      subtitle: $('pl-subtitle') ? $('pl-subtitle').value : '',
+      titleFont: $('pl-titlefont') ? $('pl-titlefont').value : 'serif',
+      inkSaver: $('pl-inksaver') ? $('pl-inksaver').checked : false,
+      extras: {
+        duaCards: $('pl-extra-duacards') ? $('pl-extra-duacards').checked : false,
+        bookmarks: $('pl-extra-bookmarks') ? $('pl-extra-bookmarks').checked : false,
+        notes: $('pl-extra-notes') ? $('pl-extra-notes').checked : false,
+        quranDuas: $('pl-extra-quranduas') ? $('pl-extra-quranduas').checked : false,
+        surahTracker: $('pl-extra-surahtracker') ? $('pl-extra-surahtracker').checked : false
+      }
     };
+  }
+
+  /* Live page count under the extras toggles: the default book
+     is 56 pages (44 without the Kids' Pack); each extra adds its
+     pages, and the count follows every toggle immediately. */
+  function updatePageCount() {
+    var el = $('pl-pagecount');
+    if (!el || typeof RP === 'undefined') return;
+    var spec = readSpec();
+    el.textContent = 'Your planner: ' + RP.pageCount(spec) + ' pages' +
+      (spec.includeKids ? ' (Kids’ Pack included)' : '') + '.';
   }
 
   function build() {
@@ -182,13 +203,17 @@ if (typeof module !== 'undefined' && module.exports) {
      at 96dpi) for a design, exactly as book.js assembles page 1 —
      used for the picker's miniature covers and the live preview.
      The sheet is scaled down by CSS transform (fitMiniSheets). */
-  function coverSheetHTML(designId, name, lang) {
+  function coverSheetHTML(designId, name, lang, extra) {
+    extra = extra || {};
     var spec = RP.normalizeSpec({
       startDate: RP.DEFAULT_START, lang: lang || 'en', numerals: 'west',
-      paper: 'letter', coverTheme: designId, includeKids: true, name: name || ''
+      paper: 'letter', coverTheme: designId, includeKids: true, name: name || '',
+      subtitle: extra.subtitle || '', titleFont: extra.titleFont || 'serif',
+      inkSaver: extra.inkSaver === true
     });
     var ctx = Render.mkCtx(spec);
-    return '<div class="book-page cover-page cover-theme-' + spec.coverTheme + '" dir="' + ctx.dir + '"' +
+    return '<div class="book-page cover-page cover-theme-' + spec.coverTheme +
+      ' cover-font-' + spec.titleFont + (spec.inkSaver ? ' ink-saver' : '') + '" dir="' + ctx.dir + '"' +
       ' style="width:816px;height:1056px;padding:57.6px;margin:0;box-shadow:none;">' +
       '<div class="page-body">' + Render.pageHTML({ type: 'cover', name: spec.name }, ctx) + '</div></div>';
   }
@@ -208,7 +233,11 @@ if (typeof module !== 'undefined' && module.exports) {
     if (!sheet || typeof Render === 'undefined') return;
     var name = $('pl-name') ? $('pl-name').value : '';
     var lang = $('pl-lang') ? $('pl-lang').value : 'en';
-    sheet.innerHTML = coverSheetHTML(currentTheme, name, lang);
+    sheet.innerHTML = coverSheetHTML(currentTheme, name, lang, {
+      subtitle: $('pl-subtitle') ? $('pl-subtitle').value : '',
+      titleFont: $('pl-titlefont') ? $('pl-titlefont').value : 'serif',
+      inkSaver: $('pl-inksaver') ? $('pl-inksaver').checked : false
+    });
     var d = RP.coverDesign(currentTheme);
     var nameEl = $('pl-cover-name');
     if (nameEl && d) nameEl.textContent = d.name + ' — this is page 1 of your planner.';
@@ -274,6 +303,18 @@ if (typeof module !== 'undefined' && module.exports) {
         fitTimer = setTimeout(fitMiniSheets, 120);
       });
     }
+    /* cover text + print options follow the live preview; the
+       live page count follows the kids pack + extras toggles */
+    if ($('pl-subtitle')) $('pl-subtitle').addEventListener('input', updateCoverPreview);
+    if ($('pl-titlefont')) $('pl-titlefont').addEventListener('change', updateCoverPreview);
+    if ($('pl-inksaver')) $('pl-inksaver').addEventListener('change', updateCoverPreview);
+    ['pl-kids', 'pl-inksaver', 'pl-extra-duacards', 'pl-extra-bookmarks', 'pl-extra-notes',
+     'pl-extra-quranduas', 'pl-extra-surahtracker']
+      .forEach(function (id) {
+        var el = $(id);
+        if (el) el.addEventListener('change', updatePageCount);
+      });
+    updatePageCount();
     /* changing the start date or language re-labels the hint */
     $('pl-start').addEventListener('change', function () {
       var v = $('pl-start').value;
