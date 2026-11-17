@@ -48,6 +48,10 @@
     var out = pages.map(function (page, idx) {
       var cls = 'book-page' +
         (page.type === 'cover' || page.type === 'kidsdivider' ? ' cover-page' : '') +
+        /* the chosen cover design colours page 1 only (styles.css
+           cover-theme-* variables); the kids divider shares the
+           cover-page layout class but keeps the default design */
+        (page.type === 'cover' ? ' cover-theme-' + spec.coverTheme : '') +
         (page.type === 'certificate' ? ' cert-page' : '');
       var footer = '<p class="page-footer">' +
         Render.esc(Render.S(ctx, 'footerBrand')) + ' · ' +
