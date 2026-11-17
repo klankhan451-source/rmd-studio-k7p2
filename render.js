@@ -142,6 +142,43 @@
     return color && color !== '#ffd166' ? s.split('#ffd166').join(color) : s;
   }
 
+  /* ---------- Foil gradients (cover upgrade 2026-11-17) ----------
+   * Multi-tone metallic gradients for the cover artwork, in the
+   * palette's metal family. IMPORTANT print-pipeline fact, probe-
+   * verified against WeasyPrint 70 (the PDF pipeline used for the
+   * sample/retail books): objectBoundingBox gradients render
+   * NOTHING there, while gradientUnits="userSpaceOnUse" gradients
+   * (linear + radial), pattern fills and clip paths all render
+   * correctly — so every gradient below is userSpaceOnUse, which
+   * browsers also support. HTML title text cannot take an SVG
+   * gradient and CSS background-clip:text renders the title
+   * INVISIBLE in WeasyPrint, so titles use a rich solid foil tone
+   * (the --cover-title variables) instead. */
+  function foilStops(deco) {
+    switch (deco) {
+      case '#d7deeb': return [[0, '#ffffff'], [0.45, '#d7deeb'], [0.78, '#93a3bd'], [1, '#eef2f8']]; // silver
+      case '#dfa32e': return [[0, '#f3cd8a'], [0.45, '#dfa32e'], [0.78, '#a8741a'], [1, '#f3cd8a']]; // bronze
+      case '#d99a5c': return [[0, '#f6cfae'], [0.45, '#d99a5c'], [0.78, '#b06f3f'], [1, '#f6cfae']]; // rose gold
+      case '#f0c35c': return [[0, '#f9e29a'], [0.45, '#f0c35c'], [0.78, '#b8860b'], [1, '#f9e29a']]; // pale gold
+      default: return [[0, '#f6e27a'], [0.45, '#d4af37'], [0.78, '#aa8a2e'], [1, '#f6e27a']];        // gold
+    }
+  }
+
+  function foilDefs(uid, deco, x2, y2) {
+    var stops = foilStops(deco).map(function (st) {
+      return '<stop offset="' + st[0] + '" stop-color="' + st[1] + '"/>';
+    }).join('');
+    return '<defs><linearGradient id="foil-' + uid + '" gradientUnits="userSpaceOnUse" ' +
+      'x1="0" y1="0" x2="' + x2 + '" y2="' + y2 + '">' + stops + '</linearGradient></defs>';
+  }
+
+  /* Repaint a #ffd166-baked SVG so its flat fills/strokes become
+     the foil gradient defined by foilDefs for this uid. */
+  function foilPaint(s, uid) {
+    return s.split('fill="#ffd166"').join('fill="url(#foil-' + uid + ')"')
+      .split('stroke="#ffd166"').join('stroke="url(#foil-' + uid + ')"');
+  }
+
   /* Cover ornament: mosque silhouette — central dome with a small
      crescent finial, two minarets, an arched door, corner stars. */
   function mosqueSVG() {
@@ -187,11 +224,12 @@
     return s + '</svg>';
   }
 
-  /* The original cover ornament: crescent + fanoos lantern + stars.
-     Also the divider / Eid / certificate ornament (no argument). */
-  function decoSVG(ornament, color) {
-    if (ornament === 'mosque') return paint(mosqueSVG(), color);
-    if (ornament === 'star') return paint(starMedallionSVG(), color);
+  /* The raw ornament SVGs, baked in the original gold #ffd166.
+     decoSVG flat-paints them (divider / Eid / certificate);
+     foilOrnamentSVG gradient-paints them (the book cover). */
+  function rawOrnamentSVG(ornament) {
+    if (ornament === 'mosque') return mosqueSVG();
+    if (ornament === 'star') return starMedallionSVG();
     var s = '<svg class="deco-svg ornament-lantern" viewBox="0 0 400 300" aria-hidden="true">';
     s += '<path d="' + crescentD(130, 130, 95) + '" fill="#ffd166"/>';
     s += starSVG(215, 70, 20, 'fill="#ffd166"');
@@ -208,7 +246,23 @@
     s += '<path d="M274 196 L306 196 L290 226 Z"/>';
     s += '</g>';
     s += '<circle cx="290" cy="150" r="13" fill="#ffd166"/>';
-    return paint(s + '</svg>', color);
+    return s + '</svg>';
+  }
+
+  /* The original cover ornament: crescent + fanoos lantern + stars.
+     Also the divider / Eid / certificate ornament (no argument). */
+  function decoSVG(ornament, color) {
+    return paint(rawOrnamentSVG(ornament), color);
+  }
+
+  /* The cover version of an ornament: same drawing, but the flat
+     deco colour becomes the palette's multi-tone foil gradient.
+     uid (the design id) keeps gradient ids unique when several
+     covers share one document (the settings picker thumbnails). */
+  function foilOrnamentSVG(ornament, deco, uid) {
+    var s = rawOrnamentSVG(ornament);
+    s = s.replace(/(<svg[^>]*>)/, '$1' + foilDefs(uid, deco, 400, 300));
+    return foilPaint(s, uid);
   }
 
   /* Subtle geometric pattern layer for the cover: a lattice of
@@ -230,6 +284,275 @@
       }
     }
     return paint(s + '</svg>', color);
+  }
+
+  /* ---------- Hero scene covers (added 2026-11-17) ----------
+   * Full-composition cover scenes in an 816x1056 viewBox (a US
+   * Letter sheet at 96dpi; 'slice' crops gracefully on A4, like
+   * the pattern layer). All gradients are userSpaceOnUse (see
+   * the foil note above). Seeded randomness keeps every buyer's
+   * copy of a design identical. Objects only — no people. */
+
+  function lcg(seed) {
+    var s = seed >>> 0;
+    return function () {
+      s = (s * 1103515245 + 12345) & 0x7fffffff;
+      return s / 0x7fffffff;
+    };
+  }
+
+  /* Four-point sparkle (diamond star) polygon points. */
+  function sparklePoints(cx, cy, r) {
+    var pts = [];
+    for (var i = 0; i < 8; i++) {
+      var rad = i % 2 === 0 ? r : r * 0.24;
+      var a = -Math.PI / 2 + i * Math.PI / 4;
+      pts.push((Math.round((cx + rad * Math.cos(a)) * 10) / 10) + ',' +
+        (Math.round((cy + rad * Math.sin(a)) * 10) / 10));
+    }
+    return pts.join(' ');
+  }
+
+  function starFieldSVG(rand, count, w, yMax, colors) {
+    var cols = colors || ['#ffd166', '#fff3c4', '#ffffff'];
+    var s = '';
+    for (var i = 0; i < count; i++) {
+      var x = +(rand() * w).toFixed(1), y = +(rand() * yMax).toFixed(1);
+      var c = cols[Math.floor(rand() * cols.length)];
+      var o = (0.3 + rand() * 0.65).toFixed(2);
+      if (i % 11 === 5) {
+        s += '<polygon points="' + sparklePoints(x, y, 7 + rand() * 6) + '" fill="' + c + '" opacity="' + o + '"/>';
+      } else {
+        s += '<circle cx="' + x + '" cy="' + y + '" r="' + (0.9 + rand() * 1.9).toFixed(1) +
+          '" fill="' + c + '" opacity="' + o + '"/>';
+      }
+    }
+    return s;
+  }
+
+  /* A fanoos lantern drawn around a local origin at its centre
+     (glow disc included by hangingLantern). */
+  function lanternLocal(uid) {
+    var G = 'url(#foil-' + uid + ')';
+    var s = '<g stroke="' + G + '" stroke-width="5" fill="none" stroke-linejoin="round">';
+    s += '<circle cx="0" cy="-88" r="9"/>';
+    s += '<path d="M-28 -72 L28 -72 L16 -46 L-16 -46 Z"/>';
+    s += '<path d="M-22 -46 L22 -46 L22 46 L-22 46 Z"/>';
+    s += '<line x1="0" y1="-46" x2="0" y2="46"/>';
+    s += '<line x1="-22" y1="0" x2="22" y2="0"/>';
+    s += '<path d="M-16 46 L16 46 L0 76 Z"/></g>';
+    s += '<circle cx="0" cy="0" r="13" fill="' + G + '"/>';
+    return s;
+  }
+
+  function hangingLantern(x, topY, chainLen, scale, uid) {
+    var cy = topY + chainLen + 97;
+    return '<line x1="' + x + '" y1="' + topY + '" x2="' + x + '" y2="' + (topY + chainLen) +
+      '" stroke="url(#foil-' + uid + ')" stroke-width="3"/>' +
+      '<circle cx="' + x + '" cy="' + cy + '" r="' + Math.round(100 * scale) +
+      '" fill="url(#foil-' + uid + ')" opacity="0.15"/>' +
+      '<g transform="translate(' + x + ',' + cy + ') scale(' + scale + ')">' + lanternLocal(uid) + '</g>';
+  }
+
+  /* Mosque skyline band sitting on the bottom edge (yBase) of an
+     816-wide canvas: buildings, domes, two minarets, lit windows. */
+  function skylineSVG(yBase, silhouette, windowColor, seed) {
+    var rand = lcg(seed);
+    var s = '';
+    var x = -6;
+    var minarets = [120, 668];
+    var mi = 0;
+    while (x < 822) {
+      if (mi < minarets.length && x + 60 > minarets[mi]) {
+        var mx = minarets[mi];
+        s += '<rect x="' + (mx - 7) + '" y="' + (yBase - 218) + '" width="14" height="218" fill="' + silhouette + '"/>';
+        s += '<path d="M' + (mx - 13) + ' ' + (yBase - 218) + ' C' + (mx - 13) + ' ' + (yBase - 244) + ' ' +
+          (mx - 5) + ' ' + (yBase - 248) + ' ' + mx + ' ' + (yBase - 266) + ' C' + (mx + 5) + ' ' +
+          (yBase - 248) + ' ' + (mx + 13) + ' ' + (yBase - 244) + ' ' + (mx + 13) + ' ' + (yBase - 218) +
+          ' Z" fill="' + silhouette + '"/>';
+        s += '<rect x="' + (mx - 12) + '" y="' + (yBase - 178) + '" width="24" height="6" fill="' + silhouette + '"/>';
+        s += '<rect x="' + (mx - 2.5) + '" y="' + (yBase - 205) + '" width="5" height="9" fill="' + windowColor + '"/>';
+        mi++;
+      }
+      var bw = 44 + Math.floor(rand() * 62);
+      var bh = 58 + Math.floor(rand() * 88);
+      var top = yBase - bh;
+      s += '<rect x="' + x + '" y="' + top + '" width="' + bw + '" height="' + bh + '" fill="' + silhouette + '"/>';
+      if (rand() < 0.55) {
+        var dcx = x + bw / 2, dr = Math.min(bw * 0.36, 30);
+        s += '<path d="M' + (dcx - dr) + ' ' + top + ' C' + (dcx - dr) + ' ' + (top - dr * 1.05) + ' ' +
+          (dcx - dr * 0.34) + ' ' + (top - dr * 1.15) + ' ' + dcx + ' ' + (top - dr * 1.62) + ' C' +
+          (dcx + dr * 0.34) + ' ' + (top - dr * 1.15) + ' ' + (dcx + dr) + ' ' + (top - dr * 1.05) + ' ' +
+          (dcx + dr) + ' ' + top + ' Z" fill="' + silhouette + '"/>';
+        s += '<line x1="' + dcx + '" y1="' + (top - dr * 1.62) + '" x2="' + dcx + '" y2="' +
+          (top - dr * 1.62 - 9) + '" stroke="' + silhouette + '" stroke-width="3"/>';
+      }
+      var cols = Math.max(1, Math.floor(bw / 17));
+      var rows = Math.max(1, Math.floor(bh / 21));
+      for (var cx2 = 0; cx2 < cols; cx2++) {
+        for (var ry = 0; ry < rows; ry++) {
+          if (rand() < 0.42) {
+            s += '<rect x="' + (x + 7 + cx2 * 17) + '" y="' + (top + 9 + ry * 21) +
+              '" width="5.5" height="8.5" fill="' + windowColor + '" opacity="0.9"/>';
+          }
+        }
+      }
+      x += bw + 3 + Math.floor(rand() * 8);
+    }
+    return s;
+  }
+
+  function sceneOpen() {
+    return '<svg class="cover-scene-svg" viewBox="0 0 816 1056" preserveAspectRatio="xMidYMid slice" aria-hidden="true">';
+  }
+
+  function skyGradDef(uid, stops) {
+    return '<defs><linearGradient id="sky-' + uid + '" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="0" y2="1056">' +
+      stops.map(function (st) { return '<stop offset="' + st[0] + '" stop-color="' + st[1] + '"/>'; }).join('') +
+      '</linearGradient></defs>';
+  }
+
+  function sceneNightskySVG(uid, deco) {
+    var s = sceneOpen();
+    s += skyGradDef(uid, [[0, '#040818'], [0.55, '#0d1f4b'], [1, '#1d3468']]);
+    /* gold foil is forced here: the navy palette's own deco is
+       silver (right for the classic navy covers), but this hero
+       scene is specified with a GOLD crescent */
+    s += foilDefs(uid, '#ffd166', 816, 1056);
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+    s += starFieldSVG(lcg(1234567), 110, 816, 700);
+    s += '<path d="' + crescentD(262, 288, 168) + '" fill="url(#foil-' + uid + ')" opacity="0.14"/>';
+    s += '<path d="' + crescentD(258, 292, 148) + '" fill="url(#foil-' + uid + ')"/>';
+    s += '<polygon points="' + sparklePoints(452, 178, 26) + '" fill="url(#foil-' + uid + ')"/>';
+    s += '<polygon points="' + sparklePoints(560, 300, 15) + '" fill="url(#foil-' + uid + ')" opacity="0.8"/>';
+    s += skylineSVG(1056, '#03060f', '#ffd166', 777);
+    return s + '</svg>';
+  }
+
+  /* Pointed (mihrab) arch outline, insettable. */
+  function archPath(inset) {
+    var x0 = 118 + inset, x1 = 698 - inset, apex = 96 + inset * 0.6, base = 992;
+    return 'M' + x0 + ' ' + base + ' L' + x0 + ' 430 C' + x0 + ' 268 ' + (268 + inset) + ' 168 408 ' + apex +
+      ' C' + (548 - inset) + ' 168 ' + x1 + ' 268 ' + x1 + ' 430 L' + x1 + ' ' + base;
+  }
+
+  function sceneArchSVG(uid, deco, skylineColor) {
+    var s = sceneOpen();
+    s += foilDefs(uid, deco, 816, 1056);
+    s += starFieldSVG(lcg(99), 26, 816, 300, ['#e9c766', '#fff3c4']);
+    s += '<path d="' + archPath(0) + '" fill="none" stroke="url(#foil-' + uid + ')" stroke-width="5"/>';
+    s += '<path d="' + archPath(20) + '" fill="none" stroke="url(#foil-' + uid + ')" stroke-width="1.8" opacity="0.85"/>';
+    s += hangingLantern(262, 205, 30, 0.78, uid);
+    s += hangingLantern(408, 120, 92, 0.95, uid);
+    s += hangingLantern(554, 205, 30, 0.78, uid);
+    s += '<g transform="translate(150,320) scale(0.63)">' + skylineSVG(1056, skylineColor, '#ffd166', 4242) + '</g>';
+    return s + '</svg>';
+  }
+
+  function sceneArabesqueSVG(uid, deco) {
+    var s = sceneOpen();
+    s += skyGradDef(uid, [[0, '#03222b'], [1, '#0a5c63']]);
+    s += '<defs><pattern id="arab-' + uid + '" width="54" height="54" patternUnits="userSpaceOnUse">' +
+      '<polygon points="' + star8Points(27, 27, 15, 15 * 0.62) + '" fill="none" stroke="#04313a" stroke-width="2.2"/>' +
+      '<circle cx="0" cy="0" r="2.4" fill="#04313a"/><circle cx="54" cy="0" r="2.4" fill="#04313a"/>' +
+      '<circle cx="0" cy="54" r="2.4" fill="#04313a"/><circle cx="54" cy="54" r="2.4" fill="#04313a"/></pattern></defs>';
+    s += foilDefs(uid, deco, 816, 1056);
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+    s += starFieldSVG(lcg(31337), 40, 816, 420);
+    s += '<path d="' + crescentD(348, 612, 318) + '" fill="url(#foil-' + uid + ')"/>';
+    s += '<path d="' + crescentD(348, 612, 318) + '" fill="url(#arab-' + uid + ')" opacity="0.55"/>';
+    /* festive swag across the top-right corner — kept flat and
+       high (sparkles only, no hanging lantern shapes) so it never
+       touches the title text below it (render-verified) */
+    s += '<path d="M452 22 Q640 80 812 30" fill="none" stroke="url(#foil-' + uid + ')" stroke-width="2.5"/>';
+    [[520, 46, 10], [600, 60, 13], [680, 58, 10], [752, 42, 12]].forEach(function (p) {
+      s += '<polygon points="' + sparklePoints(p[0], p[1], p[2]) + '" fill="url(#foil-' + uid + ')"/>';
+    });
+    return s + '</svg>';
+  }
+
+  function sceneCalligraphySVG(uid) {
+    var s = sceneOpen();
+    s += skyGradDef(uid, [[0, '#040818'], [0.6, '#0a1735'], [1, '#16295c']]);
+    s += foilDefs(uid, '#ffd166', 816, 1056);
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+    s += starFieldSVG(lcg(2024), 46, 816, 1056);
+    s += '<path d="' + crescentD(408, 148, 44) + '" fill="url(#foil-' + uid + ')"/>';
+    s += '<polygon points="' + sparklePoints(480, 106, 14) + '" fill="url(#foil-' + uid + ')"/>';
+    return s + '</svg>';
+  }
+
+  /* Concentric eight-point-star medallion (corner ornament). */
+  function mandalaGroup(cx, cy, R, uid) {
+    var G = 'url(#foil-' + uid + ')';
+    var s = '<g fill="none" stroke="' + G + '">';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + R + '" stroke-width="2.5"/>';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 0.86) + '" stroke-width="1.2" opacity="0.8"/>';
+    s += '<polygon points="' + star8Points(cx, cy, R * 0.8, R * 0.8 * 0.62) + '" stroke-width="2"/>';
+    s += '<polygon points="' + star8Points(cx, cy, R * 0.58, R * 0.58 * 0.62) + '" fill="' + G + '" stroke="none" opacity="0.92"/>';
+    s += '<polygon points="' + star8Points(cx, cy, R * 0.38, R * 0.38 * 0.62) + '" stroke-width="2.2"/>';
+    s += '<circle cx="' + cx + '" cy="' + cy + '" r="' + (R * 0.13) + '" fill="' + G + '" stroke="none"/>';
+    for (var i = 0; i < 16; i++) {
+      var a = i * Math.PI / 8;
+      s += '<circle cx="' + (cx + R * 0.93 * Math.cos(a)).toFixed(1) + '" cy="' +
+        (cy + R * 0.93 * Math.sin(a)).toFixed(1) + '" r="' + (R * 0.022).toFixed(1) +
+        '" fill="' + G + '" stroke="none"/>';
+    }
+    return s + '</g>';
+  }
+
+  function sceneMandalaSVG(uid, deco) {
+    var s = sceneOpen();
+    s += '<defs><linearGradient id="sky-' + uid + '" gradientUnits="userSpaceOnUse" x1="0" y1="0" x2="816" y2="1056">' +
+      '<stop offset="0" stop-color="#101012"/><stop offset="1" stop-color="#2e2e33"/></linearGradient></defs>';
+    s += foilDefs(uid, deco, 816, 1056);
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+    s += starFieldSVG(lcg(555), 30, 816, 1056, ['#f5c542', '#fff3c4']);
+    s += mandalaGroup(816, 0, 330, uid);
+    s += mandalaGroup(0, 1056, 300, uid);
+    return s + '</svg>';
+  }
+
+  function scenePastelSkylineSVG(uid, deco) {
+    var s = sceneOpen();
+    s += skyGradDef(uid, [[0, '#fff8f1'], [0.55, '#fdeadd'], [1, '#f8d8cc']]);
+    s += foilDefs(uid, deco, 816, 1056);
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+    s += starFieldSVG(lcg(8080), 34, 816, 620, ['#d99a5c', '#e9b949', '#c98a6a']);
+    s += '<path d="' + crescentD(250, 280, 150) + '" fill="url(#foil-' + uid + ')" opacity="0.16"/>';
+    s += '<path d="' + crescentD(246, 284, 132) + '" fill="url(#foil-' + uid + ')"/>';
+    s += '<polygon points="' + sparklePoints(432, 172, 22) + '" fill="url(#foil-' + uid + ')"/>';
+    s += skylineSVG(1056, '#57293e', '#ffd166', 2027);
+    return s + '</svg>';
+  }
+
+  function coverSceneSVG(design, deco) {
+    var uid = design.id;
+    switch (design.scene) {
+      case 'nightsky': return sceneNightskySVG(uid, deco);
+      case 'arch': return sceneArchSVG(uid, deco, design.id === 'scene-arch-ivory' ? '#7a5a34' : '#052e22');
+      case 'arabesque': return sceneArabesqueSVG(uid, deco);
+      case 'calligraphy': return sceneCalligraphySVG(uid);
+      case 'mandala': return sceneMandalaSVG(uid, deco);
+      case 'pastelskyline': return scenePastelSkylineSVG(uid, deco);
+      case 'pastelarch': return sceneArchSVG(uid, deco, '#6b4a5a');
+    }
+    return '';
+  }
+
+  /* Kids' divider artwork: a big friendly crescent + chunky stars
+     in bright colours (objects only, no faces). */
+  function kidsDecoSVG() {
+    var s = '<svg class="deco-svg ornament-kids" viewBox="0 0 400 300" aria-hidden="true">';
+    s += '<path d="' + crescentD(148, 152, 108) + '" fill="#ffb703"/>';
+    s += '<polygon points="' + starPoints(272, 104, 52, 52 * 0.48) + '" fill="#fb8500"/>';
+    s += '<polygon points="' + starPoints(318, 218, 27, 27 * 0.48) + '" fill="#2a9d8f"/>';
+    s += '<polygon points="' + starPoints(84, 52, 18, 18 * 0.48) + '" fill="#ef476f"/>';
+    s += '<circle cx="330" cy="52" r="9" fill="#2a9d8f"/>';
+    s += '<circle cx="66" cy="238" r="11" fill="#fb8500"/>';
+    s += '<circle cx="352" cy="150" r="7" fill="#ef476f"/>';
+    s += '<circle cx="120" cy="262" r="6" fill="#2a9d8f"/>';
+    return s + '</svg>';
   }
 
   var SW = 'stroke="#14232b" stroke-width="7" fill="#ffffff" stroke-linejoin="round" stroke-linecap="round"';
@@ -366,25 +689,52 @@
 
   /* ---------- page bodies ---------- */
 
+  /* The buyer's name in a ruled "belongs to" band (retail-planner
+     style): label, then the name — or a writing line when the
+     name is blank — between two fine rules (styles.css). */
+  function coverNameBand(ctx) {
+    var h = '<div class="cover-name"><span class="cover-name-label">' + L(ctx, 'belongsTo') + '</span>';
+    h += ctx.name
+      ? '<span class="cover-name-value">' + esc(ctx.name) + '</span>'
+      : '<span class="wline cover-name-line"></span>';
+    return h + '</div>';
+  }
+
+  function sceneCoverBody(design, ctx) {
+    var deco = RP.COVER_PALETTES[design.palette].deco;
+    var h = '<div class="cover-scene">' + coverSceneSVG(design, deco) + '</div>';
+    if (design.scene === 'calligraphy') h += '<div class="cover-frame"></div>';
+    h += '<div class="cover-inner scene-inner scene-inner-' + design.scene + '">';
+    if (design.scene === 'calligraphy') {
+      h += '<div class="calligraphy-word" dir="rtl" lang="ar">رمضان</div>';
+    }
+    if (design.scene === 'mandala') {
+      h += '<svg class="scene-crescent" viewBox="0 0 100 100" aria-hidden="true"><path d="' +
+        crescentD(50, 50, 34) + '" fill="#d9a62e"/><polygon points="' +
+        sparklePoints(76, 30, 10) + '" fill="#d9a62e"/></svg>';
+    }
+    h += '<h1 class="cover-title-main">' + L(ctx, 'coverTitle') + '</h1>';
+    h += '<p class="cover-year">' + L(ctx, 'coverYear') + '</p>';
+    h += coverNameBand(ctx);
+    h += '<p class="cover-brand">' + L(ctx, 'brand') + '</p>';
+    return h + '</div>';
+  }
+
   function coverBody(page, ctx) {
     /* decorative overlays first (pattern + double-line frame) —
        CSS positions them absolutely inside the sheet and lifts
        .cover-inner above them; neither affects content flow.
        The artwork is drawn in the chosen palette's deco colour. */
     var design = ctx.coverDesign || RP.coverDesign(RP.DEFAULT_COVER_DESIGN);
+    if (design.scene) return sceneCoverBody(design, ctx);
     var deco = RP.COVER_PALETTES[design.palette].deco;
     var h = '<div class="cover-pattern">' + coverPatternSVG(deco) + '</div>';
     h += '<div class="cover-frame"></div>';
     h += '<div class="cover-inner">';
-    h += decoSVG(design.ornament, deco);
-    h += '<h1 class="cover-title">' + L(ctx, 'coverTitle') + '</h1>';
+    h += foilOrnamentSVG(design.ornament, deco, design.id);
+    h += '<h1 class="cover-title-main">' + L(ctx, 'coverTitle') + '</h1>';
     h += '<p class="cover-year">' + L(ctx, 'coverYear') + '</p>';
-    h += '<div class="cover-name"><span class="cover-name-label">' + L(ctx, 'belongsTo') + '</span>';
-    h += ctx.name
-      ? '<span class="cover-name-value">' + esc(ctx.name) + '</span>'
-      : '<span class="wline cover-name-line"></span>';
-    h += '</div>';
-    h += '<div class="moon-note">' + LStack(ctx, 'moonNote') + '</div>';
+    h += coverNameBand(ctx);
     h += '<p class="cover-brand">' + L(ctx, 'brand') + '</p>';
     return h + '</div>';
   }
@@ -497,7 +847,14 @@
       }
       h += '</tbody></table>';
     });
-    return h + '</div></section>';
+    /* The moon-sighting note moved here from the cover (cover
+       upgrade 2026-11-17): the cover is artwork now; the note
+       keeps its dashed styling on this early page instead. (The
+       Overview — page 2 — is measurably full: its 30-card grid
+       models within ~58px of the sheet, so the note cannot live
+       there without spilling the grid onto a second sheet.) */
+    return h + '</div></section>' +
+      '<div class="moon-note book-note">' + LStack(ctx, 'moonNote') + '</div>';
   }
 
   function lastTenBody(page, ctx) {
@@ -588,8 +945,8 @@
   }
 
   function kidsDividerBody(page, ctx) {
-    return '<div class="cover-inner">' + decoSVG() +
-      '<h1 class="cover-title">' + LStack(ctx, 'kidsDivider') + '</h1>' +
+    return '<div class="cover-inner">' + kidsDecoSVG() +
+      '<h1 class="kids-title">' + LStack(ctx, 'kidsDivider') + '</h1>' +
       '<p class="cover-sub">' + LStack(ctx, 'kidsDividerSub') + '</p>' +
       '<p class="cover-brand">' + LStack(ctx, 'brand') + '</p></div>';
   }
@@ -675,6 +1032,8 @@
     esc: esc, mkCtx: mkCtx, N: N, L: L, S: S,
     pageBodyHTML: pageBodyHTML, pageHTML: pageHTML,
     coloringSVG: coloringSVG, decoSVG: decoSVG,
+    foilOrnamentSVG: foilOrnamentSVG, coverSceneSVG: coverSceneSVG,
+    kidsDecoSVG: kidsDecoSVG, sparklePoints: sparklePoints,
     coverPatternSVG: coverPatternSVG,
     crescentD: crescentD, starPoints: starPoints, star8Points: star8Points,
     PRAYERS: PRAYERS
