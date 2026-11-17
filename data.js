@@ -12,6 +12,28 @@
   var STRINGS = {
     brand:          { en: 'SONGLAP DEALS', ar: 'SONGLAP DEALS' },
     coverTitle:     { en: 'Ramadan Planner', ar: 'مخطط رمضان' },
+    duaCardsTitle:  { en: 'Printable Dua Cards', ar: 'بطاقات أدعية للطباعة' },
+    duaCardsIntro:  { en: 'All 30 daily duas as cut-out cards — one for each day of Ramadan. Cut along the dashed lines and keep a card where you will see it.',
+                      ar: 'أدعية الأيام الثلاثين كلها في بطاقات تُقصّ — بطاقة لكل يوم من رمضان. قُصّ على الخطوط المتقطعة وضع كل بطاقة حيث تراها.' },
+    duaCardDay:     { en: 'Day {n}', ar: 'اليوم {n}' },
+    quranDuasTitle: { en: 'Duas from the Qur’an', ar: 'أدعية من القرآن الكريم' },
+    quranDuasIntro: { en: 'Supplications taken from the Qur’an itself — the “Rabbana” duas and the prayers of the prophets and the believers, with the surah and verse of each one. These are in addition to the daily duas.',
+                      ar: 'أدعية مأخوذة من القرآن نفسه — أدعية «ربنا» ودعاء الأنبياء والمؤمنين، مع ذكر السورة والآية لكل دعاء. وهي زيادة على أدعية الأيام.' },
+    surahTrackerTitle: { en: 'Qur’an Reading Tracker — All 114 Surahs', ar: 'متابعة قراءة القرآن — السور الـ١١٤ كلها' },
+    surahTrackerIntro: { en: 'Every surah in order, with its number of verses. Tick the box and write the date each time you finish a surah.',
+                      ar: 'كل سورة بترتيبها مع عدد آياتها. ضع علامة واكتب التاريخ كلما أنهيت سورة.' },
+    surahCol:       { en: 'Surah', ar: 'السورة' },
+    versesCol:      { en: 'Verses', ar: 'الآيات' },
+    dateCol:        { en: 'Date', ar: 'التاريخ' },
+    bookmarksTitle: { en: 'Ramadan Bookmarks', ar: 'فواصل رمضان' },
+    bookmarksIntro: { en: 'Four bookmarks for your planner and your Qur’an. Cut along the dashed lines.',
+                      ar: 'أربع فواصل لمخططك ومصحفك. قُصّ على الخطوط المتقطعة.' },
+    bookmarkDua:    { en: 'O Allah, help me to remember You, thank You and worship You well.',
+                      ar: 'اللهم أعني على ذكرك وشكرك وحسن عبادتك' },
+    bookmarkDuaSrc: { en: 'Abu Dawud 1522', ar: 'أبو داود ١٥٢٢' },
+    bookmarkMotto:  { en: 'Day by day, deed by deed', ar: 'يوماً بيوم، وعملاً بعمل' },
+    ramadanMubarak: { en: 'Ramadan Mubarak', ar: 'رمضان مبارك' },
+    notesTitle:     { en: 'Notes', ar: 'ملاحظات' },
     coverYear:      { en: 'Ramadan 1448 AH · 2027', ar: 'رمضان ١٤٤٨ هـ · ٢٠٢٧' },
     belongsTo:      { en: 'This planner belongs to', ar: 'هذا المخطط لـ' },
     moonNote:       { en: 'The start of Ramadan depends on the sighting of the moon. If Ramadan begins a day earlier or later where you live, change the start date in the settings and generate the planner again.',
@@ -295,10 +317,971 @@
   var WEEKDAYS_EN = ['Sunday', 'Monday', 'Tuesday', 'Wednesday', 'Thursday', 'Friday', 'Saturday'];
   var WEEKDAYS_AR = ['الأحد', 'الاثنين', 'الثلاثاء', 'الأربعاء', 'الخميس', 'الجمعة', 'السبت'];
 
+  /* ---------- Quranic duas (Feature E, 2026-11-17) ----------
+   * 52 supplications quoted from the Qur'an itself
+   * (the Rabbana duas and the prophets' / believers' duas).
+   * Arabic: Tanzil simple-script text, sliced programmatically
+   * from the verified verse text — never retyped. English:
+   * Sahih International, sliced the same way. src = Surah:Ayah. */
+  var QURAN_DUAS = [
+    {
+      "ar": "رَبَّنَا تَقَبَّلْ مِنَّا ۖ إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ",
+      "en": "Our Lord, accept [this] from us. Indeed You are the Hearing, the Knowing.",
+      "src": "Qur'an 2:127"
+    },
+    {
+      "ar": "رَبَّنَا وَاجْعَلْنَا مُسْلِمَيْنِ لَكَ وَمِنْ ذُرِّيَّتِنَا أُمَّةً مُسْلِمَةً لَكَ وَأَرِنَا مَنَاسِكَنَا وَتُبْ عَلَيْنَا ۖ إِنَّكَ أَنْتَ التَّوَّابُ الرَّحِيمُ",
+      "en": "Our Lord, and make us Muslims [in submission] to You and from our descendants a Muslim nation [in submission] to You. And show us our rites and accept our repentance. Indeed, You are the Accepting of repentance, the Merciful.",
+      "src": "Qur'an 2:128"
+    },
+    {
+      "ar": "رَبَّنَا آتِنَا فِي الدُّنْيَا حَسَنَةً وَفِي الْآخِرَةِ حَسَنَةً وَقِنَا عَذَابَ النَّارِ",
+      "en": "Our Lord, give us in this world [that which is] good and in the Hereafter [that which is] good and protect us from the punishment of the Fire.",
+      "src": "Qur'an 2:201"
+    },
+    {
+      "ar": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَثَبِّتْ أَقْدَامَنَا وَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+      "en": "Our Lord, pour upon us patience and plant firmly our feet and give us victory over the disbelieving people.",
+      "src": "Qur'an 2:250"
+    },
+    {
+      "ar": "رَبَّنَا لَا تُؤَاخِذْنَا إِنْ نَسِينَا أَوْ أَخْطَأْنَا ۚ رَبَّنَا وَلَا تَحْمِلْ عَلَيْنَا إِصْرًا كَمَا حَمَلْتَهُ عَلَى الَّذِينَ مِنْ قَبْلِنَا ۚ رَبَّنَا وَلَا تُحَمِّلْنَا مَا لَا طَاقَةَ لَنَا بِهِ ۖ وَاعْفُ عَنَّا وَاغْفِرْ لَنَا وَارْحَمْنَا ۚ أَنْتَ مَوْلَانَا فَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+      "en": "Our Lord, do not impose blame upon us if we have forgotten or erred. Our Lord, and lay not upon us a burden like that which You laid upon those before us. Our Lord, and burden us not with that which we have no ability to bear. And pardon us; and forgive us; and have mercy upon us. You are our protector, so give us victory over the disbelieving people.",
+      "src": "Qur'an 2:286"
+    },
+    {
+      "ar": "رَبَّنَا لَا تُزِغْ قُلُوبَنَا بَعْدَ إِذْ هَدَيْتَنَا وَهَبْ لَنَا مِنْ لَدُنْكَ رَحْمَةً ۚ إِنَّكَ أَنْتَ الْوَهَّابُ",
+      "en": "Our Lord, let not our hearts deviate after You have guided us and grant us from Yourself mercy. Indeed, You are the Bestower.",
+      "src": "Qur'an 3:8"
+    },
+    {
+      "ar": "رَبَّنَا إِنَّكَ جَامِعُ النَّاسِ لِيَوْمٍ لَا رَيْبَ فِيهِ ۚ إِنَّ اللَّهَ لَا يُخْلِفُ الْمِيعَادَ",
+      "en": "Our Lord, surely You will gather the people for a Day about which there is no doubt. Indeed, Allah does not fail in His promise.",
+      "src": "Qur'an 3:9"
+    },
+    {
+      "ar": "رَبَّنَا إِنَّنَا آمَنَّا فَاغْفِرْ لَنَا ذُنُوبَنَا وَقِنَا عَذَابَ النَّارِ",
+      "en": "Our Lord, indeed we have believed, so forgive us our sins and protect us from the punishment of the Fire,",
+      "src": "Qur'an 3:16"
+    },
+    {
+      "ar": "رَبِّ إِنِّي نَذَرْتُ لَكَ مَا فِي بَطْنِي مُحَرَّرًا فَتَقَبَّلْ مِنِّي ۖ إِنَّكَ أَنْتَ السَّمِيعُ الْعَلِيمُ",
+      "en": "My Lord, indeed I have pledged to You what is in my womb, consecrated [for Your service], so accept this from me. Indeed, You are the Hearing, the Knowing.",
+      "src": "Qur'an 3:35"
+    },
+    {
+      "ar": "رَبِّ هَبْ لِي مِنْ لَدُنْكَ ذُرِّيَّةً طَيِّبَةً ۖ إِنَّكَ سَمِيعُ الدُّعَاءِ",
+      "en": "My Lord, grant me from Yourself a good offspring. Indeed, You are the Hearer of supplication.",
+      "src": "Qur'an 3:38"
+    },
+    {
+      "ar": "رَبَّنَا آمَنَّا بِمَا أَنْزَلْتَ وَاتَّبَعْنَا الرَّسُولَ فَاكْتُبْنَا مَعَ الشَّاهِدِينَ",
+      "en": "Our Lord, we have believed in what You revealed and have followed the messenger Jesus, so register us among the witnesses [to truth].",
+      "src": "Qur'an 3:53"
+    },
+    {
+      "ar": "رَبَّنَا اغْفِرْ لَنَا ذُنُوبَنَا وَإِسْرَافَنَا فِي أَمْرِنَا وَثَبِّتْ أَقْدَامَنَا وَانْصُرْنَا عَلَى الْقَوْمِ الْكَافِرِينَ",
+      "en": "Our Lord, forgive us our sins and the excess [committed] in our affairs and plant firmly our feet and give us victory over the disbelieving people.",
+      "src": "Qur'an 3:147"
+    },
+    {
+      "ar": "رَبَّنَا مَا خَلَقْتَ هَٰذَا بَاطِلًا سُبْحَانَكَ فَقِنَا عَذَابَ النَّارِ",
+      "en": "Our Lord, You did not create this aimlessly; exalted are You [above such a thing]; then protect us from the punishment of the Fire.",
+      "src": "Qur'an 3:191"
+    },
+    {
+      "ar": "رَبَّنَا إِنَّكَ مَنْ تُدْخِلِ النَّارَ فَقَدْ أَخْزَيْتَهُ ۖ وَمَا لِلظَّالِمِينَ مِنْ أَنْصَارٍ",
+      "en": "Our Lord, indeed whoever You admit to the Fire - You have disgraced him, and for the wrongdoers there are no helpers.",
+      "src": "Qur'an 3:192"
+    },
+    {
+      "ar": "رَبَّنَا إِنَّنَا سَمِعْنَا مُنَادِيًا يُنَادِي لِلْإِيمَانِ أَنْ آمِنُوا بِرَبِّكُمْ فَآمَنَّا ۚ رَبَّنَا فَاغْفِرْ لَنَا ذُنُوبَنَا وَكَفِّرْ عَنَّا سَيِّئَاتِنَا وَتَوَفَّنَا مَعَ الْأَبْرَارِ",
+      "en": "Our Lord, indeed we have heard a caller calling to faith, [saying], 'Believe in your Lord,' and we have believed. Our Lord, so forgive us our sins and remove from us our misdeeds and cause us to die with the righteous.",
+      "src": "Qur'an 3:193"
+    },
+    {
+      "ar": "رَبَّنَا وَآتِنَا مَا وَعَدْتَنَا عَلَىٰ رُسُلِكَ وَلَا تُخْزِنَا يَوْمَ الْقِيَامَةِ ۗ إِنَّكَ لَا تُخْلِفُ الْمِيعَادَ",
+      "en": "Our Lord, and grant us what You promised us through Your messengers and do not disgrace us on the Day of Resurrection. Indeed, You do not fail in [Your] promise.",
+      "src": "Qur'an 3:194"
+    },
+    {
+      "ar": "رَبَّنَا أَنْزِلْ عَلَيْنَا مَائِدَةً مِنَ السَّمَاءِ تَكُونُ لَنَا عِيدًا لِأَوَّلِنَا وَآخِرِنَا وَآيَةً مِنْكَ ۖ وَارْزُقْنَا وَأَنْتَ خَيْرُ الرَّازِقِينَ",
+      "en": "O Allah, our Lord, send down to us a table [spread with food] from the heaven to be for us a festival for the first of us and the last of us and a sign from You. And provide for us, and You are the best of providers.",
+      "src": "Qur'an 5:114"
+    },
+    {
+      "ar": "رَبَّنَا ظَلَمْنَا أَنْفُسَنَا وَإِنْ لَمْ تَغْفِرْ لَنَا وَتَرْحَمْنَا لَنَكُونَنَّ مِنَ الْخَاسِرِينَ",
+      "en": "Our Lord, we have wronged ourselves, and if You do not forgive us and have mercy upon us, we will surely be among the losers.",
+      "src": "Qur'an 7:23"
+    },
+    {
+      "ar": "رَبَّنَا أَفْرِغْ عَلَيْنَا صَبْرًا وَتَوَفَّنَا مُسْلِمِينَ",
+      "en": "Our Lord, pour upon us patience and let us die as Muslims [in submission to You].",
+      "src": "Qur'an 7:126"
+    },
+    {
+      "ar": "رَبِّ اغْفِرْ لِي وَلِأَخِي وَأَدْخِلْنَا فِي رَحْمَتِكَ ۖ وَأَنْتَ أَرْحَمُ الرَّاحِمِينَ",
+      "en": "My Lord, forgive me and my brother and admit us into Your mercy, for You are the most merciful of the merciful.",
+      "src": "Qur'an 7:151"
+    },
+    {
+      "ar": "رَبَّنَا لَا تَجْعَلْنَا فِتْنَةً لِلْقَوْمِ الظَّالِمِينَ وَنَجِّنَا بِرَحْمَتِكَ مِنَ الْقَوْمِ الْكَافِرِينَ",
+      "en": "Our Lord, make us not [objects of] trial for the wrongdoing people And save us by Your mercy from the disbelieving people.",
+      "src": "Qur'an 10:85–86"
+    },
+    {
+      "ar": "رَبِّ قَدْ آتَيْتَنِي مِنَ الْمُلْكِ وَعَلَّمْتَنِي مِنْ تَأْوِيلِ الْأَحَادِيثِ ۚ فَاطِرَ السَّمَاوَاتِ وَالْأَرْضِ أَنْتَ وَلِيِّي فِي الدُّنْيَا وَالْآخِرَةِ ۖ تَوَفَّنِي مُسْلِمًا وَأَلْحِقْنِي بِالصَّالِحِينَ",
+      "en": "My Lord, You have given me [something] of sovereignty and taught me of the interpretation of dreams. Creator of the heavens and earth, You are my protector in this world and in the Hereafter. Cause me to die a Muslim and join me with the righteous.",
+      "src": "Qur'an 12:101"
+    },
+    {
+      "ar": "رَبِّ اجْعَلْ هَٰذَا الْبَلَدَ آمِنًا وَاجْنُبْنِي وَبَنِيَّ أَنْ نَعْبُدَ الْأَصْنَامَ",
+      "en": "My Lord, make this city [Makkah] secure and keep me and my sons away from worshipping idols.",
+      "src": "Qur'an 14:35"
+    },
+    {
+      "ar": "رَبَّنَا إِنَّكَ تَعْلَمُ مَا نُخْفِي وَمَا نُعْلِنُ ۗ وَمَا يَخْفَىٰ عَلَى اللَّهِ مِنْ شَيْءٍ فِي الْأَرْضِ وَلَا فِي السَّمَاءِ",
+      "en": "Our Lord, indeed You know what we conceal and what we declare, and nothing is hidden from Allah on the earth or in the heaven.",
+      "src": "Qur'an 14:38"
+    },
+    {
+      "ar": "رَبِّ اجْعَلْنِي مُقِيمَ الصَّلَاةِ وَمِنْ ذُرِّيَّتِي ۚ رَبَّنَا وَتَقَبَّلْ دُعَاءِ",
+      "en": "My Lord, make me an establisher of prayer, and [many] from my descendants. Our Lord, and accept my supplication.",
+      "src": "Qur'an 14:40"
+    },
+    {
+      "ar": "رَبَّنَا اغْفِرْ لِي وَلِوَالِدَيَّ وَلِلْمُؤْمِنِينَ يَوْمَ يَقُومُ الْحِسَابُ",
+      "en": "Our Lord, forgive me and my parents and the believers the Day the account is established.",
+      "src": "Qur'an 14:41"
+    },
+    {
+      "ar": "رَبِّ أَدْخِلْنِي مُدْخَلَ صِدْقٍ وَأَخْرِجْنِي مُخْرَجَ صِدْقٍ وَاجْعَلْ لِي مِنْ لَدُنْكَ سُلْطَانًا نَصِيرًا",
+      "en": "My Lord, cause me to enter a sound entrance and to exit a sound exit and grant me from Yourself a supporting authority.",
+      "src": "Qur'an 17:80"
+    },
+    {
+      "ar": "رَبَّنَا آتِنَا مِنْ لَدُنْكَ رَحْمَةً وَهَيِّئْ لَنَا مِنْ أَمْرِنَا رَشَدًا",
+      "en": "Our Lord, grant us from Yourself mercy and prepare for us from our affair right guidance.",
+      "src": "Qur'an 18:10"
+    },
+    {
+      "ar": "رَبِّ اشْرَحْ لِي صَدْرِي وَيَسِّرْ لِي أَمْرِي وَاحْلُلْ عُقْدَةً مِنْ لِسَانِي يَفْقَهُوا قَوْلِي",
+      "en": "My Lord, expand for me my breast [with assurance] And ease for me my task And untie the knot from my tongue That they may understand my speech.",
+      "src": "Qur'an 20:25–28"
+    },
+    {
+      "ar": "أَنِّي مَسَّنِيَ الضُّرُّ وَأَنْتَ أَرْحَمُ الرَّاحِمِينَ",
+      "en": "Indeed, adversity has touched me, and you are the Most Merciful of the merciful.",
+      "src": "Qur'an 21:83"
+    },
+    {
+      "ar": "لَا إِلَٰهَ إِلَّا أَنْتَ سُبْحَانَكَ إِنِّي كُنْتُ مِنَ الظَّالِمِينَ",
+      "en": "There is no deity except You; exalted are You. Indeed, I have been of the wrongdoers.",
+      "src": "Qur'an 21:87"
+    },
+    {
+      "ar": "رَبِّ لَا تَذَرْنِي فَرْدًا وَأَنْتَ خَيْرُ الْوَارِثِينَ",
+      "en": "My Lord, do not leave me alone [with no heir], while you are the best of inheritors.",
+      "src": "Qur'an 21:89"
+    },
+    {
+      "ar": "رَبِّ أَعُوذُ بِكَ مِنْ هَمَزَاتِ الشَّيَاطِينِ",
+      "en": "My Lord, I seek refuge in You from the incitements of the devils,",
+      "src": "Qur'an 23:97"
+    },
+    {
+      "ar": "وَأَعُوذُ بِكَ رَبِّ أَنْ يَحْضُرُونِ",
+      "en": "And I seek refuge in You, my Lord, lest they be present with me.",
+      "src": "Qur'an 23:98"
+    },
+    {
+      "ar": "رَبَّنَا آمَنَّا فَاغْفِرْ لَنَا وَارْحَمْنَا وَأَنْتَ خَيْرُ الرَّاحِمِينَ",
+      "en": "Our Lord, we have believed, so forgive us and have mercy upon us, and You are the best of the merciful.",
+      "src": "Qur'an 23:109"
+    },
+    {
+      "ar": "رَبِّ اغْفِرْ وَارْحَمْ وَأَنْتَ خَيْرُ الرَّاحِمِينَ",
+      "en": "My Lord, forgive and have mercy, and You are the best of the merciful.",
+      "src": "Qur'an 23:118"
+    },
+    {
+      "ar": "رَبَّنَا اصْرِفْ عَنَّا عَذَابَ جَهَنَّمَ ۖ إِنَّ عَذَابَهَا كَانَ غَرَامًا",
+      "en": "Our Lord, avert from us the punishment of Hell. Indeed, its punishment is ever adhering;",
+      "src": "Qur'an 25:65"
+    },
+    {
+      "ar": "رَبَّنَا هَبْ لَنَا مِنْ أَزْوَاجِنَا وَذُرِّيَّاتِنَا قُرَّةَ أَعْيُنٍ وَاجْعَلْنَا لِلْمُتَّقِينَ إِمَامًا",
+      "en": "Our Lord, grant us from among our wives and offspring comfort to our eyes and make us an example for the righteous.",
+      "src": "Qur'an 25:74"
+    },
+    {
+      "ar": "رَبِّ هَبْ لِي حُكْمًا وَأَلْحِقْنِي بِالصَّالِحِينَ",
+      "en": "My Lord, grant me authority and join me with the righteous.",
+      "src": "Qur'an 26:83"
+    },
+    {
+      "ar": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَدْخِلْنِي بِرَحْمَتِكَ فِي عِبَادِكَ الصَّالِحِينَ",
+      "en": "My Lord, enable me to be grateful for Your favor which You have bestowed upon me and upon my parents and to do righteousness of which You approve. And admit me by Your mercy into [the ranks of] Your righteous servants.",
+      "src": "Qur'an 27:19"
+    },
+    {
+      "ar": "رَبِّ إِنِّي ظَلَمْتُ نَفْسِي فَاغْفِرْ لِي فَغَفَرَ لَهُ ۚ إِنَّهُ هُوَ الْغَفُورُ الرَّحِيمُ",
+      "en": "My Lord, indeed I have wronged myself, so forgive me,\" and He forgave him. Indeed, He is the Forgiving, the Merciful.",
+      "src": "Qur'an 28:16"
+    },
+    {
+      "ar": "رَبِّ إِنِّي لِمَا أَنْزَلْتَ إِلَيَّ مِنْ خَيْرٍ فَقِيرٌ",
+      "en": "My Lord, indeed I am, for whatever good You would send down to me, in need.",
+      "src": "Qur'an 28:24"
+    },
+    {
+      "ar": "رَبِّ هَبْ لِي مِنَ الصَّالِحِينَ",
+      "en": "My Lord, grant me [a child] from among the righteous.",
+      "src": "Qur'an 37:100"
+    },
+    {
+      "ar": "رَبِّ اغْفِرْ لِي وَهَبْ لِي مُلْكًا لَا يَنْبَغِي لِأَحَدٍ مِنْ بَعْدِي ۖ إِنَّكَ أَنْتَ الْوَهَّابُ",
+      "en": "My Lord, forgive me and grant me a kingdom such as will not belong to anyone after me. Indeed, You are the Bestower.",
+      "src": "Qur'an 38:35"
+    },
+    {
+      "ar": "رَبَّنَا وَسِعْتَ كُلَّ شَيْءٍ رَحْمَةً وَعِلْمًا فَاغْفِرْ لِلَّذِينَ تَابُوا وَاتَّبَعُوا سَبِيلَكَ وَقِهِمْ عَذَابَ الْجَحِيمِ",
+      "en": "Our Lord, You have encompassed all things in mercy and knowledge, so forgive those who have repented and followed Your way and protect them from the punishment of Hellfire.",
+      "src": "Qur'an 40:7"
+    },
+    {
+      "ar": "رَبِّ أَوْزِعْنِي أَنْ أَشْكُرَ نِعْمَتَكَ الَّتِي أَنْعَمْتَ عَلَيَّ وَعَلَىٰ وَالِدَيَّ وَأَنْ أَعْمَلَ صَالِحًا تَرْضَاهُ وَأَصْلِحْ لِي فِي ذُرِّيَّتِي ۖ إِنِّي تُبْتُ إِلَيْكَ وَإِنِّي مِنَ الْمُسْلِمِينَ",
+      "en": "My Lord, enable me to be grateful for Your favor which You have bestowed upon me and upon my parents and to work righteousness of which You will approve and make righteous for me my offspring. Indeed, I have repented to You, and indeed, I am of the Muslims.",
+      "src": "Qur'an 46:15"
+    },
+    {
+      "ar": "أَنِّي مَغْلُوبٌ فَانْتَصِرْ",
+      "en": "Indeed, I am overpowered, so help.",
+      "src": "Qur'an 54:10"
+    },
+    {
+      "ar": "رَبَّنَا اغْفِرْ لَنَا وَلِإِخْوَانِنَا الَّذِينَ سَبَقُونَا بِالْإِيمَانِ وَلَا تَجْعَلْ فِي قُلُوبِنَا غِلًّا لِلَّذِينَ آمَنُوا رَبَّنَا إِنَّكَ رَءُوفٌ رَحِيمٌ",
+      "en": "Our Lord, forgive us and our brothers who preceded us in faith and put not in our hearts [any] resentment toward those who have believed. Our Lord, indeed You are Kind and Merciful.",
+      "src": "Qur'an 59:10"
+    },
+    {
+      "ar": "رَبَّنَا عَلَيْكَ تَوَكَّلْنَا وَإِلَيْكَ أَنَبْنَا وَإِلَيْكَ الْمَصِيرُ",
+      "en": "Our Lord, upon You we have relied, and to You we have returned, and to You is the destination.",
+      "src": "Qur'an 60:4"
+    },
+    {
+      "ar": "رَبَّنَا لَا تَجْعَلْنَا فِتْنَةً لِلَّذِينَ كَفَرُوا وَاغْفِرْ لَنَا رَبَّنَا ۖ إِنَّكَ أَنْتَ الْعَزِيزُ الْحَكِيمُ",
+      "en": "Our Lord, make us not [objects of] torment for the disbelievers and forgive us, our Lord. Indeed, it is You who is the Exalted in Might, the Wise.",
+      "src": "Qur'an 60:5"
+    },
+    {
+      "ar": "رَبَّنَا أَتْمِمْ لَنَا نُورَنَا وَاغْفِرْ لَنَا ۖ إِنَّكَ عَلَىٰ كُلِّ شَيْءٍ قَدِيرٌ",
+      "en": "Our Lord, perfect for us our light and forgive us. Indeed, You are over all things competent.",
+      "src": "Qur'an 66:8"
+    },
+    {
+      "ar": "رَبِّ اغْفِرْ لِي وَلِوَالِدَيَّ وَلِمَنْ دَخَلَ بَيْتِيَ مُؤْمِنًا وَلِلْمُؤْمِنِينَ وَالْمُؤْمِنَاتِ وَلَا تَزِدِ الظَّالِمِينَ إِلَّا تَبَارًا",
+      "en": "My Lord, forgive me and my parents and whoever enters my house a believer and the believing men and believing women. And do not increase the wrongdoers except in destruction.",
+      "src": "Qur'an 71:28"
+    }
+  ];
+
+  /* ---------- All 114 surahs (Feature F, 2026-11-17) ----------
+   * Number, Arabic name, English (transliterated) name and
+   * verse count — Tanzil surah metadata, cross-checked against
+   * AlQuran Cloud meta: all 114 ayah counts agree. */
+  var SURAHS = [
+   {
+    "n": 1,
+    "ar": "الفاتحة",
+    "en": "Al-Faatiha",
+    "ayahs": 7
+   },
+   {
+    "n": 2,
+    "ar": "البقرة",
+    "en": "Al-Baqara",
+    "ayahs": 286
+   },
+   {
+    "n": 3,
+    "ar": "آل عمران",
+    "en": "Aal-i-Imraan",
+    "ayahs": 200
+   },
+   {
+    "n": 4,
+    "ar": "النساء",
+    "en": "An-Nisaa",
+    "ayahs": 176
+   },
+   {
+    "n": 5,
+    "ar": "المائدة",
+    "en": "Al-Maaida",
+    "ayahs": 120
+   },
+   {
+    "n": 6,
+    "ar": "الأنعام",
+    "en": "Al-An'aam",
+    "ayahs": 165
+   },
+   {
+    "n": 7,
+    "ar": "الأعراف",
+    "en": "Al-A'raaf",
+    "ayahs": 206
+   },
+   {
+    "n": 8,
+    "ar": "الأنفال",
+    "en": "Al-Anfaal",
+    "ayahs": 75
+   },
+   {
+    "n": 9,
+    "ar": "التوبة",
+    "en": "At-Tawba",
+    "ayahs": 129
+   },
+   {
+    "n": 10,
+    "ar": "يونس",
+    "en": "Yunus",
+    "ayahs": 109
+   },
+   {
+    "n": 11,
+    "ar": "هود",
+    "en": "Hud",
+    "ayahs": 123
+   },
+   {
+    "n": 12,
+    "ar": "يوسف",
+    "en": "Yusuf",
+    "ayahs": 111
+   },
+   {
+    "n": 13,
+    "ar": "الرعد",
+    "en": "Ar-Ra'd",
+    "ayahs": 43
+   },
+   {
+    "n": 14,
+    "ar": "ابراهيم",
+    "en": "Ibrahim",
+    "ayahs": 52
+   },
+   {
+    "n": 15,
+    "ar": "الحجر",
+    "en": "Al-Hijr",
+    "ayahs": 99
+   },
+   {
+    "n": 16,
+    "ar": "النحل",
+    "en": "An-Nahl",
+    "ayahs": 128
+   },
+   {
+    "n": 17,
+    "ar": "الإسراء",
+    "en": "Al-Israa",
+    "ayahs": 111
+   },
+   {
+    "n": 18,
+    "ar": "الكهف",
+    "en": "Al-Kahf",
+    "ayahs": 110
+   },
+   {
+    "n": 19,
+    "ar": "مريم",
+    "en": "Maryam",
+    "ayahs": 98
+   },
+   {
+    "n": 20,
+    "ar": "طه",
+    "en": "Taa-Haa",
+    "ayahs": 135
+   },
+   {
+    "n": 21,
+    "ar": "الأنبياء",
+    "en": "Al-Anbiyaa",
+    "ayahs": 112
+   },
+   {
+    "n": 22,
+    "ar": "الحج",
+    "en": "Al-Hajj",
+    "ayahs": 78
+   },
+   {
+    "n": 23,
+    "ar": "المؤمنون",
+    "en": "Al-Muminoon",
+    "ayahs": 118
+   },
+   {
+    "n": 24,
+    "ar": "النور",
+    "en": "An-Noor",
+    "ayahs": 64
+   },
+   {
+    "n": 25,
+    "ar": "الفرقان",
+    "en": "Al-Furqaan",
+    "ayahs": 77
+   },
+   {
+    "n": 26,
+    "ar": "الشعراء",
+    "en": "Ash-Shu'araa",
+    "ayahs": 227
+   },
+   {
+    "n": 27,
+    "ar": "النمل",
+    "en": "An-Naml",
+    "ayahs": 93
+   },
+   {
+    "n": 28,
+    "ar": "القصص",
+    "en": "Al-Qasas",
+    "ayahs": 88
+   },
+   {
+    "n": 29,
+    "ar": "العنكبوت",
+    "en": "Al-Ankaboot",
+    "ayahs": 69
+   },
+   {
+    "n": 30,
+    "ar": "الروم",
+    "en": "Ar-Room",
+    "ayahs": 60
+   },
+   {
+    "n": 31,
+    "ar": "لقمان",
+    "en": "Luqman",
+    "ayahs": 34
+   },
+   {
+    "n": 32,
+    "ar": "السجدة",
+    "en": "As-Sajda",
+    "ayahs": 30
+   },
+   {
+    "n": 33,
+    "ar": "الأحزاب",
+    "en": "Al-Ahzaab",
+    "ayahs": 73
+   },
+   {
+    "n": 34,
+    "ar": "سبإ",
+    "en": "Saba",
+    "ayahs": 54
+   },
+   {
+    "n": 35,
+    "ar": "فاطر",
+    "en": "Faatir",
+    "ayahs": 45
+   },
+   {
+    "n": 36,
+    "ar": "يس",
+    "en": "Yaseen",
+    "ayahs": 83
+   },
+   {
+    "n": 37,
+    "ar": "الصافات",
+    "en": "As-Saaffaat",
+    "ayahs": 182
+   },
+   {
+    "n": 38,
+    "ar": "ص",
+    "en": "Saad",
+    "ayahs": 88
+   },
+   {
+    "n": 39,
+    "ar": "الزمر",
+    "en": "Az-Zumar",
+    "ayahs": 75
+   },
+   {
+    "n": 40,
+    "ar": "غافر",
+    "en": "Al-Ghaafir",
+    "ayahs": 85
+   },
+   {
+    "n": 41,
+    "ar": "فصلت",
+    "en": "Fussilat",
+    "ayahs": 54
+   },
+   {
+    "n": 42,
+    "ar": "الشورى",
+    "en": "Ash-Shura",
+    "ayahs": 53
+   },
+   {
+    "n": 43,
+    "ar": "الزخرف",
+    "en": "Az-Zukhruf",
+    "ayahs": 89
+   },
+   {
+    "n": 44,
+    "ar": "الدخان",
+    "en": "Ad-Dukhaan",
+    "ayahs": 59
+   },
+   {
+    "n": 45,
+    "ar": "الجاثية",
+    "en": "Al-Jaathiya",
+    "ayahs": 37
+   },
+   {
+    "n": 46,
+    "ar": "الأحقاف",
+    "en": "Al-Ahqaf",
+    "ayahs": 35
+   },
+   {
+    "n": 47,
+    "ar": "محمد",
+    "en": "Muhammad",
+    "ayahs": 38
+   },
+   {
+    "n": 48,
+    "ar": "الفتح",
+    "en": "Al-Fath",
+    "ayahs": 29
+   },
+   {
+    "n": 49,
+    "ar": "الحجرات",
+    "en": "Al-Hujuraat",
+    "ayahs": 18
+   },
+   {
+    "n": 50,
+    "ar": "ق",
+    "en": "Qaaf",
+    "ayahs": 45
+   },
+   {
+    "n": 51,
+    "ar": "الذاريات",
+    "en": "Adh-Dhaariyat",
+    "ayahs": 60
+   },
+   {
+    "n": 52,
+    "ar": "الطور",
+    "en": "At-Tur",
+    "ayahs": 49
+   },
+   {
+    "n": 53,
+    "ar": "النجم",
+    "en": "An-Najm",
+    "ayahs": 62
+   },
+   {
+    "n": 54,
+    "ar": "القمر",
+    "en": "Al-Qamar",
+    "ayahs": 55
+   },
+   {
+    "n": 55,
+    "ar": "الرحمن",
+    "en": "Ar-Rahmaan",
+    "ayahs": 78
+   },
+   {
+    "n": 56,
+    "ar": "الواقعة",
+    "en": "Al-Waaqia",
+    "ayahs": 96
+   },
+   {
+    "n": 57,
+    "ar": "الحديد",
+    "en": "Al-Hadid",
+    "ayahs": 29
+   },
+   {
+    "n": 58,
+    "ar": "المجادلة",
+    "en": "Al-Mujaadila",
+    "ayahs": 22
+   },
+   {
+    "n": 59,
+    "ar": "الحشر",
+    "en": "Al-Hashr",
+    "ayahs": 24
+   },
+   {
+    "n": 60,
+    "ar": "الممتحنة",
+    "en": "Al-Mumtahana",
+    "ayahs": 13
+   },
+   {
+    "n": 61,
+    "ar": "الصف",
+    "en": "As-Saff",
+    "ayahs": 14
+   },
+   {
+    "n": 62,
+    "ar": "الجمعة",
+    "en": "Al-Jumu'a",
+    "ayahs": 11
+   },
+   {
+    "n": 63,
+    "ar": "المنافقون",
+    "en": "Al-Munaafiqoon",
+    "ayahs": 11
+   },
+   {
+    "n": 64,
+    "ar": "التغابن",
+    "en": "At-Taghaabun",
+    "ayahs": 18
+   },
+   {
+    "n": 65,
+    "ar": "الطلاق",
+    "en": "At-Talaaq",
+    "ayahs": 12
+   },
+   {
+    "n": 66,
+    "ar": "التحريم",
+    "en": "At-Tahrim",
+    "ayahs": 12
+   },
+   {
+    "n": 67,
+    "ar": "الملك",
+    "en": "Al-Mulk",
+    "ayahs": 30
+   },
+   {
+    "n": 68,
+    "ar": "القلم",
+    "en": "Al-Qalam",
+    "ayahs": 52
+   },
+   {
+    "n": 69,
+    "ar": "الحاقة",
+    "en": "Al-Haaqqa",
+    "ayahs": 52
+   },
+   {
+    "n": 70,
+    "ar": "المعارج",
+    "en": "Al-Ma'aarij",
+    "ayahs": 44
+   },
+   {
+    "n": 71,
+    "ar": "نوح",
+    "en": "Nooh",
+    "ayahs": 28
+   },
+   {
+    "n": 72,
+    "ar": "الجن",
+    "en": "Al-Jinn",
+    "ayahs": 28
+   },
+   {
+    "n": 73,
+    "ar": "المزمل",
+    "en": "Al-Muzzammil",
+    "ayahs": 20
+   },
+   {
+    "n": 74,
+    "ar": "المدثر",
+    "en": "Al-Muddaththir",
+    "ayahs": 56
+   },
+   {
+    "n": 75,
+    "ar": "القيامة",
+    "en": "Al-Qiyaama",
+    "ayahs": 40
+   },
+   {
+    "n": 76,
+    "ar": "الانسان",
+    "en": "Al-Insaan",
+    "ayahs": 31
+   },
+   {
+    "n": 77,
+    "ar": "المرسلات",
+    "en": "Al-Mursalaat",
+    "ayahs": 50
+   },
+   {
+    "n": 78,
+    "ar": "النبإ",
+    "en": "An-Naba",
+    "ayahs": 40
+   },
+   {
+    "n": 79,
+    "ar": "النازعات",
+    "en": "An-Naazi'aat",
+    "ayahs": 46
+   },
+   {
+    "n": 80,
+    "ar": "عبس",
+    "en": "Abasa",
+    "ayahs": 42
+   },
+   {
+    "n": 81,
+    "ar": "التكوير",
+    "en": "At-Takwir",
+    "ayahs": 29
+   },
+   {
+    "n": 82,
+    "ar": "الإنفطار",
+    "en": "Al-Infitaar",
+    "ayahs": 19
+   },
+   {
+    "n": 83,
+    "ar": "المطففين",
+    "en": "Al-Mutaffifin",
+    "ayahs": 36
+   },
+   {
+    "n": 84,
+    "ar": "الإنشقاق",
+    "en": "Al-Inshiqaaq",
+    "ayahs": 25
+   },
+   {
+    "n": 85,
+    "ar": "البروج",
+    "en": "Al-Burooj",
+    "ayahs": 22
+   },
+   {
+    "n": 86,
+    "ar": "الطارق",
+    "en": "At-Taariq",
+    "ayahs": 17
+   },
+   {
+    "n": 87,
+    "ar": "الأعلى",
+    "en": "Al-A'laa",
+    "ayahs": 19
+   },
+   {
+    "n": 88,
+    "ar": "الغاشية",
+    "en": "Al-Ghaashiya",
+    "ayahs": 26
+   },
+   {
+    "n": 89,
+    "ar": "الفجر",
+    "en": "Al-Fajr",
+    "ayahs": 30
+   },
+   {
+    "n": 90,
+    "ar": "البلد",
+    "en": "Al-Balad",
+    "ayahs": 20
+   },
+   {
+    "n": 91,
+    "ar": "الشمس",
+    "en": "Ash-Shams",
+    "ayahs": 15
+   },
+   {
+    "n": 92,
+    "ar": "الليل",
+    "en": "Al-Lail",
+    "ayahs": 21
+   },
+   {
+    "n": 93,
+    "ar": "الضحى",
+    "en": "Ad-Dhuhaa",
+    "ayahs": 11
+   },
+   {
+    "n": 94,
+    "ar": "الشرح",
+    "en": "Ash-Sharh",
+    "ayahs": 8
+   },
+   {
+    "n": 95,
+    "ar": "التين",
+    "en": "At-Tin",
+    "ayahs": 8
+   },
+   {
+    "n": 96,
+    "ar": "العلق",
+    "en": "Al-Alaq",
+    "ayahs": 19
+   },
+   {
+    "n": 97,
+    "ar": "القدر",
+    "en": "Al-Qadr",
+    "ayahs": 5
+   },
+   {
+    "n": 98,
+    "ar": "البينة",
+    "en": "Al-Bayyina",
+    "ayahs": 8
+   },
+   {
+    "n": 99,
+    "ar": "الزلزلة",
+    "en": "Az-Zalzala",
+    "ayahs": 8
+   },
+   {
+    "n": 100,
+    "ar": "العاديات",
+    "en": "Al-Aadiyaat",
+    "ayahs": 11
+   },
+   {
+    "n": 101,
+    "ar": "القارعة",
+    "en": "Al-Qaari'a",
+    "ayahs": 11
+   },
+   {
+    "n": 102,
+    "ar": "التكاثر",
+    "en": "At-Takaathur",
+    "ayahs": 8
+   },
+   {
+    "n": 103,
+    "ar": "العصر",
+    "en": "Al-Asr",
+    "ayahs": 3
+   },
+   {
+    "n": 104,
+    "ar": "الهمزة",
+    "en": "Al-Humaza",
+    "ayahs": 9
+   },
+   {
+    "n": 105,
+    "ar": "الفيل",
+    "en": "Al-Fil",
+    "ayahs": 5
+   },
+   {
+    "n": 106,
+    "ar": "قريش",
+    "en": "Quraish",
+    "ayahs": 4
+   },
+   {
+    "n": 107,
+    "ar": "الماعون",
+    "en": "Al-Maa'un",
+    "ayahs": 7
+   },
+   {
+    "n": 108,
+    "ar": "الكوثر",
+    "en": "Al-Kawthar",
+    "ayahs": 3
+   },
+   {
+    "n": 109,
+    "ar": "الكافرون",
+    "en": "Al-Kaafiroon",
+    "ayahs": 6
+   },
+   {
+    "n": 110,
+    "ar": "النصر",
+    "en": "An-Nasr",
+    "ayahs": 3
+   },
+   {
+    "n": 111,
+    "ar": "المسد",
+    "en": "Al-Masad",
+    "ayahs": 5
+   },
+   {
+    "n": 112,
+    "ar": "الإخلاص",
+    "en": "Al-Ikhlaas",
+    "ayahs": 4
+   },
+   {
+    "n": 113,
+    "ar": "الفلق",
+    "en": "Al-Falaq",
+    "ayahs": 5
+   },
+   {
+    "n": 114,
+    "ar": "الناس",
+    "en": "An-Naas",
+    "ayahs": 6
+   }
+  ];
+
   var api = {
     STRINGS: STRINGS, DUAS: DUAS, QADR_DUA: QADR_DUA,
     DEEDS: DEEDS, LAST_TEN_ACTS: LAST_TEN_ACTS, EID_PREP: EID_PREP,
     KIDS_DEEDS: KIDS_DEEDS, COLORING_IDS: COLORING_IDS, COLORING_NAMES: COLORING_NAMES,
+    QURAN_DUAS: QURAN_DUAS, SURAHS: SURAHS,
     MONTHS_EN: MONTHS_EN, MONTHS_AR: MONTHS_AR,
     WEEKDAYS_EN: WEEKDAYS_EN, WEEKDAYS_AR: WEEKDAYS_AR
   };
