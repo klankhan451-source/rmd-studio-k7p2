@@ -282,7 +282,7 @@ body {
   padding: 8px 12px;
 }
 .dua-ar { font-size: 18px; line-height: 1.7; margin: 0; color: #14232b; text-align: right; }
-.dua-en { font-size: 13px; line-height: 1.45; margin: 5px 0 0; color: #33505c; }
+.dua-en { font-size: 13px; line-height: 1.45; margin: 5px 0 0; color: #33505c; direction: ltr; unicode-bidi: isolate; }
 .dua-src { font-size: 11.5px; color: #b98a1d; font-weight: 700; margin: 5px 0 0; }
 
 /* ---------- Weekly ---------- */
