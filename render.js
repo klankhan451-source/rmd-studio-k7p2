@@ -417,7 +417,7 @@
       L(ctx, 'suhoor') + '</th><th>' + L(ctx, 'iftar') + '</th></tr></thead><tbody>';
     for (var d = 1; d <= 30; d++) {
       var date = RP.dateForDay(page.startDate, d);
-      h += '<tr><td class="m-day' + (ctx.lang === 'ar' ? '' : ' ltr') + '">' + N(ctx, d) + '<span class="m-date">' +
+      h += '<tr><td class="m-day"' + (ctx.lang === 'ar' ? '' : ' style="direction:ltr;unicode-bidi:isolate;text-align:left"') + '>' + N(ctx, d) + '<span class="m-date">' +
         esc(RP.formatDateShort(date, ctx.lang === 'ar' ? 'ar' : 'en', ctx.numerals)) +
         '</span></td><td></td><td></td></tr>';
     }
