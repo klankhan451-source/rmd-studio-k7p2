@@ -160,7 +160,9 @@ if (typeof module !== 'undefined' && module.exports) {
         bookmarks: $('pl-extra-bookmarks') ? $('pl-extra-bookmarks').checked : false,
         notes: $('pl-extra-notes') ? $('pl-extra-notes').checked : false,
         quranDuas: $('pl-extra-quranduas') ? $('pl-extra-quranduas').checked : false,
-        surahTracker: $('pl-extra-surahtracker') ? $('pl-extra-surahtracker').checked : false
+        surahTracker: $('pl-extra-surahtracker') ? $('pl-extra-surahtracker').checked : false,
+        prepChecklist: $('pl-extra-prep') ? $('pl-extra-prep').checked : false,
+        readingPlan: $('pl-extra-readplan') ? $('pl-extra-readplan').checked : false
       }
     };
   }
@@ -293,6 +295,50 @@ if (typeof module !== 'undefined' && module.exports) {
 
   function initApp() {
     BookBuilder.init(build);
+    /* ---------- Learn tab (2026-11-17) ----------
+       Two tabs: Create (the settings + preview, as always) and
+       Learn — five teaching cards about what the book contains
+       and how to use it. The Learn card 1 picture is a REAL Day-1
+       daily page rendered by the book's own renderer into a
+       mini-sheet, scaled by the same fitMiniSheets machinery as
+       the cover picker. The tab is screen-only: it lives inside
+       #app, which print hides entirely. */
+    var learnSheet = $('learn-daily-sheet');
+    if (learnSheet && typeof Render !== 'undefined' && typeof RPDATA !== 'undefined') {
+      var lspec = RP.normalizeSpec({
+        startDate: RP.DEFAULT_START, lang: 'en', numerals: 'west',
+        paper: 'letter', includeKids: true, name: ''
+      });
+      var lctx = Render.mkCtx(lspec);
+      learnSheet.innerHTML =
+        '<div class="book-page" dir="ltr" style="width:816px;height:1056px;padding:57.6px;margin:0;box-shadow:none;">' +
+        '<div class="page-body">' + Render.pageHTML({
+          type: 'daily', day: 1,
+          date: RP.dateForDay(RP.DEFAULT_START, 1), dua: RPDATA.DUAS[0]
+        }, lctx) + '</div></div>';
+    }
+    var btnCreate = $('tab-btn-create'), btnLearn = $('tab-btn-learn');
+    var tabCreate = $('tab-create'), tabLearn = $('tab-learn');
+    function showTab(learn) {
+      if (!tabCreate || !tabLearn) return;
+      tabCreate.hidden = learn;
+      tabLearn.hidden = !learn;
+      if (btnCreate) {
+        btnCreate.classList.toggle('active', !learn);
+        btnCreate.setAttribute('aria-selected', learn ? 'false' : 'true');
+      }
+      if (btnLearn) {
+        btnLearn.classList.toggle('active', learn);
+        btnLearn.setAttribute('aria-selected', learn ? 'true' : 'false');
+      }
+      /* the Learn miniature can only be measured once visible */
+      if (learn) fitMiniSheets();
+      window.scrollTo(0, 0);
+    }
+    if (btnCreate && btnLearn) {
+      btnCreate.addEventListener('click', function () { showTab(false); });
+      btnLearn.addEventListener('click', function () { showTab(true); });
+    }
     /* cover design picker: every design card carries a REAL
        miniature cover (the true page-1 markup, scaled down), the
        buyer's saved choice is restored (migrating 4-design-era
@@ -387,7 +433,7 @@ if (typeof module !== 'undefined' && module.exports) {
     if ($('pl-titlefont')) $('pl-titlefont').addEventListener('change', updateCoverPreview);
     if ($('pl-inksaver')) $('pl-inksaver').addEventListener('change', updateCoverPreview);
     ['pl-kids', 'pl-inksaver', 'pl-extra-duacards', 'pl-extra-bookmarks', 'pl-extra-notes',
-     'pl-extra-quranduas', 'pl-extra-surahtracker']
+     'pl-extra-quranduas', 'pl-extra-surahtracker', 'pl-extra-prep', 'pl-extra-readplan']
       .forEach(function (id) {
         var el = $(id);
         if (el) el.addEventListener('change', updatePageCount);
