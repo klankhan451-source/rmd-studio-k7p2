@@ -302,7 +302,7 @@
   function duaBlock(ctx, dua, titleKey) {
     var h = '<section class="blk dua-blk">' + blkTitle(ctx, titleKey || 'duaOfDay');
     h += '<p class="dua-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
-    if (ctx.lang !== 'ar') h += '<p class="dua-en">' + esc(dua.en) + '</p>';
+    if (ctx.lang !== 'ar') h += '<p class="dua-en" dir="ltr">' + esc(dua.en) + '</p>';
     h += '<p class="dua-src">' + esc(dua.src) + '</p></section>';
     return h;
   }
