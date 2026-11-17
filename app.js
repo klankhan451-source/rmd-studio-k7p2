@@ -266,9 +266,9 @@ if (typeof module !== 'undefined' && module.exports) {
       }
       picker.innerHTML = RP.COVER_DESIGNS.map(function (d) {
         return '<button type="button" class="design-card" role="option" data-design="' + d.id + '" aria-label="' + d.name + '">' +
-          '<span class="mini-viewport"><span class="mini-sheet">' +
+          '<div class="mini-viewport"><div class="mini-sheet">' +
           coverSheetHTML(d.id, '', 'en') +
-          '</span></span>' +
+          '</div></div>' +
           '<span class="design-name">' + d.name + '</span></button>';
       }).join('');
       var nameEl = $('pl-theme-name');
@@ -302,6 +302,21 @@ if (typeof module !== 'undefined' && module.exports) {
         clearTimeout(fitTimer);
         fitTimer = setTimeout(fitMiniSheets, 120);
       });
+      /* Refit once webfonts land (a late font swap can trigger a
+         relayout after the first fit) and whenever a viewport
+         itself changes size (rotation, the panel reflowing to one
+         column) — ResizeObserver where the browser has one. The
+         observer also fires once on observe(), giving every sheet
+         a second fit after first layout. Guarded: without RO the
+         resize listener above still covers viewport changes. */
+      if (document.fonts && document.fonts.ready && document.fonts.ready.then) {
+        document.fonts.ready.then(function () { fitMiniSheets(); });
+      }
+      if (typeof ResizeObserver !== 'undefined') {
+        var miniRO = new ResizeObserver(function () { fitMiniSheets(); });
+        var miniVps = document.querySelectorAll('.mini-viewport, .cover-preview-viewport');
+        for (var vi = 0; vi < miniVps.length; vi++) miniRO.observe(miniVps[vi]);
+      }
     }
     /* cover text + print options follow the live preview; the
        live page count follows the kids pack + extras toggles */
