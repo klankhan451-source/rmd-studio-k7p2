@@ -95,10 +95,40 @@
         <span class="picker-title" id="pl-theme-title">Cover design — tap a design to choose it</span>
         <div id="pl-theme" class="cover-picker" role="listbox" aria-label="Cover design"></div>
         <p class="hint" id="pl-theme-name"></p>
+        <label>Cover subtitle (optional — printed under the title on the cover)
+          <input type="text" id="pl-subtitle" placeholder="e.g. My Ramadan Journey — or your family name" maxlength="60">
+        </label>
+        <label>Cover title font
+          <select id="pl-titlefont">
+            <option value="serif" selected>Classic Serif</option>
+            <option value="script">Elegant Script</option>
+            <option value="sans">Modern Sans</option>
+          </select>
+        </label>
       </div>
       <label class="check">
         <input type="checkbox" id="pl-kids" checked> Include the Kids’ Ramadan Pack (star chart, good-deed cards, colouring pages &amp; certificate)
       </label>
+      <div class="step-head">Print options &amp; extras</div>
+      <label class="check">
+        <input type="checkbox" id="pl-inksaver"> Ink-saver printing — a light version of your cover + softer interior colours, kinder to home printers
+      </label>
+      <label class="check">
+        <input type="checkbox" id="pl-extra-duacards"> Extra: Printable Dua Cards — all 30 daily duas as cut-out cards (+5 pages)
+      </label>
+      <label class="check">
+        <input type="checkbox" id="pl-extra-quranduas"> Extra: Duas from the Qur’an — a collection of 52 supplications quoted from the Qur’an itself, each with its surah &amp; verse
+      </label>
+      <label class="check">
+        <input type="checkbox" id="pl-extra-surahtracker"> Extra: Qur’an Reading Tracker — all 114 surahs with a tick box and date line for each (+4 pages)
+      </label>
+      <label class="check">
+        <input type="checkbox" id="pl-extra-bookmarks"> Extra: Ramadan Bookmarks — 4 cut-out bookmarks (+1 page)
+      </label>
+      <label class="check">
+        <input type="checkbox" id="pl-extra-notes"> Extra: Notes Pages — 2 extra lined pages (+2 pages)
+      </label>
+      <p class="hint" id="pl-pagecount"></p>
       <div class="step-head">Step 3 · Generate &amp; download</div>
       <div class="btn-row">
         <button class="btn btn-primary" id="pl-build">Generate Planner</button>
