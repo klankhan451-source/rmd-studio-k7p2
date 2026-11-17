@@ -462,6 +462,170 @@ body {
   --cover-line: #a3a86b;
   --cover-note-bg: #f8faf0;
 }
+/* Second-wave scene designs (2026-11-17): text colours for the
+   eight new art families x two colourways. The artwork itself
+   is drawn by render.js; these blocks carry the colours of the
+   title / year / name band that sit on each scene. */
+.cover-theme-scene-zellige {
+  --cover-bg: #f2ecdd;
+  --cover-title: #44501f;
+  --cover-accent: #8a6d1f;
+  --cover-deco: #ffd166;
+  --cover-sub: #6a6a4a;
+  --cover-name: #44501f;
+  --cover-line: #b07a4a;
+  --cover-note-bg: #fbf7ec;
+}
+.cover-theme-scene-zellige-teal {
+  --cover-bg: #eae1cc;
+  --cover-title: #0a4f57;
+  --cover-accent: #0d5a63;
+  --cover-deco: #ffd166;
+  --cover-sub: #527a76;
+  --cover-name: #0a4f57;
+  --cover-line: #0d5a63;
+  --cover-note-bg: #faf5e9;
+}
+.cover-theme-scene-moonphases {
+  --cover-bg: #04061a;
+  --cover-title: #f3d27a;
+  --cover-accent: #d4af37;
+  --cover-deco: #d7deeb;
+  --cover-sub: #c3cee6;
+  --cover-name: #fff6dd;
+  --cover-line: #d4af37;
+  --cover-note-bg: #101c40;
+}
+.cover-theme-scene-moonphases-light {
+  --cover-bg: #fdfaf1;
+  --cover-title: #22355e;
+  --cover-accent: #b98a1d;
+  --cover-deco: #d7deeb;
+  --cover-sub: #5a6a86;
+  --cover-name: #22355e;
+  --cover-line: #b98a1d;
+  --cover-note-bg: #fffaf0;
+}
+.cover-theme-scene-mihrab {
+  --cover-bg: #fbf6ea;
+  --cover-title: #5b3a1e;
+  --cover-accent: #9a6a14;
+  --cover-deco: #dfa32e;
+  --cover-sub: #7a5c38;
+  --cover-name: #5b3a1e;
+  --cover-line: #b98a1d;
+  --cover-note-bg: #fffaf0;
+}
+.cover-theme-scene-mihrab-rose {
+  --cover-bg: #fdf3ee;
+  --cover-title: #822659;
+  --cover-accent: #b76e79;
+  --cover-deco: #d99a5c;
+  --cover-sub: #8a5a64;
+  --cover-name: #822659;
+  --cover-line: #b76e79;
+  --cover-note-bg: #fff8f4;
+}
+.cover-theme-scene-kufic {
+  --cover-bg: #eadfc6;
+  --cover-title: #0a4f57;
+  --cover-accent: #0a4f57;
+  --cover-deco: #ffd166;
+  --cover-sub: #4a6a66;
+  --cover-name: #0a4f57;
+  --cover-line: #0a4f57;
+  --cover-note-bg: #f6efdd;
+}
+.cover-theme-scene-kufic-emerald {
+  --cover-bg: #e8dfc8;
+  --cover-title: #065f46;
+  --cover-accent: #047857;
+  --cover-deco: #ffd166;
+  --cover-sub: #4a6a5a;
+  --cover-name: #065f46;
+  --cover-line: #065f46;
+  --cover-note-bg: #f5efdd;
+}
+.cover-theme-scene-linen {
+  --cover-bg: #f7f2e7;
+  --cover-title: #5b3a1e;
+  --cover-accent: #9a6a14;
+  --cover-deco: #dfa32e;
+  --cover-sub: #7a5c38;
+  --cover-name: #5b3a1e;
+  --cover-line: #b98a1d;
+  --cover-note-bg: #fffaf0;
+}
+.cover-theme-scene-linen-sage {
+  --cover-bg: #eef0e2;
+  --cover-title: #43511f;
+  --cover-accent: #7d8c46;
+  --cover-deco: #ffd166;
+  --cover-sub: #68754a;
+  --cover-name: #43511f;
+  --cover-line: #a3a86b;
+  --cover-note-bg: #f8faf0;
+}
+.cover-theme-scene-iznik {
+  --cover-bg: #fbf8f0;
+  --cover-title: #1d3f7c;
+  --cover-accent: #2456a6;
+  --cover-deco: #d7deeb;
+  --cover-sub: #5a6a86;
+  --cover-name: #1d3f7c;
+  --cover-line: #2456a6;
+  --cover-note-bg: #f4f7fd;
+}
+.cover-theme-scene-iznik-turquoise {
+  --cover-bg: #fdf6ea;
+  --cover-title: #14666e;
+  --cover-accent: #1f8a94;
+  --cover-deco: #ffd166;
+  --cover-sub: #5a7a76;
+  --cover-name: #14666e;
+  --cover-line: #1f8a94;
+  --cover-note-bg: #f2faf8;
+}
+.cover-theme-scene-kids {
+  --cover-bg: #ffedbe;
+  --cover-title: #7c2d12;
+  --cover-accent: #ea580c;
+  --cover-deco: #d99a5c;
+  --cover-sub: #8a5a44;
+  --cover-name: #7c2d12;
+  --cover-line: #f59e0b;
+  --cover-note-bg: #fff8ec;
+}
+.cover-theme-scene-kids-night {
+  --cover-bg: #141f42;
+  --cover-title: #ffe9a8;
+  --cover-accent: #ffd166;
+  --cover-deco: #d7deeb;
+  --cover-sub: #c3cee6;
+  --cover-name: #fff6dd;
+  --cover-line: #ffd166;
+  --cover-note-bg: #232f55;
+}
+.cover-theme-scene-wash {
+  --cover-bg: #fffdf8;
+  --cover-title: #3d3a75;
+  --cover-accent: #6366f1;
+  --cover-deco: #ffd166;
+  --cover-sub: #6a6a86;
+  --cover-name: #3d3a75;
+  --cover-line: #a5a3d8;
+  --cover-note-bg: #f6f5fd;
+}
+.cover-theme-scene-wash-sage {
+  --cover-bg: #fffdf8;
+  --cover-title: #43511f;
+  --cover-accent: #7d9a52;
+  --cover-deco: #ffd166;
+  --cover-sub: #68754a;
+  --cover-name: #43511f;
+  --cover-line: #a3bf8a;
+  --cover-note-bg: #f8faf0;
+}
 /* The cover ornaments + pattern are drawn by render.js in the
    palette's deco colour, baked into the SVG markup (print
    engines do not reliably recolour SVG presentation attributes
@@ -513,6 +677,29 @@ body {
   color: var(--cover-title, #0f2027);
 }
 .cover-year { font-size: 20px; color: var(--cover-accent, #b98a1d); font-weight: 700; margin: 0 0 26px; }
+/* The buyer's optional cover subtitle (2026-11-17): their own
+   line under the title, in the plate area. Absent when empty —
+   render.js prints nothing, so default covers are unchanged. */
+.cover-subtitle {
+  font-family: Georgia, 'Times New Roman', 'Nimbus Roman No. 9 L', serif;
+  font-style: italic; font-size: 21px; line-height: 1.3;
+  color: var(--cover-sub, #48626e); margin: 0 12% 12px;
+}
+/* Cover title font choice (2026-11-17): book.js stamps
+   cover-font-<choice> on page 1. 'serif' is the original face
+   (the .cover-title-main default above), so only the two new
+   choices need rules. The script stack names real script faces
+   where a buyer's system has them and falls back to an italic
+   serif in the WeasyPrint pipeline. */
+.cover-font-script .cover-title-main {
+  font-family: 'Segoe Script', 'Brush Script MT', 'Apple Chancery',
+    'URW Chancery L', 'Z003', Georgia, 'Times New Roman', serif;
+  font-style: italic;
+}
+.cover-font-sans .cover-title-main {
+  font-family: 'DejaVu Sans', 'Helvetica Neue', Helvetica, Arial, sans-serif;
+  font-weight: 700; letter-spacing: .5px;
+}
 /* Centred measure via percentage side margins, NOT max-width +
    margin:auto — in RTL pages some print engines mis-resolve auto
    side margins and shove the block off the sheet. */
@@ -563,12 +750,136 @@ body {
 .scene-inner-arabesque { padding-top: 4%; }
 .scene-inner-calligraphy { padding-top: 22%; }
 .scene-inner-mandala { padding-top: 30%; }
+/* Second-wave families: the title block lands on each scene's
+   plate / calm zone (measured against the 816x1056 artwork). */
+/* plate designs: the bilingual title steps down a size so it
+   always sits INSIDE its drawn plate (zellige / kufic / kids) */
+.scene-inner-plate .cover-title-main { font-size: 41px; }
+.scene-inner-zellige { padding-top: 33%; }
+.scene-inner-moonphases { padding-top: 54%; }
+.scene-inner-mihrab { padding-top: 56%; }
+.scene-inner-kufic { padding-top: 41%; }
+.scene-inner-linen { padding-top: 46%; }
+.scene-inner-iznik { padding-top: 55%; }
+.scene-inner-kids { padding-top: 58%; }
+.scene-inner-wash { padding-top: 34%; }
 .calligraphy-word {
   font-family: 'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic',
     'Scheherazade New', serif;
   font-size: 128px; line-height: 1.55; color: #dcb84e; margin-bottom: 6px;
 }
 .scene-crescent { height: 84px; margin-bottom: 4px; }
+
+/* ---------- Ink-saver printing (2026-11-17) ----------
+   book.js stamps .ink-saver on every sheet when the buyer picks
+   the ink-saver option. The cover keeps its composition but the
+   scene artwork fades to a whisper over an ivory ground and all
+   cover text goes dark (the classic covers' pattern + ornament
+   already print lightly on ivory); interior bands/rules wash
+   out and the dark palettes' accents go pastel. Colours only —
+   the layout never changes. */
+.cover-page.ink-saver {
+  --cover-bg: #fdfbf4;
+  --cover-title: #22303a;
+  --cover-accent: #9a6a14;
+  --cover-sub: #5a6a72;
+  --cover-name: #22303a;
+  --cover-line: #9a6a14;
+  --cover-note-bg: #fdfbf4;
+}
+.cover-page.ink-saver .cover-scene { opacity: .16; }
+.cover-page.ink-saver .cover-pattern { opacity: .07; }
+.cover-page.ink-saver .calligraphy-word { color: #22303a; }
+.book-page.ink-saver {
+  --theme-band: #f2f2f2;
+  --theme-soft: #fcfcfc;
+  --theme-line: #e6e6e6;
+}
+.book-theme-emerald.ink-saver { --theme-accent: #63a98d; --theme-title: #4a8a72; }
+.book-theme-purple.ink-saver { --theme-accent: #9d85e0; --theme-title: #7a63b0; }
+.book-theme-burgundy.ink-saver { --theme-accent: #c47a89; --theme-title: #9a5566; }
+.book-theme-teal.ink-saver { --theme-accent: #5fa8ae; --theme-title: #4a7d84; }
+.book-theme-charcoal.ink-saver { --theme-accent: #ab9250; --theme-title: #5a5a60; }
+.book-theme-olive.ink-saver { --theme-accent: #8ba163; --theme-title: #66744a; }
+.book-theme-navy.ink-saver { --theme-accent: #7590c4; --theme-title: #55688f; }
+
+/* ---------- Optional extras pages (2026-11-17) ---------- */
+.dua-cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.dua-card {
+  border: 1.8px dashed var(--theme-accent, #b98a1d); border-radius: 10px;
+  padding: 10px 12px;
+}
+.dua-card-day { font-size: 12.5px; font-weight: 700; color: var(--theme-title, #0f2027); margin-bottom: 5px; }
+.dua-card .dua-ar { font-size: 15px; line-height: 1.65; margin: 0 0 5px; }
+.dua-card .dua-en { font-size: 12px; margin: 0 0 5px; }
+.dua-card .dua-src { margin: 0; }
+.bookmarks-row { display: flex; gap: 10px; }
+.bookmark {
+  flex: 1; height: 640px; text-align: center;
+  border: 1.8px dashed var(--theme-accent, #b98a1d); border-radius: 12px;
+  padding: 18px 12px; display: flex; flex-direction: column; align-items: center;
+}
+.bm-hole {
+  width: 16px; height: 16px; flex: none;
+  border: 2px solid var(--theme-accent, #b98a1d); border-radius: 50%;
+  margin-bottom: 12px;
+}
+.bm-orn { height: 34px; margin-bottom: 14px; }
+.bm-title {
+  font-family: Georgia, 'Times New Roman', 'Nimbus Roman No. 9 L', serif;
+  font-size: 21px; line-height: 1.3; color: var(--theme-title, #0f2027);
+}
+.bm-sub { font-size: 12px; color: #48626e; margin-top: 8px; line-height: 1.45; }
+.bookmark .dua-ar { font-size: 15px; line-height: 1.65; margin: 0 0 6px; }
+.bookmark .dua-en { font-size: 11.5px; margin: 0 0 6px; }
+.bookmark .dua-src { margin: 0; }
+.bm-motto {
+  font-family: Georgia, 'Times New Roman', 'Nimbus Roman No. 9 L', serif;
+  font-style: italic; font-size: 16.5px; line-height: 1.45;
+  color: var(--theme-title, #0f2027);
+}
+.bm-brand {
+  margin-top: auto; font-size: 10px; letter-spacing: 2.5px; font-weight: 800;
+  color: var(--theme-accent, #b98a1d);
+}
+
+/* ---------- Quran sections (Features E + F, 2026-11-17) ---------- */
+.qd-blk {
+  border: 1.5px solid var(--theme-line, #e3ddc8); border-radius: 10px;
+  border-inline-start: 5px solid var(--theme-accent, #b98a1d);
+  background: var(--theme-soft, #fffaf0);
+  padding: 10px 14px; margin-bottom: 10px;
+}
+.qd-ref {
+  font-size: 13px; font-weight: 700; color: var(--theme-accent, #b98a1d);
+  margin: 0 0 4px; direction: ltr; unicode-bidi: isolate;
+}
+.qd-blk .dua-ar { font-size: 16px; line-height: 1.7; margin: 0; }
+.qd-blk .dua-en { font-size: 13px; margin: 5px 0 0; }
+.surah-cols { display: flex; gap: 14px; }
+.surah-half { flex: 1; }
+.surah-table { width: 100%; border-collapse: collapse; font-size: 12px; }
+.surah-table th {
+  background: var(--theme-band, #eef3f0); color: var(--theme-title, #0f2027);
+  font-size: 11.5px; padding: 4px 6px; text-align: start;
+  border-bottom: 2px solid var(--theme-accent, #b98a1d);
+}
+.surah-table td {
+  padding: 2px 6px; border-bottom: 1px solid var(--theme-line, #e3ddc8);
+  vertical-align: middle;
+}
+.st-done { width: 22px; text-align: center; }
+.st-box {
+  display: inline-block; width: 12px; height: 12px;
+  border: 1.8px solid var(--theme-accent, #b98a1d); border-radius: 3px;
+  vertical-align: middle;
+}
+.st-num { width: 26px; font-weight: 700; color: var(--theme-title, #0f2027); }
+.st-ar { font-size: 13.5px; }
+.st-en { color: #33505c; }
+.st-verses { width: 36px; text-align: center; }
+.st-date { width: 62px; }
+.st-date .wline { display: block; border-bottom: 1.2px solid #9db4bc; min-height: 12px; }
 /* Kids' divider title: chunkier than the book title. */
 .kids-title {
   font-size: 42px; font-weight: 800; letter-spacing: .5px;
