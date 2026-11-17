@@ -30,6 +30,7 @@
     var designId = RP.migrateCoverTheme(spec.coverTheme);
     return {
       lang: spec.lang, numerals: spec.numerals, name: spec.name || '',
+      subtitle: spec.subtitle || '',
       dir: spec.lang === 'en' ? 'ltr' : 'rtl',
       coverTheme: designId,
       coverDesign: RP.coverDesign(designId)
@@ -526,6 +527,165 @@
     return s + '</svg>';
   }
 
+  /* ---------- Second-wave scene families (2026-11-17) ----------
+   * Eight families, two colourways each, following the Gemini
+   * design review: ONE hero motif per cover, ~40% breathing
+   * space, the title always on a clean plate or an uncluttered
+   * zone, gold only as thin lines / small accents. Most are
+   * light and ink-friendly. Same print rules as the first wave:
+   * userSpaceOnUse gradients only, seeded randomness, objects
+   * only. Each family branches on the design id for its two
+   * colourways; the text block position is shared per family
+   * (.scene-inner-<family> in styles.css). */
+
+  /* 1 — Moroccan zellige: an interlocking star-and-diamond tile
+     field in muted tones behind a clean framed label plate. */
+  function sceneZelligeSVG(uid, deco, teal) {
+    var pal = teal
+      ? { bg: '#eae1cc', a: '#0d5a63', b: '#c9a86a', c: '#7fa8a0', plate: '#faf5e9', line: '#0d5a63' }
+      : { bg: '#f2ecdd', a: '#8a9a7b', b: '#c08552', c: '#d9c39a', plate: '#fbf7ec', line: '#b07a4a' };
+    var s = sceneOpen();
+    s += foilDefs(uid, deco, 816, 1056);
+    s += '<defs><pattern id="zel-' + uid + '" width="92" height="92" patternUnits="userSpaceOnUse">' +
+      '<rect width="92" height="92" fill="' + pal.bg + '"/>' +
+      '<polygon points="' + star8Points(46, 46, 27, 27 * 0.62) + '" fill="none" stroke="' + pal.a + '" stroke-width="2.4"/>' +
+      '<circle cx="46" cy="46" r="3.2" fill="' + pal.b + '"/>' +
+      '<rect x="-9" y="-9" width="18" height="18" transform="rotate(45 0 0)" fill="' + pal.b + '" opacity="0.85"/>' +
+      '<rect x="83" y="-9" width="18" height="18" transform="rotate(45 92 0)" fill="' + pal.b + '" opacity="0.85"/>' +
+      '<rect x="-9" y="83" width="18" height="18" transform="rotate(45 0 92)" fill="' + pal.b + '" opacity="0.85"/>' +
+      '<rect x="83" y="83" width="18" height="18" transform="rotate(45 92 92)" fill="' + pal.b + '" opacity="0.85"/>' +
+      '<circle cx="0" cy="46" r="2.4" fill="' + pal.c + '"/><circle cx="92" cy="46" r="2.4" fill="' + pal.c + '"/>' +
+      '<circle cx="46" cy="0" r="2.4" fill="' + pal.c + '"/><circle cx="46" cy="92" r="2.4" fill="' + pal.c + '"/>' +
+      '</pattern></defs>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#zel-' + uid + ')"/>';
+    /* the label plate: solid, double-ruled, small foil star seal */
+    s += '<rect x="118" y="222" width="580" height="478" rx="6" fill="' + pal.plate + '" stroke="' + pal.line + '" stroke-width="3"/>';
+    s += '<rect x="132" y="236" width="552" height="450" rx="4" fill="none" stroke="' + pal.line + '" stroke-width="1.2"/>';
+    s += '<circle cx="408" cy="222" r="23" fill="' + pal.plate + '"/>';
+    s += '<polygon points="' + star8Points(408, 222, 17, 17 * 0.62) + '" fill="url(#foil-' + uid + ')"/>';
+    return s + '</svg>';
+  }
+
+  /* 2 — Moon phases: a vertical progression of moons (crescent,
+     half, full, half, crescent) on a hairline, over deep navy —
+     or, in the light colourway, navy + gold on ivory. */
+  function moonPhaseD(cx, cy, r, kind) {
+    if (kind === 'full') return '';
+    if (kind === 'half-r') return 'M' + cx + ' ' + (cy - r) + ' A' + r + ' ' + r + ' 0 0 1 ' + cx + ' ' + (cy + r) + ' Z';
+    if (kind === 'half-l') return 'M' + cx + ' ' + (cy - r) + ' A' + r + ' ' + r + ' 0 0 0 ' + cx + ' ' + (cy + r) + ' Z';
+    return crescentD(cx, cy, r);
+  }
+
+  function sceneMoonphasesSVG(uid, deco, light) {
+    var s = sceneOpen();
+    if (light) {
+      s += skyGradDef(uid, [[0, '#fdfaf1'], [1, '#f3ead3']]);
+    } else {
+      s += skyGradDef(uid, [[0, '#04061a'], [0.6, '#0a1735'], [1, '#1d3468']]);
+    }
+    /* gold foil in both colourways (the navy palette's own deco
+       is silver — the nightsky scene sets the same precedent) */
+    s += foilDefs(uid, '#ffd166', 816, 1056);
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+    if (light) {
+      s += starFieldSVG(lcg(4242), 22, 816, 640, ['#22355e', '#b98a1d']);
+    } else {
+      s += starFieldSVG(lcg(90210), 40, 816, 700);
+    }
+    var line = light ? '#22355e' : 'url(#foil-' + uid + ')';
+    s += '<line x1="408" y1="92" x2="408" y2="416" stroke="' + line + '" stroke-width="1.2" opacity="0.4"/>';
+    var kinds = ['crescent-r', 'half-r', 'full', 'half-l', 'crescent-l'];
+    for (var i = 0; i < 5; i++) {
+      var cy = 118 + i * 68, kind = kinds[i];
+      if (kind === 'full') {
+        s += '<circle cx="408" cy="' + cy + '" r="31" fill="url(#foil-' + uid + ')"/>';
+        s += '<circle cx="408" cy="' + cy + '" r="38" fill="none" stroke="' + line + '" stroke-width="1.4"/>';
+      } else if (kind === 'crescent-r') {
+        s += '<g transform="translate(816,0) scale(-1,1)"><path d="' + crescentD(408, cy, 30) +
+          '" fill="url(#foil-' + uid + ')"/></g>';
+        s += '<circle cx="408" cy="' + cy + '" r="30" fill="none" stroke="' + line + '" stroke-width="1.1" opacity="0.35"/>';
+      } else if (kind === 'crescent-l') {
+        s += '<path d="' + crescentD(408, cy, 30) + '" fill="url(#foil-' + uid + ')"/>';
+        s += '<circle cx="408" cy="' + cy + '" r="30" fill="none" stroke="' + line + '" stroke-width="1.1" opacity="0.35"/>';
+      } else {
+        s += '<path d="' + moonPhaseD(408, cy, 30, kind) + '" fill="url(#foil-' + uid + ')"/>';
+        s += '<circle cx="408" cy="' + cy + '" r="30" fill="none" stroke="' + line + '" stroke-width="1.1" opacity="0.35"/>';
+      }
+    }
+    return s + '</svg>';
+  }
+
+  /* 3 — Mihrab arch botanical: a pointed arch in fine lines on
+     warm ivory; inside it a date palm and two olive sprigs, all
+     delicate line art in the upper half — the title rests in the
+     calm lower half of the arch. Rose colourway: blush ground,
+     rose arch, the same olive botanicals. */
+  function oliveSprig(x, y, mirror, leaf) {
+    var s = '<g transform="translate(' + x + ',' + y + ') scale(' + (mirror ? -1 : 1) + ',1)">';
+    s += '<path d="M0 0 C -12 52 -6 104 14 152" fill="none" stroke="' + leaf + '" stroke-width="3.4" stroke-linecap="round"/>';
+    var leaves = [[-4, 26, -38], [2, 58, 30], [-4, 88, -34], [4, 116, 26], [8, 140, -22]];
+    for (var i = 0; i < leaves.length; i++) {
+      var lx = leaves[i][0], ly = leaves[i][1], rot = leaves[i][2];
+      s += '<ellipse cx="' + (lx + (rot < 0 ? -13 : 13)) + '" cy="' + ly + '" rx="17" ry="6.2" fill="' +
+        leaf + '" opacity="0.85" transform="rotate(' + rot + ' ' + lx + ' ' + ly + ')"/>';
+    }
+    return s + '</g>';
+  }
+
+  function sceneMihrabSVG(uid, deco, rose) {
+    var pal = rose
+      ? { bg0: '#fdf3ee', bg1: '#f9e0d4', arch: '#b76e79', leaf: '#66713c', trunk: '#8a6a4a', fruit: '#d97757' }
+      : { bg0: '#fbf6ea', bg1: '#f3ead3', arch: '#66713c', leaf: '#66713c', trunk: '#7a6a45', fruit: '#c08552' };
+    var s = sceneOpen();
+    s += skyGradDef(uid, [[0, pal.bg0], [1, pal.bg1]]);
+    s += foilDefs(uid, deco, 816, 1056);
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+    /* the arch: colour line, thin foil line, colour hairline */
+    s += '<path d="' + archPath(0) + '" fill="none" stroke="' + pal.arch + '" stroke-width="4"/>';
+    s += '<path d="' + archPath(11) + '" fill="none" stroke="url(#foil-' + uid + ')" stroke-width="1.6"/>';
+    s += '<path d="' + archPath(22) + '" fill="none" stroke="' + pal.arch + '" stroke-width="1.2" opacity="0.75"/>';
+    s += '<polygon points="' + star8Points(408, 96, 13, 13 * 0.62) + '" fill="url(#foil-' + uid + ')"/>';
+    /* date palm, centred in the arch's upper half */
+    s += '<g stroke="' + pal.leaf + '" stroke-width="4.6" fill="none" stroke-linecap="round">';
+    var fronds = [[300, 192], [338, 158], [376, 138], [440, 138], [478, 158], [516, 192], [298, 244], [518, 244]];
+    for (var i = 0; i < fronds.length; i++) {
+      var fx = fronds[i][0], fy = fronds[i][1];
+      var mx = 408 + (fx - 408) * 0.45, my = fy - 34;
+      s += '<path d="M408 252 Q ' + mx + ' ' + my + ' ' + fx + ' ' + fy + '"/>';
+    }
+    s += '</g>';
+    s += '<path d="M408 436 C 401 372 402 308 408 254" fill="none" stroke="' + pal.trunk + '" stroke-width="7" stroke-linecap="round"/>';
+    s += '<circle cx="393" cy="272" r="6.5" fill="' + pal.fruit + '"/>' +
+      '<circle cx="408" cy="281" r="6.5" fill="' + pal.fruit + '"/>' +
+      '<circle cx="423" cy="272" r="6.5" fill="' + pal.fruit + '"/>';
+    /* olive sprigs inside the arch's shoulders */
+    s += oliveSprig(222, 282, false, pal.leaf);
+    s += oliveSprig(594, 282, true, pal.leaf);
+    return s + '</svg>';
+  }
+
+  /* 4 — Square Kufic: a squared meander (maze) band frames a
+     calm sandstone field; the title sits on a ruled plate. */
+  function sceneKuficSVG(uid, deco, emerald) {
+    var pal = emerald
+      ? { bg: '#e8dfc8', band: '#065f46', plate: '#f5efdd', line: '#065f46' }
+      : { bg: '#eadfc6', band: '#0a4f57', plate: '#f6efdd', line: '#0a4f57' };
+    var s = sceneOpen();
+    s += '<defs><pattern id="kuf-' + uid + '" width="54" height="54" patternUnits="userSpaceOnUse">' +
+      '<rect width="54" height="54" fill="' + pal.bg + '"/>' +
+      '<path d="M8 46 V16 H38 V34 H22" fill="none" stroke="' + pal.band + '" stroke-width="8"/>' +
+      '<rect x="42" y="6" width="8" height="8" fill="' + pal.band + '"/>' +
+      '</pattern></defs>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="' + pal.bg + '"/>';
+    s += '<path fill-rule="evenodd" fill="url(#kuf-' + uid + ')" d="M30 30 H786 V1026 H30 Z M118 118 H698 V938 H118 Z"/>';
+    /* the title plate */
+    s += '<rect x="130" y="288" width="556" height="482" fill="' + pal.plate + '" stroke="' + pal.line + '" stroke-width="3"/>';
+    s += '<rect x="143" y="301" width="530" height="456" fill="none" stroke="' + pal.line + '" stroke-width="1.2"/>';
+    s += '<circle cx="408" cy="288" r="21" fill="' + pal.plate + '"/>';
+    s += '<polygon points="' + star8Points(408, 288, 15, 15 * 0.62) + '" fill="' + pal.band + '"/>';
+    return s + '</svg>';
+  }
+
   function coverSceneSVG(design, deco) {
     var uid = design.id;
     switch (design.scene) {
@@ -536,8 +696,223 @@
       case 'mandala': return sceneMandalaSVG(uid, deco);
       case 'pastelskyline': return scenePastelSkylineSVG(uid, deco);
       case 'pastelarch': return sceneArchSVG(uid, deco, '#6b4a5a');
+      case 'zellige': return sceneZelligeSVG(uid, deco, design.id === 'scene-zellige-teal');
+      case 'moonphases': return sceneMoonphasesSVG(uid, deco, design.id === 'scene-moonphases-light');
+      case 'mihrab': return sceneMihrabSVG(uid, deco, design.id === 'scene-mihrab-rose');
+      case 'kufic': return sceneKuficSVG(uid, deco, design.id === 'scene-kufic-emerald');
+      case 'linen': return sceneLinenSVG(uid, deco, design.id === 'scene-linen-sage');
+      case 'iznik': return sceneIznikSVG(uid, deco, design.id === 'scene-iznik-turquoise');
+      case 'kids': return sceneKidsSVG(uid, deco, design.id === 'scene-kids-night');
+      case 'wash': return sceneWashSVG(uid, deco, design.id === 'scene-wash-sage');
     }
     return '';
+  }
+
+  /* 7 — Kids' watercolour: a friendly flat camel and a striped
+     desert tent under a warm sky (day), or a starry tent under a
+     big crescent (night). The title sits in a rounded frame. */
+  function tentGroup(x, y, scale, night) {
+    var s = '<g transform="translate(' + x + ',' + y + ') scale(' + scale + ')">';
+    s += '<path d="M-84 108 L0 -42 L84 108 Z" fill="#ef476f"/>';
+    s += '<path d="M-46 108 L0 -12 L46 108 Z" fill="#fff3e2"/>';
+    s += '<path d="M-17 108 L0 52 L17 108 Z" fill="' + (night ? '#ffd166' : '#822659') + '"/>';
+    s += '<line x1="0" y1="-42" x2="0" y2="-74" stroke="#8a5a2b" stroke-width="4"/>';
+    s += '<polygon points="0,-74 24,-67 0,-60" fill="#ffb703"/>';
+    return s + '</g>';
+  }
+
+  function camelGroup(x, y, scale) {
+    var body = '#e8a856', dark = '#dd9a44', cream = '#f0bc77';
+    var s = '<g transform="translate(' + x + ',' + y + ') scale(' + scale + ')">';
+    /* legs */
+    s += '<g fill="' + dark + '"><rect x="-72" y="44" width="13" height="62" rx="6"/>' +
+      '<rect x="-42" y="44" width="13" height="62" rx="6"/>' +
+      '<rect x="34" y="44" width="13" height="62" rx="6"/>' +
+      '<rect x="64" y="44" width="13" height="62" rx="6"/></g>';
+    /* tail */
+    s += '<path d="M-94 -18 C -112 2 -110 28 -100 42" fill="none" stroke="' + dark + '" stroke-width="6" stroke-linecap="round"/>';
+    s += '<circle cx="-99" cy="46" r="7" fill="#b97a2e"/>';
+    /* humps + body */
+    s += '<circle cx="-32" cy="-46" r="30" fill="' + body + '"/>';
+    s += '<circle cx="30" cy="-46" r="30" fill="' + body + '"/>';
+    s += '<ellipse cx="0" cy="0" rx="96" ry="56" fill="' + body + '"/>';
+    /* neck + head */
+    s += '<path d="M74 -28 C 104 -52 110 -88 102 -118 L 132 -126 C 142 -88 132 -58 98 -30 Z" fill="' + body + '"/>';
+    s += '<ellipse cx="122" cy="-130" rx="30" ry="19" fill="' + body + '" transform="rotate(-14 122 -130)"/>';
+    s += '<ellipse cx="142" cy="-122" rx="14" ry="11" fill="' + cream + '"/>';
+    s += '<circle cx="108" cy="-146" r="7" fill="' + body + '"/>';
+    s += '<circle cx="128" cy="-134" r="4" fill="#5b3a1e"/>';
+    /* saddle blanket */
+    s += '<rect x="-38" y="-44" width="76" height="46" rx="9" fill="#2a9d8f"/>';
+    s += '<rect x="-38" y="-24" width="76" height="11" fill="#ef476f"/>';
+    return s + '</g>';
+  }
+
+  function sceneKidsSVG(uid, deco, night) {
+    var s = sceneOpen();
+    if (night) {
+      s += skyGradDef(uid, [[0, '#141f42'], [0.6, '#27335f'], [1, '#3b4a7a']]);
+      s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+      s += starFieldSVG(lcg(60606), 70, 816, 430, ['#ffffff', '#ffd166', '#ffe9a8']);
+      s += '<path d="' + crescentD(640, 138, 54) + '" fill="#ffd166"/>';
+      s += '<polygon points="' + sparklePoints(706, 92, 15) + '" fill="#ffd166"/>';
+      s += '<path d="M0 436 C 220 392 420 424 816 384 L816 1056 L0 1056 Z" fill="#232f55"/>';
+      s += '<ellipse cx="408" cy="414" rx="150" ry="13" fill="#1a2447"/>';
+      s += tentGroup(408, 306, 1.25, true);
+      /* rounded title plate */
+      s += '<rect x="96" y="436" width="624" height="470" rx="30" fill="#26335c" stroke="#ffd166" stroke-width="3"/>';
+    } else {
+      s += skyGradDef(uid, [[0, '#ffedbe'], [0.55, '#fff3d9'], [1, '#fff7e6']]);
+      s += '<rect x="0" y="0" width="816" height="1056" fill="url(#sky-' + uid + ')"/>';
+      s += '<circle cx="676" cy="138" r="45" fill="#ffb703"/>';
+      s += '<circle cx="676" cy="138" r="60" fill="none" stroke="#ffb703" stroke-width="3" opacity="0.55"/>';
+      s += '<polygon points="' + sparklePoints(140, 108, 15) + '" fill="#fb8500"/>';
+      s += '<polygon points="' + sparklePoints(228, 178, 11) + '" fill="#ef476f"/>';
+      s += '<polygon points="' + sparklePoints(560, 210, 11) + '" fill="#2a9d8f"/>';
+      /* dunes */
+      s += '<path d="M0 420 C 200 372 430 408 816 366 L816 1056 L0 1056 Z" fill="#f6d7a0"/>';
+      s += '<path d="M0 448 C 260 408 520 436 816 402 L816 1056 L0 1056 Z" fill="#eec27f"/>';
+      s += '<ellipse cx="322" cy="412" rx="130" ry="11" fill="#dfae62"/>';
+      s += '<ellipse cx="618" cy="404" rx="96" ry="9" fill="#dfae62"/>';
+      s += camelGroup(322, 300, 1.0);
+      s += tentGroup(618, 296, 0.95, false);
+      /* rounded title plate */
+      s += '<rect x="96" y="436" width="624" height="470" rx="30" fill="#fffdf6" stroke="#f59e0b" stroke-width="3"/>';
+    }
+    return s + '</svg>';
+  }
+
+  /* 8 — Watercolour wash: soft radial washes pooled at the
+     corners, a dusting of gold speckles and three delicate
+     line stars. The middle stays empty for the title. */
+  function washBlotch(uid, name, cx, cy, r, color, op) {
+    return '<radialGradient id="' + name + '-' + uid + '" gradientUnits="userSpaceOnUse" cx="' +
+      cx + '" cy="' + cy + '" r="' + r + '"><stop offset="0" stop-color="' + color +
+      '" stop-opacity="' + op + '"/><stop offset="1" stop-color="' + color +
+      '" stop-opacity="0"/></radialGradient>';
+  }
+
+  function sceneWashSVG(uid, deco, sage) {
+    var cols = sage
+      ? { a: '#8fae6b', b: '#f2a7c3', c: '#a8bf8a', d: '#e5c878' }
+      : { a: '#6366f1', b: '#f2a7c3', c: '#818cf8', d: '#f9c6d8' };
+    var s = sceneOpen();
+    s += '<defs>' +
+      washBlotch(uid, 'wa', 110, 140, 330, cols.a, 0.5) +
+      washBlotch(uid, 'wb', 712, 225, 275, cols.b, 0.55) +
+      washBlotch(uid, 'wc', 690, 900, 310, cols.c, 0.38) +
+      washBlotch(uid, 'wd', 105, 915, 255, cols.d, 0.5) +
+      '</defs>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="#fffdf8"/>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#wa-' + uid + ')"/>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#wb-' + uid + ')"/>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#wc-' + uid + ')"/>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#wd-' + uid + ')"/>';
+    /* gold speckles, kept out of the title band */
+    var rand = lcg(sage ? 777 : 31415);
+    for (var i = 0; i < 30; i++) {
+      var x = +(rand() * 816).toFixed(1), y = +(rand() * 1056).toFixed(1);
+      if (x > 165 && x < 651 && y > 315 && y < 775) continue;
+      s += '<circle cx="' + x + '" cy="' + y + '" r="' + (1.4 + rand() * 1.8).toFixed(1) +
+        '" fill="#c9a227" opacity="' + (0.35 + rand() * 0.5).toFixed(2) + '"/>';
+    }
+    /* delicate line stars in three corners */
+    [[168, 208, 17], [652, 148, 13], [606, 912, 15]].forEach(function (p) {
+      s += '<polygon points="' + sparklePoints(p[0], p[1], p[2]) +
+        '" fill="none" stroke="#b98a1d" stroke-width="1.6"/>';
+    });
+    return s + '</svg>';
+  }
+
+  /* 5 — Pressed linen: a cloth-weave ground, a debossed double
+     border (shadow line + highlight line) and ONE small star
+     emblem. The most ink-friendly cover in the lineup. */
+  function sceneLinenSVG(uid, deco, sage) {
+    var pal = sage
+      ? { bg: '#eef0e2', weave: '#ccd2b4', shadow: 'rgba(67,81,31,0.20)', emblem: '#f8f4e2', emblemLine: '#7d8c46' }
+      : { bg: '#f7f2e7', weave: '#ddd2b8', shadow: 'rgba(91,58,30,0.16)', emblem: null, emblemLine: null };
+    var s = sceneOpen();
+    s += foilDefs(uid, deco, 816, 1056);
+    s += '<defs><pattern id="weave-' + uid + '" width="5" height="5" patternUnits="userSpaceOnUse">' +
+      '<path d="M0 2.5 H5 M2.5 0 V5" stroke="' + pal.weave + '" stroke-width="1"/></pattern></defs>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="' + pal.bg + '"/>';
+    s += '<rect x="0" y="0" width="816" height="1056" fill="url(#weave-' + uid + ')" opacity="0.55"/>';
+    /* debossed border: dark line low-right, light line up-left */
+    s += '<rect x="46" y="47" width="724" height="962" fill="none" stroke="' + pal.shadow + '" stroke-width="2"/>';
+    s += '<rect x="44" y="45" width="724" height="962" fill="none" stroke="#ffffff" stroke-width="2" opacity="0.85"/>';
+    s += '<rect x="60" y="61" width="696" height="934" fill="none" stroke="' + pal.shadow + '" stroke-width="1.2"/>';
+    s += '<rect x="59" y="60" width="696" height="934" fill="none" stroke="#ffffff" stroke-width="1.2" opacity="0.7"/>';
+    /* the single emblem */
+    if (sage) {
+      s += '<circle cx="408" cy="300" r="45" fill="none" stroke="' + pal.emblemLine + '" stroke-width="1.6"/>';
+      s += '<polygon points="' + star8Points(408, 300, 30, 30 * 0.62) + '" fill="' + pal.emblem +
+        '" stroke="' + pal.emblemLine + '" stroke-width="1.6"/>';
+    } else {
+      s += '<circle cx="408" cy="300" r="45" fill="none" stroke="url(#foil-' + uid + ')" stroke-width="1.6"/>';
+      s += '<polygon points="' + star8Points(408, 300, 30, 30 * 0.62) + '" fill="url(#foil-' + uid + ')"/>';
+    }
+    return s + '</svg>';
+  }
+
+  /* 6 — Iznik florals: a symmetric bouquet — one cobalt tulip,
+     two side tulips, two coral carnations, turquoise leaves —
+     inside a thin double rule on ivory. Turquoise colourway
+     swaps which colour leads. */
+  function scallopPoints(cx, cy, r) {
+    var pts = [];
+    for (var i = 0; i < 24; i++) {
+      var rad = i % 2 === 0 ? r : r * 0.8;
+      var a = i * Math.PI / 12;
+      pts.push((Math.round((cx + rad * Math.cos(a)) * 10) / 10) + ',' +
+        (Math.round((cy + rad * Math.sin(a)) * 10) / 10));
+    }
+    return pts.join(' ');
+  }
+
+  function tulipGroup(x, y, scale, fill) {
+    var s = '<g transform="translate(' + x + ',' + y + ') scale(' + scale + ')">';
+    s += '<path d="M-30 10 C-30 -22 -18 -36 -10 -52 C-5 -34 -1 -26 0 -14 C1 -26 5 -34 10 -52 ' +
+      'C18 -36 30 -22 30 10 C30 30 16 42 0 42 C-16 42 -30 30 -30 10 Z" fill="' + fill + '"/>';
+    s += '<path d="M-11 -46 C-7 -28 -5 -16 -4 34 M11 -46 C7 -28 5 -16 4 34" fill="none" stroke="#fbf8f0" stroke-width="2.2" opacity="0.8"/>';
+    return s + '</g>';
+  }
+
+  function sceneIznikSVG(uid, deco, turquoise) {
+    var main = turquoise ? '#1f9aa8' : '#2456a6';
+    var second = turquoise ? '#2456a6' : '#1f9aa8';
+    var frame = turquoise ? '#1f8a94' : '#2456a6';
+    var bg = turquoise ? '#fdf6ea' : '#fbf8f0';
+    var leaf = '#2e8b74', coral = '#e2725b';
+    var s = sceneOpen();
+    s += '<rect x="0" y="0" width="816" height="1056" fill="' + bg + '"/>';
+    s += '<rect x="30" y="30" width="756" height="996" fill="none" stroke="' + frame + '" stroke-width="2.6"/>';
+    s += '<rect x="41" y="41" width="734" height="974" fill="none" stroke="' + frame + '" stroke-width="1.1"/>';
+    /* stems */
+    s += '<g stroke="' + leaf + '" stroke-width="5" fill="none" stroke-linecap="round">' +
+      '<path d="M408 436 C 404 356 404 300 408 246"/>' +
+      '<path d="M408 400 C 368 368 340 330 330 292"/>' +
+      '<path d="M408 400 C 448 368 476 330 486 292"/>' +
+      '<path d="M408 424 C 356 404 312 378 288 344"/>' +
+      '<path d="M408 424 C 460 404 504 378 528 344"/></g>';
+    /* leaves */
+    s += '<g fill="' + second + '">' +
+      '<path d="M402 356 C 372 336 344 338 322 356 C 344 374 374 374 402 356 Z"/>' +
+      '<path d="M414 356 C 444 336 472 338 494 356 C 472 374 442 374 414 356 Z"/>' +
+      '<path d="M404 300 C 380 282 356 282 338 296 C 358 314 384 314 404 300 Z"/>' +
+      '<path d="M412 300 C 436 282 460 282 478 296 C 458 314 432 314 412 300 Z"/></g>';
+    /* carnations (coral, scalloped) + centres */
+    s += '<polygon points="' + scallopPoints(272, 330, 27) + '" fill="' + coral + '"/>';
+    s += '<polygon points="' + scallopPoints(544, 330, 27) + '" fill="' + coral + '"/>';
+    s += '<circle cx="272" cy="330" r="8" fill="#fdf3d8"/>';
+    s += '<circle cx="544" cy="330" r="8" fill="#fdf3d8"/>';
+    /* tulips: side pair first, hero in the middle */
+    s += tulipGroup(322, 252, 0.82, second);
+    s += tulipGroup(494, 252, 0.82, second);
+    s += tulipGroup(408, 196, 1.18, main);
+    /* three small buds on stems above the carnations */
+    s += '<circle cx="272" cy="298" r="7" fill="' + main + '"/>';
+    s += '<circle cx="544" cy="298" r="7" fill="' + main + '"/>';
+    return s + '</svg>';
   }
 
   /* Kids' divider artwork: a big friendly crescent + chunky stars
@@ -700,11 +1075,25 @@
     return h + '</div>';
   }
 
+  /* The buyer's optional cover subtitle (their own words — a
+     journey title, a family name), printed under the title in
+     the plate area. Empty subtitle -> nothing at all. */
+  function coverSubtitleHTML(ctx) {
+    return ctx.subtitle
+      ? '<p class="cover-subtitle">' + esc(ctx.subtitle) + '</p>'
+      : '';
+  }
+
   function sceneCoverBody(design, ctx) {
     var deco = RP.COVER_PALETTES[design.palette].deco;
     var h = '<div class="cover-scene">' + coverSceneSVG(design, deco) + '</div>';
     if (design.scene === 'calligraphy') h += '<div class="cover-frame"></div>';
-    h += '<div class="cover-inner scene-inner scene-inner-' + design.scene + '">';
+    /* plate designs (zellige / kufic / kids) carry the title
+       inside a drawn plate narrower than the full sheet, so
+       styles.css steps the title size down for them */
+    var plate = ['zellige', 'kufic', 'kids'].indexOf(design.scene) !== -1;
+    h += '<div class="cover-inner scene-inner scene-inner-' + design.scene +
+      (plate ? ' scene-inner-plate' : '') + '">';
     if (design.scene === 'calligraphy') {
       h += '<div class="calligraphy-word" dir="rtl" lang="ar">رمضان</div>';
     }
@@ -714,6 +1103,7 @@
         sparklePoints(76, 30, 10) + '" fill="#d9a62e"/></svg>';
     }
     h += '<h1 class="cover-title-main">' + L(ctx, 'coverTitle') + '</h1>';
+    h += coverSubtitleHTML(ctx);
     h += '<p class="cover-year">' + L(ctx, 'coverYear') + '</p>';
     h += coverNameBand(ctx);
     h += '<p class="cover-brand">' + L(ctx, 'brand') + '</p>';
@@ -733,6 +1123,7 @@
     h += '<div class="cover-inner">';
     h += foilOrnamentSVG(design.ornament, deco, design.id);
     h += '<h1 class="cover-title-main">' + L(ctx, 'coverTitle') + '</h1>';
+    h += coverSubtitleHTML(ctx);
     h += '<p class="cover-year">' + L(ctx, 'coverYear') + '</p>';
     h += coverNameBand(ctx);
     h += '<p class="cover-brand">' + L(ctx, 'brand') + '</p>';
@@ -1009,6 +1400,112 @@
     return h + '</div>';
   }
 
+  /* ---------- Optional extras (2026-11-17) ---------- */
+
+  /* One cut-out dua card: day label, the dua exactly as the
+     daily pages print it (Arabic always, translation unless the
+     book is Arabic-only), and its printed source. */
+  function duaCardHTML(ctx, dua, day) {
+    var h = '<div class="dua-card"><div class="dua-card-day">' +
+      L(ctx, 'duaCardDay', { n: N(ctx, day) }) + '</div>';
+    h += '<p class="dua-ar card-dua-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
+    if (ctx.lang !== 'ar') h += '<p class="dua-en card-dua-en" dir="ltr">' + esc(dua.en) + '</p>';
+    h += '<p class="dua-src">' + esc(dua.src) + '</p></div>';
+    return h;
+  }
+
+  function duaCardsBody(page, ctx) {
+    var h = pageHead(ctx, L(ctx, 'duaCardsTitle'));
+    if (page.chunk === 0) h += '<p class="intro-line">' + L(ctx, 'duaCardsIntro') + '</p>';
+    h += '<div class="dua-cards-grid">';
+    page.duas.forEach(function (dua, i) {
+      h += duaCardHTML(ctx, dua, page.firstDay + i);
+    });
+    return h + '</div>';
+  }
+
+  /* Four cut-out bookmarks in a row: title bookmark, dua
+     bookmark (with its source, like every dua in this book),
+     motto bookmark, Ramadan Mubarak bookmark. */
+  function bookmarksBody(page, ctx) {
+    var h = pageHead(ctx, L(ctx, 'bookmarksTitle'));
+    h += '<p class="intro-line">' + L(ctx, 'bookmarksIntro') + '</p>';
+    h += '<div class="bookmarks-row">';
+    var starOrn = '<svg class="bm-orn" viewBox="0 0 40 40" aria-hidden="true"><polygon points="' +
+      star8Points(20, 20, 15, 15 * 0.62) + '" fill="#b98a1d"/></svg>';
+    var moonOrn = '<svg class="bm-orn" viewBox="0 0 40 40" aria-hidden="true"><path d="' +
+      crescentD(20, 20, 14) + '" fill="#b98a1d"/></svg>';
+    var tops = [starOrn, moonOrn, starOrn, moonOrn];
+    var bodies = [
+      '<div class="bm-title">' + L(ctx, 'coverTitle') + '</div>' +
+        '<div class="bm-sub">' + L(ctx, 'coverYear') + '</div>',
+      '<p class="dua-ar bm-dua" dir="rtl" lang="ar">' + esc(DATA.STRINGS.bookmarkDua.ar) + '</p>' +
+        (ctx.lang !== 'ar' ? '<p class="dua-en bm-dua-en" dir="ltr">' + esc(DATA.STRINGS.bookmarkDua.en) + '</p>' : '') +
+        '<p class="dua-src">' + L(ctx, 'bookmarkDuaSrc') + '</p>',
+      '<div class="bm-motto">' + L(ctx, 'bookmarkMotto') + '</div>',
+      '<div class="bm-title">' + L(ctx, 'ramadanMubarak') + '</div>'
+    ];
+    for (var i = 0; i < 4; i++) {
+      h += '<div class="bookmark"><div class="bm-hole"></div>' +
+        '<div class="bm-star">' + tops[i] + '</div>' + bodies[i] +
+        '<div class="bm-brand">' + L(ctx, 'brand') + '</div></div>';
+    }
+    return h + '</div>';
+  }
+
+  function notesBody(page, ctx) {
+    var h = pageHead(ctx, L(ctx, 'notesTitle'));
+    for (var i = 0; i < 30; i++) h += ruled();
+    return h;
+  }
+
+  /* Feature E — the Quranic duas collection: each dua exactly
+     as extracted from the Qur'an text (Arabic, translation
+     unless the book is Arabic-only, and its Surah:Ayah source),
+     in a dua block of its own. Pages were height-packed by
+     generators.js, so a page holds 3–4 duas. */
+  function quranDuasBody(page, ctx) {
+    var h = pageHead(ctx, L(ctx, 'quranDuasTitle'));
+    if (page.chunk === 0) h += '<p class="intro-line">' + L(ctx, 'quranDuasIntro') + '</p>';
+    page.duas.forEach(function (dua) {
+      h += '<div class="qd-blk"><p class="qd-ref">' + esc(dua.src) + '</p>';
+      h += '<p class="dua-ar qd-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
+      if (ctx.lang !== 'ar') h += '<p class="dua-en qd-en" dir="ltr">' + esc(dua.en) + '</p>';
+      h += '</div>';
+    });
+    return h;
+  }
+
+  /* Feature F — the 114-surah reading tracker: two half-tables
+     side by side (15 rows each), every row = tick box, number,
+     Arabic name, English name, verse count, date line. */
+  function surahHalfTable(ctx, surahs) {
+    var h = '<table class="surah-table"><tr><th class="st-done">✓</th><th class="st-num">#</th>' +
+      '<th>' + L(ctx, 'surahCol') + '</th><th class="st-verses">' + L(ctx, 'versesCol') + '</th>' +
+      '<th class="st-date">' + L(ctx, 'dateCol') + '</th></tr>';
+    surahs.forEach(function (s) {
+      h += '<tr><td class="st-done"><span class="st-box"></span></td>' +
+        '<td class="st-num">' + N(ctx, s.n) + '</td>' +
+        '<td class="st-name"><span class="st-ar" dir="rtl" lang="ar">' + esc(s.ar) + '</span> ' +
+        '<span class="st-en" dir="ltr">' + esc(s.en) + '</span></td>' +
+        '<td class="st-verses">' + N(ctx, s.ayahs) + '</td>' +
+        '<td class="st-date"><span class="wline"></span></td></tr>';
+    });
+    return h + '</table>';
+  }
+
+  function surahTrackerBody(page, ctx) {
+    var h = pageHead(ctx, L(ctx, 'surahTrackerTitle'));
+    if (page.chunk === 0) h += '<p class="intro-line">' + L(ctx, 'surahTrackerIntro') + '</p>';
+    var half = Math.ceil(page.surahs.length / 2);
+    h += '<div class="surah-cols"><div class="surah-half">' +
+      surahHalfTable(ctx, page.surahs.slice(0, half)) +
+      '</div><div class="surah-half">' +
+      surahHalfTable(ctx, page.surahs.slice(half)) +
+      '</div></div>';
+    return h;
+  }
+
   var BODIES = {
     cover: coverBody, overview: overviewBody, daily: dailyBody,
     weekly: weeklyBody, khatma: khatmaBody, lastten: lastTenBody,
@@ -1016,7 +1513,9 @@
     eidprep: eidPrepBody, eidday: eidDayBody,
     kidsdivider: kidsDividerBody, kidschart: kidsChartBody,
     kidscards: kidsCardsBody, coloring: coloringBody,
-    certificate: certificateBody
+    certificate: certificateBody,
+    duacards: duaCardsBody, bookmarks: bookmarksBody, notes: notesBody,
+    quranduas: quranDuasBody, surahtracker: surahTrackerBody
   };
 
   function pageBodyHTML(page, ctx) {
