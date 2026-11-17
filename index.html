@@ -53,7 +53,12 @@
   <span>📄 A4 + US Letter</span>
 </div>
 
-<main class="layout">
+<nav class="learn-tabs" aria-label="Tool sections">
+  <button type="button" class="tab-btn active" id="tab-btn-create" aria-selected="true">🛠 Create your planner</button>
+  <button type="button" class="tab-btn" id="tab-btn-learn" aria-selected="false">📚 Learn — using your planner</button>
+</nav>
+
+<main class="layout" id="tab-create">
   <section class="panel">
     <div class="controls card">
       <h2>Planner Settings</h2>
@@ -134,6 +139,12 @@
       <label class="check">
         <input type="checkbox" id="pl-extra-notes"> Extra: Notes Pages — 2 extra lined pages (+2 pages)
       </label>
+      <label class="check">
+        <input type="checkbox" id="pl-extra-prep"> Extra: Get Ready for Ramadan — the printable prep checklist from the Learn tab (+1 page)
+      </label>
+      <label class="check">
+        <input type="checkbox" id="pl-extra-readplan"> Extra: Quran Reading Plan — how the khatma plan works, with weekly milestones (+1 page)
+      </label>
       <p class="hint" id="pl-pagecount"></p>
       <div class="step-head">Step 3 · Generate &amp; download</div>
       <div class="btn-row">
@@ -155,6 +166,92 @@
     </div>
   </section>
 </main>
+
+<!-- ============ LEARN TAB (screen only) ============ -->
+<section class="learn-wrap" id="tab-learn" hidden>
+  <div class="card learn-card">
+    <span class="learn-tag">Learn · 1 of 5</span>
+    <h2>How to use your planner</h2>
+    <p>Three steps take you from purchase to a printed planner:</p>
+    <ol>
+      <li><strong>Get your code.</strong> Your access code arrives with your purchase delivery. Enter your name and the code on the lock screen to unlock the tool — it stays unlocked on this device.</li>
+      <li><strong>Pick your settings &amp; cover.</strong> Choose the start date for your country, the language (Arabic, English, bilingual — or Bengali, Urdu, Turkish, Malay, Indonesian or French), A4 or US Letter, and one of the 54 cover designs. Add your name and it prints on the cover.</li>
+      <li><strong>Generate, download &amp; print.</strong> Click Generate Planner, then Download / Print PDF. In the print dialog choose <strong>Save as PDF</strong> and set margins to <strong>None</strong> — the page size is set for you.</li>
+    </ol>
+    <h3>Inside one daily page</h3>
+    <div class="learn-cols">
+      <div class="learn-mini">
+        <span class="picker-title">Day 1 — a real daily page</span>
+        <div class="mini-viewport"><div class="mini-sheet" id="learn-daily-sheet"></div></div>
+      </div>
+      <div class="learn-legend">
+        <ul>
+          <li><strong>Suhoor ends &amp; Iftar time</strong> — write in your local times each day.</li>
+          <li><strong>Prayer tracker</strong> — Fajr, Dhuhr, Asr, Maghrib, Isha and Taraweeh, ticked as you pray.</li>
+          <li><strong>Dua of the Day</strong> — one authentic dua every day, in Arabic with its meaning and its printed source.</li>
+          <li><strong>Today’s Qur’an</strong> — your reading goal for the day and what you finished.</li>
+          <li><strong>Water tracker</strong> — 8 glasses between Iftar and Suhoor.</li>
+          <li><strong>To-do list &amp; meal plan</strong> — the day’s tasks, plus Suhoor, Iftar and snacks.</li>
+          <li><strong>Good deed &amp; gratitude</strong> — one deed to do, and one thing to be thankful for.</li>
+        </ul>
+      </div>
+    </div>
+  </div>
+
+  <div class="card learn-card">
+    <span class="learn-tag">Learn · 2 of 5</span>
+    <h2>Get ready for Ramadan — prep checklist</h2>
+    <p>A few minutes of preparation before Day 1 makes the whole month easier:</p>
+    <ul>
+      <li>Set the <strong>start date for your country</strong> — Ramadan begins with the sighting of the moon, so check your local date (the planner default is 8 February 2027).</li>
+      <li>Choose your <strong>language and paper size</strong> before you generate.</li>
+      <li>Print <strong>single-sided</strong>, or <strong>double-sided</strong> to save paper and ink — the Ink-saver option lightens the cover and colours too.</li>
+      <li><strong>Bind, staple or folder</strong> the pages so nothing gets lost.</li>
+      <li>Write the <strong>Suhoor and Iftar times for week 1</strong> into the daily pages.</li>
+      <li>Write <strong>your name on the cover</strong> — and your child’s name on their certificate.</li>
+      <li>Tick any <strong>extras</strong> you want before printing, so everything comes out in one go.</li>
+    </ul>
+    <p>📄 <strong>Printable:</strong> tick <em>Extra: Get Ready for Ramadan</em> in the settings and this checklist prints as a page of your book, with tick boxes.</p>
+  </div>
+
+  <div class="card learn-card">
+    <span class="learn-tag">Learn · 3 of 5</span>
+    <h2>Learn the duas</h2>
+    <p>Your planner carries two dua collections — every dua is quoted exactly as it is transmitted, with its source printed next to it:</p>
+    <ul>
+      <li><strong>30 daily duas</strong> — one on every daily page, in Arabic with the meaning in your chosen language. Read the day’s dua at Suhoor or Iftar and try to learn it by heart during the day.</li>
+      <li><strong>52 duas from the Qur’an</strong> — an optional extra: the “Rabbana” duas and the prayers of the prophets and the believers, each with its surah and verse.</li>
+      <li><strong>Printable dua cards</strong> — another optional extra: all 30 daily duas as cut-out cards (5 pages, 6 cards per page). Cut along the dashed lines and keep a card where you will see it — on the fridge, in your Qur’an, by the door.</li>
+    </ul>
+    <p>A simple way to learn them: <strong>one dua a day</strong>. Read it in the morning, repeat it through the day, and by Eid you will know all 30.</p>
+  </div>
+
+  <div class="card learn-card">
+    <span class="learn-tag">Learn · 4 of 5</span>
+    <h2>Quran reading plan</h2>
+    <p>The Qur’an is divided into 30 parts, called <strong>juz</strong>. Read <strong>one juz a day</strong> and you complete the whole Qur’an inside Ramadan — a <em>khatma</em>.</p>
+    <ul>
+      <li>The <strong>Qur’an Khatma Tracker</strong> (page 3 of every planner) pairs each day with its juz — tick each juz as you finish it.</li>
+      <li>Milestones: end of <strong>week 1 → juz 7</strong>, week 2 → juz 14, week 3 → juz 21, week 4 → juz 28, and <strong>day 30 → juz 30</strong>.</li>
+      <li>Want to track by surah instead? Add the <strong>Qur’an Reading Tracker</strong> extra — all 114 surahs in order, each with its verse count, a tick box and a date line.</li>
+      <li>Missed a day? Read a little extra the next day and keep going — a khatma finished late is still a khatma.</li>
+    </ul>
+    <p>📄 <strong>Printable:</strong> tick <em>Extra: Quran Reading Plan</em> in the settings and this plan prints as a page of your book.</p>
+  </div>
+
+  <div class="card learn-card">
+    <span class="learn-tag">Learn · 5 of 5</span>
+    <h2>Ramadan with kids</h2>
+    <p>The <strong>Kids’ Ramadan Pack</strong> (included free — keep its tick box on when you generate) turns Ramadan into something children can see, touch and count:</p>
+    <ul>
+      <li><strong>30-day star chart</strong> — your child colours a star every day they fast (even a little fast), pray, do a good deed or read Qur’an.</li>
+      <li><strong>30 good-deed cards</strong> — one simple deed per day: read the card together, do the deed, colour the star on the card.</li>
+      <li><strong>6 colouring pages</strong> — lanterns, mosques and other Ramadan objects (pictures of objects only).</li>
+      <li><strong>“My First Ramadan” certificate</strong> — printed with your child’s name, ready to present on Eid day.</li>
+    </ul>
+    <p>Tip: print the kids’ pages on slightly thicker paper if you can — the star chart and certificate survive the month much better.</p>
+  </div>
+</section>
 
 <footer class="site-footer">Songlap Deals</footer>
 </div><!-- /#app -->
