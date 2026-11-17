@@ -52,6 +52,12 @@
            cover-theme-* variables); the kids divider shares the
            cover-page layout class but keeps the default design */
         (page.type === 'cover' ? ' cover-theme-' + spec.coverTheme : '') +
+        /* interior theming (2026-11-17): the chosen design's
+           palette also stamps every inside page, so styles.css can
+           flow its accent into page titles, dua cards, table
+           header bands and the footer rule (colours only — the
+           layout is unchanged) */
+        (page.type !== 'cover' ? ' book-theme-' + ctx.coverDesign.palette : '') +
         (page.type === 'certificate' ? ' cert-page' : '');
       var footer = '<p class="page-footer">' +
         Render.esc(Render.S(ctx, 'footerBrand')) + ' · ' +
