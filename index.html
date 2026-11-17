@@ -12,7 +12,7 @@
 <!-- ============ ACCESS GATE ============ -->
 <div id="lock-screen">
   <div class="lock-card">
-    <div class="lock-logo">🌙</div>
+    <div class="lock-logo"><svg width="54" height="54" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 14.2 A8.8 8.8 0 1 1 9.8 3.4 A7.2 7.2 0 0 0 20.6 14.2 Z" fill="#b98a1d"/><polygon points="18.6,2.4 19.1,4.1 20.8,4.6 19.1,5.1 18.6,6.8 18.1,5.1 16.4,4.6 18.1,4.1" fill="#b98a1d"/></svg></div>
     <h1>Ramadan Planner Generator</h1>
     <p class="lock-sub">A Songlap Deals tool for creating a complete, print-ready
     Ramadan planner — Arabic, English or bilingual.<br>
@@ -36,7 +36,7 @@
 <header class="site-header">
   <div class="header-inner">
     <div class="brand">
-      <span class="brand-icon">🌙</span>
+      <span class="brand-icon"><svg width="38" height="38" viewBox="0 0 24 24" aria-hidden="true"><path d="M20.6 14.2 A8.8 8.8 0 1 1 9.8 3.4 A7.2 7.2 0 0 0 20.6 14.2 Z" fill="#ffd166"/><polygon points="18.6,2.4 19.1,4.1 20.8,4.6 19.1,5.1 18.6,6.8 18.1,5.1 16.4,4.6 18.1,4.1" fill="#ffd166"/></svg></span>
       <div>
         <div class="brand-name">SONGLAP DEALS</div>
         <div class="brand-tag">Ramadan Planner Generator</div>
@@ -46,10 +46,23 @@
   </div>
 </header>
 
+<div class="get-strip" aria-label="What you get">
+  <span>📖 56 pages</span>
+  <span>🤲 30 duas with sources</span>
+  <span>🧒 Kids’ Pack included</span>
+  <span>📄 A4 + US Letter</span>
+</div>
+
 <main class="layout">
   <section class="panel">
     <div class="controls card">
       <h2>Planner Settings</h2>
+      <div class="steps-bar" aria-hidden="true">
+        <span class="step-chip"><b>1</b>Settings</span>
+        <span class="step-chip"><b>2</b>Cover</span>
+        <span class="step-chip"><b>3</b>Generate &amp; Download</span>
+      </div>
+      <div class="step-head first">Step 1 · Settings</div>
       <label>Ramadan start date (Day 1)
         <input type="date" id="pl-start" value="2027-02-08">
       </label>
@@ -78,13 +91,15 @@
         </select>
       </label>
       <div class="picker-block">
-        <span class="picker-title">Cover design — tap a design to choose it (30 designs)</span>
+        <div class="step-head">Step 2 · Cover design</div>
+        <span class="picker-title" id="pl-theme-title">Cover design — tap a design to choose it</span>
         <div id="pl-theme" class="cover-picker" role="listbox" aria-label="Cover design"></div>
         <p class="hint" id="pl-theme-name"></p>
       </div>
       <label class="check">
         <input type="checkbox" id="pl-kids" checked> Include the Kids’ Ramadan Pack (star chart, good-deed cards, colouring pages &amp; certificate)
       </label>
+      <div class="step-head">Step 3 · Generate &amp; download</div>
       <div class="btn-row">
         <button class="btn btn-primary" id="pl-build">Generate Planner</button>
         <button class="btn btn-gold" id="pl-print" disabled>⬇ Download / Print PDF</button>
@@ -93,6 +108,13 @@
       In the print dialog choose <strong>Save as PDF</strong> and set margins to <strong>None</strong> — the page size is set automatically.</p>
     </div>
     <div class="stage card">
+      <div class="cover-preview-wrap">
+        <span class="picker-title">Your cover — live preview</span>
+        <div class="cover-preview-viewport" id="pl-cover-preview">
+          <div class="mini-sheet" id="pl-cover-sheet"></div>
+        </div>
+        <p class="hint cover-preview-name" id="pl-cover-name"></p>
+      </div>
       <div id="pl-output" class="output"><p class="placeholder">Set your options and click Generate Planner. The full planner preview appears below the tool.</p></div>
     </div>
   </section>
