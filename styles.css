@@ -1,0 +1,315 @@
+/* Songlap Ramadan Planner Generator — styles
+   Brand: deep teal gradient (#0f2027 → #2c5364), gold highlights (#ffd166).
+   Arabic text uses an Arabic-capable font stack (system fonts only,
+   no downloads): Amiri / Traditional Arabic / Noto Naskh Arabic.
+   Every .book-page is a fixed-size sheet; the sizing constants in
+   the "Printed sheets" section are locked by tests/test_layout.js —
+   change them together. */
+
+* { box-sizing: border-box; }
+
+body {
+  margin: 0;
+  font-family: 'Segoe UI', system-ui, -apple-system, Arial, sans-serif;
+  background: #eef3f5;
+  color: #14232b;
+}
+
+.ar-font, .dua-ar, .l-ar, .card-ar,
+.book-page[dir="rtl"] {
+  font-family: 'Amiri', 'Traditional Arabic', 'Noto Naskh Arabic',
+    'Scheherazade New', 'Segoe UI', Tahoma, sans-serif;
+}
+
+/* ---------- Access gate ---------- */
+#lock-screen {
+  min-height: 100vh;
+  display: flex; align-items: center; justify-content: center;
+  background: linear-gradient(135deg, #0f2027, #203a43, #2c5364);
+  padding: 20px;
+}
+#lock-screen[hidden] { display: none; }
+.lock-card {
+  background: #ffffff; border-radius: 16px; padding: 36px 32px;
+  max-width: 400px; width: 100%; text-align: center;
+  box-shadow: 0 18px 50px rgba(0,0,0,.45);
+  border-top: 6px solid #ffd166;
+}
+.lock-logo { font-size: 52px; }
+.lock-card h1 { margin: 8px 0 6px; font-size: 24px; color: #0f2027; }
+.lock-sub { color: #48626e; margin: 0 0 20px; line-height: 1.45; }
+#lock-form { display: flex; flex-direction: column; gap: 10px; }
+#lock-name, #lock-input {
+  padding: 12px 14px; font-size: 16px;
+  border: 2px solid #c8d6dc; border-radius: 10px;
+}
+#lock-input { letter-spacing: 1px; text-transform: uppercase; }
+#lock-name:focus, #lock-input:focus { outline: none; border-color: #2c5364; }
+#lock-submit:disabled { opacity: .55; cursor: wait; }
+.lock-error { color: #c0392b; font-weight: 600; margin: 14px 0 0; }
+.lock-note { color: #7d97a1; font-size: 13px; margin: 16px 0 0; }
+
+/* ---------- License bar ---------- */
+.license-bar {
+  background: #0f2027; color: #ffd166; text-align: center;
+  font-size: 13px; font-weight: 600; letter-spacing: .4px;
+  padding: 7px 12px;
+}
+.license-bar[hidden] { display: none; }
+
+/* ---------- Header / layout ---------- */
+.site-header {
+  background: linear-gradient(90deg, #0f2027, #2c5364);
+  color: #fff; padding: 16px 20px;
+  border-bottom: 4px solid #ffd166;
+}
+.header-inner {
+  max-width: 1180px; margin: 0 auto;
+  display: flex; align-items: center; justify-content: space-between; gap: 16px; flex-wrap: wrap;
+}
+.brand { display: flex; align-items: center; gap: 12px; }
+.brand-icon { font-size: 36px; }
+.brand-name { font-size: 24px; font-weight: 800; letter-spacing: 3px; color: #ffd166; }
+.brand-tag { font-size: 14px; opacity: .92; }
+.header-note { font-size: 13px; opacity: .8; max-width: 560px; }
+
+.layout { max-width: 1180px; margin: 0 auto; padding: 18px 20px 30px; }
+.panel { display: grid; grid-template-columns: 380px 1fr; gap: 18px; align-items: start; }
+.card {
+  background: #fff; border-radius: 14px; padding: 20px;
+  box-shadow: 0 3px 14px rgba(15,32,39,.10);
+}
+.controls h2 { margin: 0 0 14px; color: #0f2027; font-size: 20px; }
+.controls label { display: block; font-weight: 600; font-size: 14px; margin-bottom: 14px; color: #33505c; }
+.controls label.check { display: flex; align-items: flex-start; gap: 9px; cursor: pointer; font-weight: 500; }
+.controls label.check input { width: auto; margin: 2px 0 0; }
+.controls input[type="text"], .controls input[type="date"],
+.controls select {
+  display: block; width: 100%; margin-top: 6px;
+  padding: 9px 11px; font-size: 14px; font-family: inherit;
+  border: 1.5px solid #c8d6dc; border-radius: 9px; background: #fbfdfe;
+}
+.controls input:focus, .controls select:focus { outline: none; border-color: #2c5364; }
+.btn-row { display: flex; gap: 8px; flex-wrap: wrap; margin: 4px 0 10px; }
+.btn {
+  border: 2px solid #2c5364; background: #fff; color: #2c5364;
+  padding: 9px 16px; border-radius: 10px; font-size: 14px; font-weight: 700; cursor: pointer;
+}
+.btn:hover:not(:disabled) { background: #e3edf1; }
+.btn:disabled { opacity: .45; cursor: not-allowed; }
+.btn-primary { background: linear-gradient(90deg, #0f2027, #2c5364); color: #fff; border-color: #0f2027; }
+.btn-primary:hover:not(:disabled) { background: linear-gradient(90deg, #2c5364, #0f2027); }
+.btn-gold { background: #ffd166; border-color: #e0aa2e; color: #14232b; }
+.btn-gold:hover:not(:disabled) { background: #ffca3a; }
+.hint { font-size: 13px; color: #48626e; line-height: 1.5; margin: 6px 0 10px; }
+.stage { min-height: 300px; }
+.output .placeholder { color: #7d97a1; text-align: center; padding: 60px 10px; }
+.site-footer { text-align: center; color: #7d97a1; font-size: 13px; padding: 0 20px 26px; }
+
+/* ---------- Book preview (screen) ---------- */
+#book-preview { background: #37474f; padding: 28px 12px; }
+#book-preview[hidden] { display: none; }
+.book-page {
+  background: #fff; margin: 0 auto 26px; position: relative; overflow: hidden;
+  box-shadow: 0 6px 28px rgba(0,0,0,.45); color: #14232b;
+  display: flex; flex-direction: column;
+}
+/* min-height: 0 is load-bearing: with the default min-height:auto,
+   some engines (WeasyPrint) inflate this flex item well past its
+   content height on grid/table pages, pushing the footer onto an
+   extra sheet. Locked by tests/test_layout.js. */
+.book-page .page-body { flex: 1; min-height: 0; }
+.book-page .page-footer {
+  font-size: 11px; color: #8aa0a9; text-align: center; margin: 12px 0 0;
+  border-top: 1px solid #e1eaed; padding-top: 8px;
+}
+
+/* ---------- Shared page pieces ---------- */
+.pg-head { margin-bottom: 8px; }
+.pg-title { font-size: 22px; margin: 0; color: #0f2027; line-height: 1.45; }
+.pg-sub { font-size: 14.5px; color: #48626e; margin-top: 3px; }
+.l-en { font-size: 0.78em; color: #48626e; font-weight: 600; }
+.intro-line { font-size: 13.5px; line-height: 1.45; color: #48626e; margin: 0 0 8px; }
+.blk { margin-top: 8px; }
+.blk-title { font-size: 15px; margin: 0 0 6px; color: #0f2027; }
+.cb {
+  display: inline-block; width: 15px; height: 15px; flex: none;
+  border: 2px solid #2c5364; border-radius: 4px; vertical-align: -2px;
+}
+.cb.sm { width: 12px; height: 12px; border-width: 1.5px; }
+.field { display: flex; align-items: center; gap: 8px; padding: 2.5px 0; }
+.flabel { font-size: 14px; font-weight: 600; color: #33505c; white-space: nowrap; }
+.wline { flex: 1; border-bottom: 1.5px solid #7d97a1; min-height: 1em; }
+.ruled { height: 23px; border-bottom: 1.5px solid #c8d6dc; }
+.todo-line {
+  height: 24px; display: flex; align-items: center; gap: 8px;
+  border-bottom: 1px solid #e1eaed;
+}
+
+/* ---------- Cover / divider / certificate ---------- */
+.cover-page, .cert-page { align-items: center; }
+.cover-inner, .cert-inner { margin: auto; text-align: center; width: 100%; }
+.deco-svg { display: block; margin: 0 auto; }
+.cover-page .deco-svg { height: 240px; }
+.cover-title { font-size: 34px; margin: 12px 0 6px; color: #0f2027; line-height: 1.25; }
+.cover-year { font-size: 20px; color: #b98a1d; font-weight: 700; margin: 0 0 26px; }
+.cover-sub { font-size: 15px; color: #48626e; line-height: 1.5; max-width: 80%; margin: 0 auto; }
+.cover-name { margin: 0 auto 30px; max-width: 70%; }
+.cover-name-label { display: block; font-size: 14px; color: #48626e; margin-bottom: 8px; }
+.cover-name-value { font-size: 26px; font-weight: 700; color: #0f2027; }
+.cover-name-line { display: block; height: 34px; }
+.moon-note {
+  border: 1.5px dashed #b98a1d; border-radius: 12px; background: #fffaf0;
+  padding: 10px 14px; font-size: 13px; line-height: 1.45; color: #48626e;
+  max-width: 88%; margin: 0 auto;
+}
+.cover-brand { margin-top: 30px; letter-spacing: 4px; font-weight: 800; color: #b98a1d; font-size: 15px; }
+.cert-page .deco-svg { height: 170px; }
+.cert-inner {
+  border: 3px double #b98a1d; border-radius: 18px; padding: 28px 30px;
+  margin: 0; background: #fffdf6;
+}
+.cert-presented { font-size: 16px; color: #48626e; margin: 14px 0 6px; }
+.cert-name { font-size: 30px; font-weight: 800; color: #0f2027; margin: 6px 0; }
+.cert-name-line { height: 40px; border-bottom: 2px solid #7d97a1; max-width: 65%; margin: 10px auto 4px; }
+.cert-for { font-size: 15px; color: #33505c; line-height: 1.5; max-width: 82%; margin: 10px auto 0; }
+.cert-welldone { font-size: 19px; font-weight: 700; color: #b98a1d; margin: 20px 0 0; }
+
+/* ---------- Overview ---------- */
+/* Trimmed 2026-11-17: real Naskh line height (1.703x) pushed the
+   30-card grid + footer past one sheet; these sizes buy back ~125px.
+   Locked by tests/test_layout.js — change them together. */
+.ov-grid { display: grid; grid-template-columns: repeat(5, 1fr); gap: 5px; }
+.ov-card { border: 1.5px solid #c8d6dc; border-radius: 10px; padding: 4px; }
+.ov-day { font-size: 12.5px; font-weight: 700; color: #0f2027; }
+.ov-day .l-en { font-size: 10.5px; }
+.ov-date { font-size: 10.5px; color: #7d97a1; margin: 0 0 2px; }
+.ov-check { display: flex; align-items: center; gap: 5px; font-size: 10.5px; color: #33505c; padding: 0.5px 0; }
+
+/* ---------- Daily page ---------- */
+.times-row { display: flex; gap: 18px; }
+.times-row .field { flex: 1; }
+.prayer-grid { display: grid; grid-template-columns: repeat(3, 1fr); gap: 6px; }
+.pchip {
+  display: flex; align-items: center; gap: 7px;
+  border: 1.5px solid #c8d6dc; border-radius: 9px;
+  padding: 4px 8px; font-size: 14.5px; font-weight: 600; color: #0f2027;
+}
+.row2 { display: flex; gap: 14px; }
+.row2 .half { flex: 1; margin-top: 8px; }
+.water-row { display: flex; gap: 6px; }
+.glass {
+  width: 26px; height: 28px; flex: none;
+  border: 2px solid #2c5364; border-top-width: 1px;
+  border-radius: 3px 3px 9px 9px;
+}
+.water-cap { font-size: 12px; color: #48626e; margin-top: 3px; }
+.dua-blk {
+  border: 1.5px solid #b98a1d; border-radius: 12px; background: #fffaf0;
+  padding: 8px 12px;
+}
+.dua-ar { font-size: 18px; line-height: 1.7; margin: 0; color: #14232b; text-align: right; }
+.dua-en { font-size: 13px; line-height: 1.45; margin: 5px 0 0; color: #33505c; }
+.dua-src { font-size: 11.5px; color: #b98a1d; font-weight: 700; margin: 5px 0 0; }
+
+/* ---------- Weekly ---------- */
+.week-rows { border-top: 1px solid #e1eaed; }
+.week-row {
+  display: flex; align-items: center; gap: 12px;
+  padding: 7px 0; border-bottom: 1px solid #e1eaed;
+}
+.week-day { width: 150px; flex: none; font-size: 13px; font-weight: 700; color: #0f2027; }
+.week-date { display: block; font-size: 11px; font-weight: 400; color: #7d97a1; margin-top: 1px; }
+.week-focus { flex: 1; display: flex; align-items: center; gap: 8px; }
+.week-checks { display: flex; gap: 6px; flex: none; }
+
+/* ---------- Khatma ---------- */
+.juz-grid { display: grid; grid-template-columns: repeat(6, 1fr); gap: 6px; }
+.juz-chip {
+  display: flex; align-items: center; gap: 5px;
+  border: 1.5px solid #c8d6dc; border-radius: 8px;
+  padding: 5px 6px; font-size: 13px; font-weight: 600; color: #0f2027;
+}
+.plan-cols { display: flex; gap: 16px; }
+.plan-table { flex: 1; border-collapse: collapse; width: 100%; }
+.plan-table th, .plan-table td {
+  border: 1px solid #c8d6dc; text-align: center; font-size: 13px;
+}
+.plan-table th { padding: 3px 6px; background: #eef6f8; color: #0f2027; }
+.plan-table td { padding: 2px 6px; }
+
+/* ---------- Tables (last-ten, deeds, meals, kids, eid) ---------- */
+.nights-table, .deeds-table, .meals-table, .kids-table, .eid-table {
+  border-collapse: collapse; width: 100%;
+}
+.nights-table th, .nights-table td,
+.deeds-table th, .deeds-table td,
+.meals-table th, .meals-table td,
+.kids-table th, .kids-table td,
+.eid-table th, .eid-table td {
+  border: 1px solid #c8d6dc; font-size: 13px;
+}
+.nights-table th, .deeds-table th, .meals-table th, .kids-table th, .eid-table th {
+  background: #eef6f8; color: #0f2027; padding: 3px 6px;
+}
+.nights-table td { padding: 4px; text-align: center; }
+.nights-table .act-name { text-align: start; font-size: 12.5px; font-weight: 600; color: #0f2027; }
+.deeds-table .deed-col { width: 190px; }
+.deeds-table th.deed-day { font-size: 8.5px; padding: 3px 0; text-align: center; }
+.deeds-table td { padding: 3px 2px; }
+.deeds-table .deed-name { font-size: 12.5px; font-weight: 600; color: #0f2027; }
+.deeds-table .deed-cell { height: 20px; }
+/* 30 rows must fit one sheet at real Naskh line height — trimmed
+   2026-11-17, locked by tests/test_layout.js. */
+.meals-table td { padding: 1px 6px; font-size: 13px; }
+.meals-table .m-day { width: 118px; font-weight: 700; color: #0f2027; white-space: nowrap; }
+.meals-table .m-date { font-size: 10.5px; font-weight: 400; color: #7d97a1; margin-inline-start: 6px; }
+/* 30 star rows must fit one sheet at real Naskh line height —
+   trimmed 2026-11-17, locked by tests/test_layout.js. */
+.kids-table th { font-size: 12.5px; padding: 2px 4px; }
+.kids-table td { padding: 0 4px; font-size: 12.5px; text-align: center; }
+.kids-table .k-day { width: 64px; font-weight: 700; color: #0f2027; }
+.kids-table .star-cell { font-size: 12.5px; color: #b98a1d; }
+.eid-table td { padding: 5px 6px; font-size: 13.5px; }
+.eid-table .e-time { width: 110px; }
+.eid-head { text-align: center; }
+.eid-head .deco-svg { height: 110px; }
+.eid-title { margin-top: 6px; }
+
+/* ---------- Eid prep ---------- */
+.eid-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 8px 18px; }
+.eid-item { display: flex; align-items: flex-start; gap: 8px; font-size: 13px; color: #0f2027; padding: 5px 2px; }
+
+/* ---------- Kids cards + colouring ---------- */
+.cards-grid { display: grid; grid-template-columns: 1fr 1fr; gap: 10px; }
+.deed-card {
+  border: 2px dashed #b98a1d; border-radius: 14px; padding: 10px;
+  background: #fffdf6;
+}
+.card-head { display: flex; justify-content: space-between; align-items: center; margin-bottom: 6px; }
+.card-day { font-size: 13px; font-weight: 800; color: #b98a1d; }
+.card-star { font-size: 20px; color: #b98a1d; }
+.card-text { margin: 0; }
+.card-ar { display: block; font-size: 14.5px; line-height: 1.5; }
+.card-en { display: block; font-size: 13px; line-height: 1.45; color: #33505c; margin-top: 2px; }
+.coloring-svg { display: block; width: 100%; max-width: 600px; height: auto; margin: 4px auto 0; }
+.coloring-field { max-width: 340px; margin-top: 8px; }
+
+/* ---------- Print: only the planner, one page per sheet ---------- */
+@media print {
+  body { background: #fff; }
+  #app, #lock-screen { display: none !important; }
+  #book-preview { display: block !important; background: #fff; padding: 0; }
+  .book-page {
+    margin: 0; box-shadow: none;
+    page-break-after: always; break-after: page;
+    page-break-inside: avoid; break-inside: avoid;
+  }
+  .ov-card, .deed-card, .juz-chip, .pchip, .strip { page-break-inside: avoid; break-inside: avoid; }
+  .book-page:last-child { page-break-after: auto; break-after: auto; }
+}
+
+@media screen and (max-width: 880px) {
+  .panel { grid-template-columns: 1fr; }
+  .header-note { display: none; }
+}
