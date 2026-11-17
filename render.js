@@ -26,9 +26,13 @@
   /* ---------- context + labels ---------- */
 
   function mkCtx(spec) {
+    spec = spec || {};
+    var designId = RP.migrateCoverTheme(spec.coverTheme);
     return {
       lang: spec.lang, numerals: spec.numerals, name: spec.name || '',
-      dir: spec.lang === 'en' ? 'ltr' : 'rtl'
+      dir: spec.lang === 'en' ? 'ltr' : 'rtl',
+      coverTheme: designId,
+      coverDesign: RP.coverDesign(designId)
     };
   }
 
@@ -113,9 +117,82 @@
     return '<polygon points="' + starPoints(cx, cy, r, r * 0.45) + '" ' + attrs + '/>';
   }
 
-  /* Small decorative crescent + lantern for cover / dividers. */
-  function decoSVG() {
-    var s = '<svg class="deco-svg" viewBox="0 0 400 300" aria-hidden="true">';
+  /* Eight-pointed star (Rub el Hizb style): 16 vertices alternating
+     outer / inner radius every 22.5 degrees. */
+  function star8Points(cx, cy, rO, rI) {
+    var pts = [];
+    for (var i = 0; i < 16; i++) {
+      var r = i % 2 === 0 ? rO : rI;
+      var a = -Math.PI / 2 + i * Math.PI / 8;
+      pts.push((Math.round((cx + r * Math.cos(a)) * 10) / 10) + ',' +
+        (Math.round((cy + r * Math.sin(a)) * 10) / 10));
+    }
+    return pts.join(' ');
+  }
+
+  function star8SVG(cx, cy, r, attrs) {
+    return '<polygon points="' + star8Points(cx, cy, r, r * 0.62) + '" ' + attrs + '/>';
+  }
+
+  /* Cover artwork is drawn in the palette's deco colour, baked
+     into the markup by decoSVG / coverPatternSVG (print engines
+     do not reliably recolour SVG presentation attributes from
+     CSS, so the colour cannot ride on a CSS rule alone). */
+  function paint(s, color) {
+    return color && color !== '#ffd166' ? s.split('#ffd166').join(color) : s;
+  }
+
+  /* Cover ornament: mosque silhouette — central dome with a small
+     crescent finial, two minarets, an arched door, corner stars. */
+  function mosqueSVG() {
+    var s = '<svg class="deco-svg ornament-mosque" viewBox="0 0 400 300" aria-hidden="true">';
+    var F = 'fill="#ffd166"';
+    /* finial crescent above the dome */
+    s += '<path d="' + crescentD(200, 34, 15) + '" ' + F + '/>';
+    s += '<line x1="200" y1="52" x2="200" y2="72" stroke="#ffd166" stroke-width="4"/>';
+    /* main dome + building */
+    s += '<path d="M138 208 C138 148 172 138 200 100 C228 138 262 148 262 208 Z" ' + F + '/>';
+    s += '<rect x="138" y="208" width="124" height="58" ' + F + '/>';
+    /* minarets */
+    [102, 298].forEach(function (cx) {
+      s += '<path d="M' + (cx - 14) + ' 138 C' + (cx - 14) + ' 116 ' + (cx - 6) + ' 110 ' +
+        cx + ' 94 C' + (cx + 6) + ' 110 ' + (cx + 14) + ' 116 ' + (cx + 14) + ' 138 Z" ' + F + '/>';
+      s += '<rect x="' + (cx - 17) + '" y="176" width="34" height="9" ' + F + '/>';
+      s += '<rect x="' + (cx - 10) + '" y="138" width="20" height="128" ' + F + '/>';
+    });
+    /* ground line + corner stars */
+    s += '<rect x="66" y="266" width="268" height="5" ' + F + '/>';
+    s += starSVG(58, 62, 13, F);
+    s += starSVG(342, 62, 13, F);
+    s += starSVG(52, 232, 9, 'fill="#ffd166" opacity="0.75"');
+    s += starSVG(348, 232, 9, 'fill="#ffd166" opacity="0.75"');
+    return s + '</svg>';
+  }
+
+  /* Cover ornament: eight-pointed star medallion inside a thin
+     ring, with a smaller star outline at its heart and corner
+     stars. */
+  function starMedallionSVG() {
+    var s = '<svg class="deco-svg ornament-star" viewBox="0 0 400 300" aria-hidden="true">';
+    var F = 'fill="#ffd166"';
+    s += '<circle cx="200" cy="150" r="112" fill="none" stroke="#ffd166" stroke-width="3"/>';
+    s += '<circle cx="200" cy="150" r="103" fill="none" stroke="#ffd166" stroke-width="1.5" opacity="0.7"/>';
+    s += '<polygon points="' + star8Points(200, 150, 92, 92 * 0.62) + '" ' + F + '/>';
+    s += '<polygon points="' + star8Points(200, 150, 52, 52 * 0.62) + '" fill="none" stroke="#ffd166" stroke-width="4"/>';
+    s += '<circle cx="200" cy="150" r="9" ' + F + '/>';
+    s += starSVG(52, 48, 12, F);
+    s += starSVG(348, 48, 12, F);
+    s += starSVG(52, 252, 12, F);
+    s += starSVG(348, 252, 12, F);
+    return s + '</svg>';
+  }
+
+  /* The original cover ornament: crescent + fanoos lantern + stars.
+     Also the divider / Eid / certificate ornament (no argument). */
+  function decoSVG(ornament, color) {
+    if (ornament === 'mosque') return paint(mosqueSVG(), color);
+    if (ornament === 'star') return paint(starMedallionSVG(), color);
+    var s = '<svg class="deco-svg ornament-lantern" viewBox="0 0 400 300" aria-hidden="true">';
     s += '<path d="' + crescentD(130, 130, 95) + '" fill="#ffd166"/>';
     s += starSVG(215, 70, 20, 'fill="#ffd166"');
     s += starSVG(60, 235, 12, 'fill="#ffd166" opacity="0.75"');
@@ -131,7 +208,28 @@
     s += '<path d="M274 196 L306 196 L290 226 Z"/>';
     s += '</g>';
     s += '<circle cx="290" cy="150" r="13" fill="#ffd166"/>';
-    return s + '</svg>';
+    return paint(s + '</svg>', color);
+  }
+
+  /* Subtle geometric pattern layer for the cover: a lattice of
+     small eight-pointed star outlines + dots in the palette's
+     deco colour, faded by styles.css (.cover-pattern opacity).
+     Absolutely positioned by CSS, so it never affects the printed
+     layout. viewBox matches a Letter sheet at 96dpi; 'slice'
+     crops it gracefully on A4. */
+  function coverPatternSVG(color) {
+    var s = '<svg class="cover-pattern-svg" viewBox="0 0 816 1056" preserveAspectRatio="xMidYMid slice" aria-hidden="true">';
+    for (var row = 0; row < 9; row++) {
+      for (var col = 0; col < 7; col++) {
+        var cx = 68 + col * 120 + (row % 2 ? 60 : 0);
+        var cy = 68 + row * 120;
+        if (cx > 800) continue;
+        s += '<polygon points="' + star8Points(cx, cy, 17, 17 * 0.62) +
+          '" fill="none" stroke="#ffd166" stroke-width="1.6"/>';
+        s += '<circle cx="' + (cx + 60) + '" cy="' + (cy + 60) + '" r="2.6" fill="#ffd166"/>';
+      }
+    }
+    return paint(s + '</svg>', color);
   }
 
   var SW = 'stroke="#14232b" stroke-width="7" fill="#ffffff" stroke-linejoin="round" stroke-linecap="round"';
@@ -269,8 +367,16 @@
   /* ---------- page bodies ---------- */
 
   function coverBody(page, ctx) {
-    var h = '<div class="cover-inner">';
-    h += decoSVG();
+    /* decorative overlays first (pattern + double-line frame) —
+       CSS positions them absolutely inside the sheet and lifts
+       .cover-inner above them; neither affects content flow.
+       The artwork is drawn in the chosen palette's deco colour. */
+    var design = ctx.coverDesign || RP.coverDesign(RP.DEFAULT_COVER_DESIGN);
+    var deco = RP.COVER_PALETTES[design.palette].deco;
+    var h = '<div class="cover-pattern">' + coverPatternSVG(deco) + '</div>';
+    h += '<div class="cover-frame"></div>';
+    h += '<div class="cover-inner">';
+    h += decoSVG(design.ornament, deco);
     h += '<h1 class="cover-title">' + L(ctx, 'coverTitle') + '</h1>';
     h += '<p class="cover-year">' + L(ctx, 'coverYear') + '</p>';
     h += '<div class="cover-name"><span class="cover-name-label">' + L(ctx, 'belongsTo') + '</span>';
@@ -569,7 +675,8 @@
     esc: esc, mkCtx: mkCtx, N: N, L: L, S: S,
     pageBodyHTML: pageBodyHTML, pageHTML: pageHTML,
     coloringSVG: coloringSVG, decoSVG: decoSVG,
-    crescentD: crescentD, starPoints: starPoints,
+    coverPatternSVG: coverPatternSVG,
+    crescentD: crescentD, starPoints: starPoints, star8Points: star8Points,
     PRAYERS: PRAYERS
   };
 
