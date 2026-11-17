@@ -47,7 +47,25 @@
     var en = fill(s.en, vars), ar = fill(s.ar, vars);
     if (ctx.lang === 'en') return esc(en);
     if (ctx.lang === 'ar') return esc(ar);
+    if (ar === en) return esc(en); // language-neutral text (e.g. the brand) prints once
     return '<span class="l-ar">' + esc(ar) + '</span> <span class="l-en">' + esc(en) + '</span>';
+  }
+
+  /* Bilingual DISPLAY lines (cover, kids divider, certificate): the
+   * Arabic and English stacked as separate lines, each in its own
+   * direction — the same pattern as the deed cards (.card-ar/.card-en).
+   * A single mixed-direction line is fragile in print engines: the
+   * line can spill off the sheet and ending punctuation (!, .) can
+   * jump to the wrong side. Stacked lines cannot do either. */
+  function LStack(ctx, key, vars) {
+    var s = DATA.STRINGS[key];
+    if (!s) return key;
+    var en = fill(s.en, vars), ar = fill(s.ar, vars);
+    if (ctx.lang === 'en') return esc(en);
+    if (ctx.lang === 'ar') return esc(ar);
+    if (ar === en) return esc(en);
+    return '<span class="bi-ar" dir="rtl" lang="ar">' + esc(ar) + '</span>' +
+      '<span class="bi-en" dir="ltr">' + esc(en) + '</span>';
   }
 
   /* One-language string (for tests + places that must not stack). */
@@ -260,7 +278,7 @@
       ? '<span class="cover-name-value">' + esc(ctx.name) + '</span>'
       : '<span class="wline cover-name-line"></span>';
     h += '</div>';
-    h += '<div class="moon-note">' + L(ctx, 'moonNote') + '</div>';
+    h += '<div class="moon-note">' + LStack(ctx, 'moonNote') + '</div>';
     h += '<p class="cover-brand">' + L(ctx, 'brand') + '</p>';
     return h + '</div>';
   }
@@ -465,9 +483,9 @@
 
   function kidsDividerBody(page, ctx) {
     return '<div class="cover-inner">' + decoSVG() +
-      '<h1 class="cover-title">' + L(ctx, 'kidsDivider') + '</h1>' +
-      '<p class="cover-sub">' + L(ctx, 'kidsDividerSub') + '</p>' +
-      '<p class="cover-brand">' + L(ctx, 'brand') + '</p></div>';
+      '<h1 class="cover-title">' + LStack(ctx, 'kidsDivider') + '</h1>' +
+      '<p class="cover-sub">' + LStack(ctx, 'kidsDividerSub') + '</p>' +
+      '<p class="cover-brand">' + LStack(ctx, 'brand') + '</p></div>';
   }
 
   function kidsChartBody(page, ctx) {
@@ -517,14 +535,14 @@
   function certificateBody(page, ctx) {
     var h = '<div class="cert-inner">';
     h += decoSVG();
-    h += '<h1 class="cover-title">' + L(ctx, 'certTitle') + '</h1>';
-    h += '<p class="cert-presented">' + L(ctx, 'certPresented') + '</p>';
+    h += '<h1 class="cover-title">' + LStack(ctx, 'certTitle') + '</h1>';
+    h += '<p class="cert-presented">' + LStack(ctx, 'certPresented') + '</p>';
     h += ctx.name
       ? '<p class="cert-name">' + esc(ctx.name) + '</p>'
       : '<div class="cert-name-line"></div>';
-    h += '<p class="cert-for">' + L(ctx, 'certFor') + '</p>';
-    h += '<p class="cert-welldone">' + L(ctx, 'certWellDone') + '</p>';
-    h += '<p class="cover-brand">' + L(ctx, 'brand') + '</p>';
+    h += '<p class="cert-for">' + LStack(ctx, 'certFor') + '</p>';
+    h += '<p class="cert-welldone">' + LStack(ctx, 'certWellDone') + '</p>';
+    h += '<p class="cover-brand">' + LStack(ctx, 'brand') + '</p>';
     return h + '</div>';
   }
 
