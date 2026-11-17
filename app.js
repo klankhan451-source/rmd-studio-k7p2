@@ -55,6 +55,7 @@ if (typeof module !== 'undefined' && module.exports) {
 
   var NAME_KEY = 'ramadan_license_name';
   var CODE_KEY = 'ramadan_license_code';
+  var THEME_KEY = 'ramadan_cover_theme';
   var appStarted = false;
 
   function unlock() {
@@ -145,6 +146,7 @@ if (typeof module !== 'undefined' && module.exports) {
       lang: $('pl-lang').value,
       numerals: $('pl-numerals').value,
       paper: $('pl-paper').value,
+      coverTheme: $('pl-theme') ? $('pl-theme').value : 'midnight',
       includeKids: $('pl-kids').checked,
       name: $('pl-name').value
     };
@@ -175,6 +177,22 @@ if (typeof module !== 'undefined' && module.exports) {
 
   function initApp() {
     BookBuilder.init(build);
+    /* cover design: restore the buyer's saved choice (if it is
+       still one of the offered designs) and remember changes */
+    var themeSel = $('pl-theme');
+    if (themeSel) {
+      try {
+        var savedTheme = localStorage.getItem(THEME_KEY);
+        if (savedTheme) {
+          for (var i = 0; i < themeSel.options.length; i++) {
+            if (themeSel.options[i].value === savedTheme) { themeSel.value = savedTheme; break; }
+          }
+        }
+      } catch (e) { /* private mode */ }
+      themeSel.addEventListener('change', function () {
+        try { localStorage.setItem(THEME_KEY, themeSel.value); } catch (e) { /* ignore */ }
+      });
+    }
     /* changing the start date or language re-labels the hint */
     $('pl-start').addEventListener('change', function () {
       var v = $('pl-start').value;
