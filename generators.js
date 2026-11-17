@@ -253,7 +253,12 @@
         bookmarks: extras.bookmarks === true,
         notes: extras.notes === true,
         quranDuas: extras.quranDuas === true,
-        surahTracker: extras.surahTracker === true
+        surahTracker: extras.surahTracker === true,
+        /* Learn extras (2026-11-17): the printable prep checklist
+           + Quran reading plan pages — OFF by default like every
+           extra, so the default book is unchanged. */
+        prepChecklist: extras.prepChecklist === true,
+        readingPlan: extras.readingPlan === true
       }
     };
   }
@@ -339,6 +344,11 @@
       pages.push({ type: 'notes' });
       pages.push({ type: 'notes' });
     }
+    /* Learn extras (2026-11-17): one page each — the Get Ready
+       prep checklist and the Quran Reading Plan — appended last,
+       only when the buyer ticks them. */
+    if (spec.extras.prepChecklist) pages.push({ type: 'prep' });
+    if (spec.extras.readingPlan) pages.push({ type: 'readplan' });
 
     return pages;
   }
