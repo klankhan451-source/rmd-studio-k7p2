@@ -102,6 +102,24 @@ body {
 .btn-gold { background: #ffd166; border-color: #e0aa2e; color: #14232b; }
 .btn-gold:hover:not(:disabled) { background: #ffca3a; }
 .hint { font-size: 13px; color: #48626e; line-height: 1.5; margin: 6px 0 10px; }
+
+/* ---------- Cover design picker (settings panel) ---------- */
+.picker-block { margin-bottom: 14px; }
+.picker-title { display: block; font-weight: 600; font-size: 14px; margin-bottom: 8px; color: #33505c; }
+.cover-picker { display: grid; grid-template-columns: repeat(3, 1fr); gap: 8px; }
+.design-card {
+  border: 2px solid #c8d6dc; border-radius: 10px; background: #fff;
+  padding: 5px; cursor: pointer; font-family: inherit; text-align: center;
+}
+.design-card:hover { border-color: #2c5364; }
+.design-card.selected { border-color: #b98a1d; box-shadow: 0 0 0 2px #ffd166; background: #fffaf0; }
+.design-swatch {
+  display: flex; align-items: center; justify-content: center;
+  height: 40px; border-radius: 6px; margin-bottom: 4px;
+  border: 1px solid rgba(20, 35, 43, .18);
+}
+.design-swatch svg { display: block; }
+.design-name { display: block; font-size: 10.5px; font-weight: 600; color: #33505c; line-height: 1.25; }
 .stage { min-height: 300px; }
 .output .placeholder { color: #7d97a1; text-align: center; padding: 60px 10px; }
 .site-footer { text-align: center; color: #7d97a1; font-size: 13px; padding: 0 20px 26px; }
@@ -176,26 +194,42 @@ body {
   --cover-note-bg: #fffaf0;
   background: var(--cover-bg);
 }
-.cover-theme-midnight { /* original design = the defaults above */ }
-.cover-theme-emerald {
+/* 30 designs = 10 palettes x 3 ornaments. The ornament lives in
+   the SVG markup (render.js); each palette's three design classes
+   share one variable block. Palette colours mirror
+   RP.COVER_PALETTES in generators.js (locked by tests). */
+.cover-theme-midnight-lantern, .cover-theme-midnight-mosque, .cover-theme-midnight-star {
+  /* the original design, restated: same values as the defaults */
+  --cover-bg: #ffffff;
+  --cover-title: #0f2027;
+  --cover-accent: #b98a1d;
+  --cover-deco: #ffd166;
+  --cover-sub: #48626e;
+  --cover-name: #0f2027;
+  --cover-line: #7d97a1;
+  --cover-note-bg: #fffaf0;
+}
+.cover-theme-emerald-lantern, .cover-theme-emerald-mosque, .cover-theme-emerald-star {
   --cover-bg: linear-gradient(155deg, #03231b, #065f46);
   --cover-title: #ffd166;
   --cover-accent: #ffd166;
+  --cover-deco: #ffd166;
   --cover-sub: #cdeee0;
   --cover-name: #fff6dd;
   --cover-line: #ffd166;
   --cover-note-bg: #0a4a38;
 }
-.cover-theme-purple {
+.cover-theme-purple-lantern, .cover-theme-purple-mosque, .cover-theme-purple-star {
   --cover-bg: linear-gradient(155deg, #1e0a3d, #4c1d95);
   --cover-title: #ffd166;
   --cover-accent: #ffd166;
+  --cover-deco: #ffd166;
   --cover-sub: #e2d6f8;
   --cover-name: #fff6dd;
   --cover-line: #ffd166;
   --cover-note-bg: #2d1454;
 }
-.cover-theme-sand {
+.cover-theme-sand-lantern, .cover-theme-sand-mosque, .cover-theme-sand-star {
   --cover-bg: linear-gradient(155deg, #fbf3e1, #f0dcb4);
   --cover-title: #5b3a1e;
   --cover-accent: #9a6a14;
@@ -205,18 +239,100 @@ body {
   --cover-line: #b98a1d;
   --cover-note-bg: #fffaf0;
 }
-/* The cover ornament (crescent, stars, lantern) is drawn in the
-   original gold #ffd166 via SVG presentation attributes; a CSS
-   fill/stroke declaration beats a presentation attribute, so a
-   themed cover recolours its ornament through the variable. */
-.cover-theme-midnight .deco-svg [fill="#ffd166"],
-.cover-theme-emerald .deco-svg [fill="#ffd166"],
-.cover-theme-purple .deco-svg [fill="#ffd166"],
-.cover-theme-sand .deco-svg [fill="#ffd166"] { fill: var(--cover-deco); }
-.cover-theme-midnight .deco-svg [stroke="#ffd166"],
-.cover-theme-emerald .deco-svg [stroke="#ffd166"],
-.cover-theme-purple .deco-svg [stroke="#ffd166"],
-.cover-theme-sand .deco-svg [stroke="#ffd166"] { stroke: var(--cover-deco); }
+.cover-theme-burgundy-lantern, .cover-theme-burgundy-mosque, .cover-theme-burgundy-star {
+  --cover-bg: linear-gradient(155deg, #2b0a12, #6d1226);
+  --cover-title: #f6d38a;
+  --cover-accent: #e8b34b;
+  --cover-deco: #f0c35c;
+  --cover-sub: #f3d9d7;
+  --cover-name: #fff3e0;
+  --cover-line: #e8b34b;
+  --cover-note-bg: #420d1b;
+}
+.cover-theme-teal-lantern, .cover-theme-teal-mosque, .cover-theme-teal-star {
+  --cover-bg: linear-gradient(155deg, #02262e, #0a5c63);
+  --cover-title: #ffd166;
+  --cover-accent: #ffd166;
+  --cover-deco: #ffd166;
+  --cover-sub: #cdeef2;
+  --cover-name: #fff6dd;
+  --cover-line: #ffd166;
+  --cover-note-bg: #07444c;
+}
+.cover-theme-charcoal-lantern, .cover-theme-charcoal-mosque, .cover-theme-charcoal-star {
+  --cover-bg: linear-gradient(155deg, #101012, #2e2e33);
+  --cover-title: #f5c542;
+  --cover-accent: #d9a62e;
+  --cover-deco: #ffd166;
+  --cover-sub: #d8d8dc;
+  --cover-name: #fff6dd;
+  --cover-line: #d9a62e;
+  --cover-note-bg: #1d1d21;
+}
+.cover-theme-rose-lantern, .cover-theme-rose-mosque, .cover-theme-rose-star {
+  --cover-bg: linear-gradient(155deg, #fdf1ec, #f6d7ce);
+  --cover-title: #822659;
+  --cover-accent: #b76e79;
+  --cover-deco: #d99a5c;
+  --cover-sub: #8a5a64;
+  --cover-name: #822659;
+  --cover-line: #b76e79;
+  --cover-note-bg: #fff8f4;
+}
+.cover-theme-olive-lantern, .cover-theme-olive-mosque, .cover-theme-olive-star {
+  --cover-bg: linear-gradient(155deg, #232b16, #4a5d23);
+  --cover-title: #ffe9a8;
+  --cover-accent: #ffd166;
+  --cover-deco: #ffd166;
+  --cover-sub: #e3ebc8;
+  --cover-name: #fff6dd;
+  --cover-line: #ffd166;
+  --cover-note-bg: #333f1d;
+}
+.cover-theme-navy-lantern, .cover-theme-navy-mosque, .cover-theme-navy-star {
+  --cover-bg: linear-gradient(155deg, #060d24, #16295c);
+  --cover-title: #e8edf7;
+  --cover-accent: #c0c8d8;
+  --cover-deco: #d7deeb;
+  --cover-sub: #c3cee6;
+  --cover-name: #ffffff;
+  --cover-line: #c0c8d8;
+  --cover-note-bg: #101c40;
+}
+/* The cover ornaments + pattern are drawn by render.js in the
+   palette's deco colour, baked into the SVG markup (print
+   engines do not reliably recolour SVG presentation attributes
+   from CSS). These rules remain as a browser-side backstop for
+   any artwork that still carries the original gold #ffd166:
+   on an unthemed cover page (the kids divider) --cover-deco is
+   the default #ffd166, so they are a no-op there, and the
+   certificate / Eid pages are not cover pages at all. */
+/* The English half of bilingual cover lines (.l-en) has a fixed
+   slate colour for body pages; on the cover it must follow the
+   palette, or dark designs lose their title contrast. The kids
+   divider is unthemed, so it keeps the original slate. */
+.cover-page .l-en { color: var(--cover-sub); }
+.cover-page .deco-svg [fill="#ffd166"] { fill: var(--cover-deco); }
+.cover-page .deco-svg [stroke="#ffd166"] { stroke: var(--cover-deco); }
+.cover-page .cover-pattern-svg [stroke="#ffd166"] { stroke: var(--cover-deco); }
+.cover-page .cover-pattern-svg [fill="#ffd166"] { fill: var(--cover-deco); }
+
+/* Richer cover dressing (all 30 designs): a subtle geometric
+   pattern layer + an elegant thin double-line frame. Both are
+   absolutely positioned inside the sheet — decorative overlays
+   only, no content flow or measured size changes — and
+   .cover-inner is lifted above them. */
+.cover-pattern {
+  position: absolute; inset: 0; z-index: 0;
+  opacity: .12; pointer-events: none;
+}
+.cover-pattern-svg { display: block; width: 100%; height: 100%; }
+.cover-frame {
+  position: absolute; inset: 22px; z-index: 0;
+  border: 3px double var(--cover-accent, #b98a1d); border-radius: 4px;
+  pointer-events: none;
+}
+.cover-inner { position: relative; z-index: 1; }
 
 .cover-inner, .cert-inner { margin: auto; text-align: center; width: 100%; }
 .deco-svg { display: block; margin: 0 auto; }
