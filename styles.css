@@ -950,6 +950,10 @@ body {
 }
 .dua-ar { font-size: 18px; line-height: 1.7; margin: 0; color: #14232b; text-align: right; }
 .dua-en { font-size: 13px; line-height: 1.45; margin: 5px 0 0; color: #33505c; direction: ltr; unicode-bidi: isolate; }
+/* Urdu dua translations: Arabic-script RTL text inside the
+   translation paragraph slot (the .dua-en rule above forces ltr,
+   which would scramble Urdu bidi — this rule wins by order). */
+.dua-en.dua-rtl { direction: rtl; text-align: right; font-size: 14px; line-height: 1.8; }
 .dua-src { font-size: 11.5px; color: var(--theme-accent, #b98a1d); font-weight: 700; margin: 5px 0 0; }
 
 /* ---------- Weekly ---------- */
