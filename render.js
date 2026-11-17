@@ -25,13 +25,22 @@
 
   /* ---------- context + labels ---------- */
 
+  /* Page direction: Arabic, bilingual and Urdu books are RTL;
+     English and the other added languages (bn/tr/ms/id/fr) LTR. */
+  function langDir(lang) {
+    return (lang === 'ar' || lang === 'bi' || lang === 'ur') ? 'rtl' : 'ltr';
+  }
+
   function mkCtx(spec) {
     spec = spec || {};
     var designId = RP.migrateCoverTheme(spec.coverTheme);
     return {
       lang: spec.lang, numerals: spec.numerals, name: spec.name || '',
       subtitle: spec.subtitle || '',
-      dir: spec.lang === 'en' ? 'ltr' : 'rtl',
+      dir: langDir(spec.lang),
+      /* Dates print in the book's own language; bilingual books
+         keep English dates exactly as before. */
+      dateLang: spec.lang === 'bi' ? 'en' : spec.lang,
       coverTheme: designId,
       coverDesign: RP.coverDesign(designId)
     };
@@ -45,13 +54,22 @@
     });
   }
 
+  /* The entry's text in the book's language: bilingual books use
+     the English field (Arabic is interleaved separately by the
+     callers); every other language uses its own field, falling
+     back to English if a field were ever missing. */
+  function T(ctx, entry) {
+    if (!entry) return '';
+    if (ctx.lang === 'bi') return entry.en;
+    return entry[ctx.lang] != null ? entry[ctx.lang] : entry.en;
+  }
+
   /* Label in the active language mode. */
   function L(ctx, key, vars) {
     var s = DATA.STRINGS[key];
     if (!s) return key;
+    if (ctx.lang !== 'bi') return esc(fill(T(ctx, s), vars));
     var en = fill(s.en, vars), ar = fill(s.ar, vars);
-    if (ctx.lang === 'en') return esc(en);
-    if (ctx.lang === 'ar') return esc(ar);
     if (ar === en) return esc(en); // language-neutral text (e.g. the brand) prints once
     return '<span class="l-ar">' + esc(ar) + '</span> <span class="l-en">' + esc(en) + '</span>';
   }
@@ -65,9 +83,8 @@
   function LStack(ctx, key, vars) {
     var s = DATA.STRINGS[key];
     if (!s) return key;
+    if (ctx.lang !== 'bi') return esc(fill(T(ctx, s), vars));
     var en = fill(s.en, vars), ar = fill(s.ar, vars);
-    if (ctx.lang === 'en') return esc(en);
-    if (ctx.lang === 'ar') return esc(ar);
     if (ar === en) return esc(en);
     return '<span class="bi-ar" dir="rtl" lang="ar">' + esc(ar) + '</span>' +
       '<span class="bi-en" dir="ltr">' + esc(en) + '</span>';
@@ -77,8 +94,38 @@
   function S(ctx, key, vars) {
     var s = DATA.STRINGS[key];
     if (!s) return key;
-    return fill(ctx.lang === 'ar' ? s.ar : s.en, vars);
+    return fill(T(ctx, s), vars);
   }
+
+  /* A list item's text as HTML: single-language books (incl. the
+     added languages) print their own text; bilingual books print
+     the Arabic + English span pair — inline (l-ar/l-en) or, with
+     stacked=true, the deed-card pair (card-ar/card-en). */
+  function pickHTML(ctx, item, stacked) {
+    if (ctx.lang !== 'bi') return esc(T(ctx, item));
+    if (stacked) {
+      return '<span class="card-ar" dir="rtl">' + esc(item.ar) + '</span>' +
+        '<span class="card-en">' + esc(item.en) + '</span>';
+    }
+    return '<span class="l-ar">' + esc(item.ar) + '</span> <span class="l-en">' + esc(item.en) + '</span>';
+  }
+
+  /* A dua's translation paragraph (the Arabic original is printed
+     separately by the callers and always shown). Arabic-only books
+     print nothing; Urdu translations are RTL text and need the
+     .dua-rtl class — the .dua-en class forces direction:ltr in
+     CSS, which would break Urdu bidi. */
+  function duaPara(ctx, entry, extraCls) {
+    if (ctx.lang === 'ar') return '';
+    var cls = 'dua-en' + (extraCls ? ' ' + extraCls : '');
+    var dir = 'ltr';
+    if (ctx.lang === 'ur') { cls += ' dua-rtl'; dir = 'rtl'; }
+    return '<p class="' + cls + '" dir="' + dir + '">' + esc(T(ctx, entry)) + '</p>';
+  }
+
+  /* The colouring pages' name-line label per language (the
+     bilingual pair is built inline at the call site). */
+  var NAME_LABEL = { bn: 'নাম', ur: 'نام', tr: 'İsim', ms: 'Nama', id: 'Nama', fr: 'Nom' };
 
   function cb(cls) { return '<span class="cb' + (cls ? ' ' + cls : '') + '"></span>'; }
   function wline() { return '<span class="wline"></span>'; }
@@ -1136,7 +1183,7 @@
     for (var d = 1; d <= 30; d++) {
       var date = RP.dateForDay(page.startDate, d);
       h += '<div class="ov-card"><div class="ov-day">' + L(ctx, 'dayOfRamadan', { n: N(ctx, d) }) + '</div>' +
-        '<div class="ov-date">' + esc(RP.formatDateShort(date, ctx.lang === 'ar' ? 'ar' : 'en', ctx.numerals)) + '</div>' +
+        '<div class="ov-date">' + esc(RP.formatDateShort(date, ctx.dateLang, ctx.numerals)) + '</div>' +
         '<div class="ov-checks">' +
         '<span class="ov-check">' + cb('sm') + L(ctx, 'fasted') + '</span>' +
         '<span class="ov-check">' + cb('sm') + L(ctx, 'prayers') + '</span>' +
@@ -1149,7 +1196,7 @@
   function duaBlock(ctx, dua, titleKey) {
     var h = '<section class="blk dua-blk">' + blkTitle(ctx, titleKey || 'duaOfDay');
     h += '<p class="dua-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
-    if (ctx.lang !== 'ar') h += '<p class="dua-en" dir="ltr">' + esc(dua.en) + '</p>';
+    h += duaPara(ctx, dua, '');
     h += '<p class="dua-src">' + esc(dua.src) + '</p></section>';
     return h;
   }
@@ -1159,7 +1206,7 @@
   function dailyBody(page, ctx) {
     var h = '<div class="pg-head daily-head"><h2 class="pg-title">' +
       L(ctx, 'dayOfRamadan', { n: N(ctx, page.day) }) + '</h2>' +
-      '<div class="pg-sub">' + esc(RP.formatDate(page.date, ctx.lang === 'ar' ? 'ar' : 'en', ctx.numerals)) + '</div></div>';
+      '<div class="pg-sub">' + esc(RP.formatDate(page.date, ctx.dateLang, ctx.numerals)) + '</div></div>';
 
     h += '<div class="times-row">' +
       '<div class="field"><span class="flabel">' + L(ctx, 'suhoorEnds') + '</span>' + wline() + '</div>' +
@@ -1203,15 +1250,15 @@
     var from = RP.dateForDay(page.startDate, page.fromDay);
     var to = RP.dateForDay(page.startDate, page.toDay);
     var sub = L(ctx, 'weekDays', { a: N(ctx, page.fromDay), b: N(ctx, page.toDay) }) + ' · ' +
-      esc(RP.formatDateShort(from, ctx.lang === 'ar' ? 'ar' : 'en', ctx.numerals)) + ' – ' +
-      esc(RP.formatDateShort(to, ctx.lang === 'ar' ? 'ar' : 'en', ctx.numerals));
+      esc(RP.formatDateShort(from, ctx.dateLang, ctx.numerals)) + ' – ' +
+      esc(RP.formatDateShort(to, ctx.dateLang, ctx.numerals));
     var h = pageHead(ctx, L(ctx, 'week', { n: N(ctx, page.week) }), sub);
     h += '<div class="week-rows">';
     for (var d = page.fromDay; d <= page.toDay; d++) {
       var date = RP.dateForDay(page.startDate, d);
       h += '<div class="week-row"><span class="week-day">' +
         L(ctx, 'dayOfRamadan', { n: N(ctx, d) }) + '<span class="week-date">' +
-        esc(RP.formatDateShort(date, ctx.lang === 'ar' ? 'ar' : 'en', ctx.numerals)) + '</span></span>' +
+        esc(RP.formatDateShort(date, ctx.dateLang, ctx.numerals)) + '</span></span>' +
         '<span class="week-focus"><span class="flabel">' + L(ctx, 'focusLine') + '</span>' + wline() + '</span>' +
         '<span class="week-checks">' + cb('sm') + cb('sm') + cb('sm') + '</span></div>';
     }
@@ -1257,8 +1304,7 @@
     h += '</tr></thead><tbody>';
     DATA.LAST_TEN_ACTS.forEach(function (act) {
       h += '<tr><td class="act-name">' +
-        (ctx.lang === 'en' ? esc(act.en) : ctx.lang === 'ar' ? esc(act.ar)
-          : '<span class="l-ar">' + esc(act.ar) + '</span> <span class="l-en">' + esc(act.en) + '</span>') + '</td>';
+        pickHTML(ctx, act) + '</td>';
       for (var c = 21; c <= 30; c++) h += '<td class="night-cell">' + cb('sm') + '</td>';
       h += '</tr>';
     });
@@ -1275,8 +1321,7 @@
     h += '</tr></thead><tbody>';
     DATA.DEEDS.forEach(function (deed) {
       h += '<tr><td class="deed-name">' +
-        (ctx.lang === 'en' ? esc(deed.en) : ctx.lang === 'ar' ? esc(deed.ar)
-          : '<span class="l-ar">' + esc(deed.ar) + '</span> <span class="l-en">' + esc(deed.en) + '</span>') + '</td>';
+        pickHTML(ctx, deed) + '</td>';
       for (var c = 1; c <= 30; c++) h += '<td class="deed-cell"></td>';
       h += '</tr>';
     });
@@ -1289,8 +1334,8 @@
       L(ctx, 'suhoor') + '</th><th>' + L(ctx, 'iftar') + '</th></tr></thead><tbody>';
     for (var d = 1; d <= 30; d++) {
       var date = RP.dateForDay(page.startDate, d);
-      h += '<tr><td class="m-day"' + (ctx.lang === 'ar' ? '' : ' style="direction:ltr;unicode-bidi:isolate;text-align:left"') + '>' + N(ctx, d) + '<span class="m-date">' +
-        esc(RP.formatDateShort(date, ctx.lang === 'ar' ? 'ar' : 'en', ctx.numerals)) +
+      h += '<tr><td class="m-day"' + (ctx.dateLang === 'ar' || ctx.dateLang === 'ur' ? '' : ' style="direction:ltr;unicode-bidi:isolate;text-align:left"') + '>' + N(ctx, d) + '<span class="m-date">' +
+        esc(RP.formatDateShort(date, ctx.dateLang, ctx.numerals)) +
         '</span></td><td></td><td></td></tr>';
     }
     return h + '</tbody></table>';
@@ -1313,8 +1358,7 @@
     h += '<div class="eid-grid">';
     DATA.EID_PREP.forEach(function (item) {
       h += '<div class="eid-item">' + cb() +
-        (ctx.lang === 'en' ? esc(item.en) : ctx.lang === 'ar' ? esc(item.ar)
-          : '<span class="l-ar">' + esc(item.ar) + '</span> <span class="l-en">' + esc(item.en) + '</span>') + '</div>';
+        pickHTML(ctx, item) + '</div>';
     });
     h += '</div>';
     h += '<section class="blk">' + blkTitle(ctx, 'notes') + ruled() + ruled() + ruled() + '</section>';
@@ -1365,8 +1409,7 @@
       h += '<div class="deed-card"><div class="card-head"><span class="card-day">' +
         L(ctx, 'cardDay', { n: N(ctx, day) }) + '</span><span class="card-star">☆</span></div>' +
         '<p class="card-text">' +
-        (ctx.lang === 'en' ? esc(deed.en) : ctx.lang === 'ar' ? esc(deed.ar)
-          : '<span class="card-ar" dir="rtl">' + esc(deed.ar) + '</span><span class="card-en">' + esc(deed.en) + '</span>') +
+        pickHTML(ctx, deed, true) +
         '</p></div>';
     });
     return h + '</div>';
@@ -1375,13 +1418,13 @@
   function coloringBody(page, ctx) {
     var name = DATA.COLORING_NAMES[page.designId] || { en: '', ar: '' };
     var h = '<div class="pg-head"><h2 class="pg-title coloring-name">' +
-      (ctx.lang === 'en' ? esc(name.en) : ctx.lang === 'ar' ? esc(name.ar)
-        : '<span class="l-ar">' + esc(name.ar) + '</span> <span class="l-en">' + esc(name.en) + '</span>') +
+      pickHTML(ctx, name) +
       '</h2><div class="pg-sub">' + L(ctx, 'coloringTitle') + '</div></div>';
     h += coloringSVG(page.designId);
     h += '<div class="field coloring-field"><span class="flabel">' +
       (ctx.lang === 'en' ? 'Name' : ctx.lang === 'ar' ? 'الاسم'
-        : '<span class="l-ar">الاسم</span> <span class="l-en">Name</span>') +
+        : ctx.lang === 'bi' ? '<span class="l-ar">الاسم</span> <span class="l-en">Name</span>'
+        : esc(NAME_LABEL[ctx.lang] || 'Name')) +
       '</span>' + wline() + '</div>';
     return h;
   }
@@ -1409,7 +1452,7 @@
     var h = '<div class="dua-card"><div class="dua-card-day">' +
       L(ctx, 'duaCardDay', { n: N(ctx, day) }) + '</div>';
     h += '<p class="dua-ar card-dua-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
-    if (ctx.lang !== 'ar') h += '<p class="dua-en card-dua-en" dir="ltr">' + esc(dua.en) + '</p>';
+    h += duaPara(ctx, dua, 'card-dua-en');
     h += '<p class="dua-src">' + esc(dua.src) + '</p></div>';
     return h;
   }
@@ -1440,7 +1483,7 @@
       '<div class="bm-title">' + L(ctx, 'coverTitle') + '</div>' +
         '<div class="bm-sub">' + L(ctx, 'coverYear') + '</div>',
       '<p class="dua-ar bm-dua" dir="rtl" lang="ar">' + esc(DATA.STRINGS.bookmarkDua.ar) + '</p>' +
-        (ctx.lang !== 'ar' ? '<p class="dua-en bm-dua-en" dir="ltr">' + esc(DATA.STRINGS.bookmarkDua.en) + '</p>' : '') +
+        duaPara(ctx, DATA.STRINGS.bookmarkDua, 'bm-dua-en') +
         '<p class="dua-src">' + L(ctx, 'bookmarkDuaSrc') + '</p>',
       '<div class="bm-motto">' + L(ctx, 'bookmarkMotto') + '</div>',
       '<div class="bm-title">' + L(ctx, 'ramadanMubarak') + '</div>'
@@ -1470,7 +1513,7 @@
     page.duas.forEach(function (dua) {
       h += '<div class="qd-blk"><p class="qd-ref">' + esc(dua.src) + '</p>';
       h += '<p class="dua-ar qd-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
-      if (ctx.lang !== 'ar') h += '<p class="dua-en qd-en" dir="ltr">' + esc(dua.en) + '</p>';
+      h += duaPara(ctx, dua, 'qd-en');
       h += '</div>';
     });
     return h;
