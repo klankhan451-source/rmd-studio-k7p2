@@ -106,10 +106,70 @@
 
   var DEFAULT_START = '2027-02-08';
 
-  /* Selectable cover designs (styles.css carries a cover-theme-*
-   * class with the colours for each). 'midnight' is the original
-   * cover design and stays the default. */
-  var COVER_THEMES = ['midnight', 'emerald', 'purple', 'sand'];
+  /* ---------- Cover designs ----------
+   * 30 selectable designs = 10 colour palettes x 3 ornaments.
+   * styles.css carries the matching cover-theme-<id> classes with
+   * the palette colours as CSS variables; render.js draws the
+   * ornament SVG. The palette colours below feed the settings
+   * picker swatches and MUST match styles.css (locked by tests).
+   * 'midnight' is the original palette and 'midnight-lantern' —
+   * its original ornament — stays the default design. */
+  var COVER_PALETTES = {
+    midnight: { name: 'Midnight Gold', bg: '#ffffff',
+      grad: 'linear-gradient(155deg, #ffffff, #ffffff)', deco: '#ffd166', ink: '#0f2027' },
+    emerald: { name: 'Emerald Night', bg: 'linear-gradient(155deg, #03231b, #065f46)',
+      grad: 'linear-gradient(155deg, #03231b, #065f46)', deco: '#ffd166', ink: '#ffd166' },
+    purple: { name: 'Royal Purple', bg: 'linear-gradient(155deg, #1e0a3d, #4c1d95)',
+      grad: 'linear-gradient(155deg, #1e0a3d, #4c1d95)', deco: '#ffd166', ink: '#ffd166' },
+    sand: { name: 'Desert Sand', bg: 'linear-gradient(155deg, #fbf3e1, #f0dcb4)',
+      grad: 'linear-gradient(155deg, #fbf3e1, #f0dcb4)', deco: '#dfa32e', ink: '#5b3a1e' },
+    burgundy: { name: 'Burgundy Wine', bg: 'linear-gradient(155deg, #2b0a12, #6d1226)',
+      grad: 'linear-gradient(155deg, #2b0a12, #6d1226)', deco: '#f0c35c', ink: '#f6d38a' },
+    teal: { name: 'Ocean Teal', bg: 'linear-gradient(155deg, #02262e, #0a5c63)',
+      grad: 'linear-gradient(155deg, #02262e, #0a5c63)', deco: '#ffd166', ink: '#ffd166' },
+    charcoal: { name: 'Charcoal Gold', bg: 'linear-gradient(155deg, #101012, #2e2e33)',
+      grad: 'linear-gradient(155deg, #101012, #2e2e33)', deco: '#ffd166', ink: '#f5c542' },
+    rose: { name: 'Rose Blush', bg: 'linear-gradient(155deg, #fdf1ec, #f6d7ce)',
+      grad: 'linear-gradient(155deg, #fdf1ec, #f6d7ce)', deco: '#d99a5c', ink: '#822659' },
+    olive: { name: 'Olive Sage', bg: 'linear-gradient(155deg, #232b16, #4a5d23)',
+      grad: 'linear-gradient(155deg, #232b16, #4a5d23)', deco: '#ffd166', ink: '#ffe9a8' },
+    navy: { name: 'Navy Silver', bg: 'linear-gradient(155deg, #060d24, #16295c)',
+      grad: 'linear-gradient(155deg, #060d24, #16295c)', deco: '#d7deeb', ink: '#e8edf7' }
+  };
+  var COVER_ORNAMENTS = [
+    { id: 'lantern', name: 'Lantern' },
+    { id: 'mosque', name: 'Mosque' },
+    { id: 'star', name: 'Star' }
+  ];
+  var COVER_DESIGNS = [];
+  Object.keys(COVER_PALETTES).forEach(function (p) {
+    COVER_ORNAMENTS.forEach(function (o) {
+      COVER_DESIGNS.push({
+        id: p + '-' + o.id,
+        name: COVER_PALETTES[p].name + ' — ' + o.name,
+        palette: p,
+        ornament: o.id
+      });
+    });
+  });
+  var DEFAULT_COVER_DESIGN = 'midnight-lantern';
+
+  function coverDesign(id) {
+    for (var i = 0; i < COVER_DESIGNS.length; i++) {
+      if (COVER_DESIGNS[i].id === id) return COVER_DESIGNS[i];
+    }
+    return null;
+  }
+
+  /* Accept any of the 30 design ids as-is. Saved values from the
+   * 4-design era are bare palette ids ('midnight', 'emerald',
+   * 'purple', 'sand') — migrate them to that palette's original
+   * (lantern) design. Anything unknown -> the default design. */
+  function migrateCoverTheme(value) {
+    if (coverDesign(value)) return value;
+    if (value && COVER_PALETTES[value]) return value + '-lantern';
+    return DEFAULT_COVER_DESIGN;
+  }
 
   function normalizeSpec(spec) {
     spec = spec || {};
@@ -119,7 +179,7 @@
       lang: ['ar', 'en', 'bi'].indexOf(spec.lang) !== -1 ? spec.lang : 'bi',
       numerals: spec.numerals === 'east' ? 'east' : 'west',
       paper: spec.paper === 'a4' ? 'a4' : 'letter',
-      coverTheme: COVER_THEMES.indexOf(spec.coverTheme) !== -1 ? spec.coverTheme : 'midnight',
+      coverTheme: migrateCoverTheme(spec.coverTheme),
       includeKids: spec.includeKids !== false,
       name: String(spec.name || '').trim()
     };
@@ -181,7 +241,12 @@
 
   var api = {
     DEFAULT_START: DEFAULT_START,
-    COVER_THEMES: COVER_THEMES,
+    COVER_PALETTES: COVER_PALETTES,
+    COVER_ORNAMENTS: COVER_ORNAMENTS,
+    COVER_DESIGNS: COVER_DESIGNS,
+    DEFAULT_COVER_DESIGN: DEFAULT_COVER_DESIGN,
+    coverDesign: coverDesign,
+    migrateCoverTheme: migrateCoverTheme,
     EASTERN: EASTERN,
     toEasternArabic: toEasternArabic,
     num: num,
