@@ -191,10 +191,13 @@ body {
 /* ---------- Book preview (screen) ---------- */
 #book-preview { background: #37474f; padding: 28px 12px; }
 #book-preview[hidden] { display: none; }
-/* Screen only: the sheets are a fixed 816px wide, so on a phone
-   the preview scrolls sideways INSIDE its own box instead of
-   blowing out the page width. @media screen keeps this out of
-   print and out of the WeasyPrint model entirely. */
+/* Screen only: the sheets are a fixed 816px wide. app.js
+   fitBookPreview() zooms them down to fit the preview box on
+   narrow screens; this overflow-x is only a fallback for
+   browsers without CSS zoom, so the preview scrolls sideways
+   INSIDE its own box instead of blowing out the page width.
+   @media screen keeps this out of print and out of the
+   WeasyPrint model entirely. */
 @media screen {
   #book-preview { overflow-x: auto; }
 }
@@ -1039,6 +1042,11 @@ body {
   #app, #lock-screen { display: none !important; }
   #book-preview { display: block !important; background: #fff; padding: 0; }
   .book-page {
+    /* zoom: 1 !important undoes the screen-only fit zoom that
+       app.js fitBookPreview() sets inline on narrow screens —
+       printed sheets are ALWAYS true size. app.js also clears
+       the zoom on 'beforeprint'; this rule is the second lock. */
+    zoom: 1 !important;
     margin: 0; box-shadow: none;
     page-break-after: always; break-after: page;
     page-break-inside: avoid; break-inside: avoid;
