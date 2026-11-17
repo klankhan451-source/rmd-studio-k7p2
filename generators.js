@@ -107,7 +107,8 @@
   var DEFAULT_START = '2027-02-08';
 
   /* ---------- Cover designs ----------
-   * 30 selectable designs = 10 colour palettes x 3 ornaments.
+   * 54 selectable designs = 30 classics (10 colour palettes x 3
+   * ornaments) + 24 scene designs (COVER_SCENES below).
    * styles.css carries the matching cover-theme-<id> classes with
    * the palette colours as CSS variables; render.js draws the
    * ornament SVG. The palette colours below feed the settings
@@ -170,7 +171,32 @@
     { id: 'scene-calligraphy', name: 'Calligraphy — Ramadan', palette: 'navy', scene: 'calligraphy' },
     { id: 'scene-mandala', name: 'Corner Mandala', palette: 'charcoal', scene: 'mandala' },
     { id: 'scene-pastel-skyline', name: 'Pastel Sisters — Skyline', palette: 'rose', scene: 'pastelskyline' },
-    { id: 'scene-pastel-arch', name: 'Pastel Sisters — Arch', palette: 'olive', scene: 'pastelarch' }
+    { id: 'scene-pastel-arch', name: 'Pastel Sisters — Arch', palette: 'olive', scene: 'pastelarch' },
+    /* Second wave (2026-11-17, Gemini design review): eight art
+       families in two colourways each — zellige tilework, moon
+       phases, a botanical mihrab arch, square-Kufic geometry,
+       pressed linen, Iznik florals, a kids' watercolour scene and
+       a soft watercolour wash. One hero motif per cover, the
+       title always on a clean plate, gold only as thin lines;
+       most are light / ink-friendly. Colourways share the family
+       scene renderer (render.js branches on the design id) and
+       the family's scene-inner text position. */
+    { id: 'scene-zellige', name: 'Moroccan Zellige Tiles', palette: 'olive', scene: 'zellige' },
+    { id: 'scene-zellige-teal', name: 'Zellige Tiles — Teal', palette: 'teal', scene: 'zellige' },
+    { id: 'scene-moonphases', name: 'Moon Phases', palette: 'navy', scene: 'moonphases' },
+    { id: 'scene-moonphases-light', name: 'Moon Phases — Ivory', palette: 'navy', scene: 'moonphases' },
+    { id: 'scene-mihrab', name: 'Mihrab Arch — Botanical', palette: 'sand', scene: 'mihrab' },
+    { id: 'scene-mihrab-rose', name: 'Mihrab Arch — Rose', palette: 'rose', scene: 'mihrab' },
+    { id: 'scene-kufic', name: 'Square Kufic Pattern', palette: 'teal', scene: 'kufic' },
+    { id: 'scene-kufic-emerald', name: 'Square Kufic — Emerald', palette: 'emerald', scene: 'kufic' },
+    { id: 'scene-linen', name: 'Pressed Linen — Minimal', palette: 'sand', scene: 'linen' },
+    { id: 'scene-linen-sage', name: 'Pressed Linen — Sage', palette: 'olive', scene: 'linen' },
+    { id: 'scene-iznik', name: 'Iznik Florals', palette: 'navy', scene: 'iznik' },
+    { id: 'scene-iznik-turquoise', name: 'Iznik Florals — Turquoise', palette: 'teal', scene: 'iznik' },
+    { id: 'scene-kids', name: "Kids' Watercolour", palette: 'rose', scene: 'kids' },
+    { id: 'scene-kids-night', name: "Kids' Watercolour — Starry Night", palette: 'navy', scene: 'kids' },
+    { id: 'scene-wash', name: 'Watercolour Wash', palette: 'purple', scene: 'wash' },
+    { id: 'scene-wash-sage', name: 'Watercolour Wash — Sage', palette: 'olive', scene: 'wash' }
   ];
   COVER_DESIGNS = COVER_DESIGNS.concat(COVER_SCENES);
   var DEFAULT_COVER_DESIGN = 'midnight-lantern';
@@ -195,6 +221,7 @@
   function normalizeSpec(spec) {
     spec = spec || {};
     var start = parseISODate(spec.startDate) ? spec.startDate : DEFAULT_START;
+    var extras = spec.extras || {};
     return {
       startDate: start,
       lang: ['ar', 'en', 'bi'].indexOf(spec.lang) !== -1 ? spec.lang : 'bi',
@@ -202,7 +229,21 @@
       paper: spec.paper === 'a4' ? 'a4' : 'letter',
       coverTheme: migrateCoverTheme(spec.coverTheme),
       includeKids: spec.includeKids !== false,
-      name: String(spec.name || '').trim()
+      name: String(spec.name || '').trim(),
+      /* Cover text + print options (2026-11-17). All optional and
+         defaulted so older saved specs and the default book are
+         byte-for-byte the book as it always was: no subtitle, the
+         classic serif title, full-colour printing, no extras. */
+      subtitle: String(spec.subtitle || '').trim().slice(0, 60),
+      titleFont: ['serif', 'script', 'sans'].indexOf(spec.titleFont) !== -1 ? spec.titleFont : 'serif',
+      inkSaver: spec.inkSaver === true,
+      extras: {
+        duaCards: extras.duaCards === true,
+        bookmarks: extras.bookmarks === true,
+        notes: extras.notes === true,
+        quranDuas: extras.quranDuas === true,
+        surahTracker: extras.surahTracker === true
+      }
     };
   }
 
@@ -255,7 +296,69 @@
       pages.push({ type: 'certificate', name: spec.name });
     }
 
+    /* Optional extras (2026-11-17): OFF by default, appended at
+       the very end of the book when the buyer ticks them — dua
+       cards (all 30 duas, 5 pages x 6 cards), the Quranic duas
+       collection (Feature E, height-packed pages), the 114-surah
+       reading tracker (Feature F, 4 pages), one bookmarks page
+       (4 bookmarks), two lined notes pages. */
+    if (spec.extras.duaCards) {
+      for (var dc = 0; dc < 5; dc++) {
+        pages.push({
+          type: 'duacards', chunk: dc,
+          duas: DATA.DUAS.slice(dc * 6, dc * 6 + 6), firstDay: dc * 6 + 1
+        });
+      }
+    }
+    if (spec.extras.quranDuas) {
+      packQuranDuas(DATA.QURAN_DUAS).forEach(function (chunkDuas, ci) {
+        pages.push({ type: 'quranduas', chunk: ci, duas: chunkDuas });
+      });
+    }
+    if (spec.extras.surahTracker) {
+      for (var st = 0; st < DATA.SURAHS.length; st += 30) {
+        pages.push({
+          type: 'surahtracker', chunk: st / 30,
+          surahs: DATA.SURAHS.slice(st, st + 30)
+        });
+      }
+    }
+    if (spec.extras.bookmarks) pages.push({ type: 'bookmarks' });
+    if (spec.extras.notes) {
+      pages.push({ type: 'notes' });
+      pages.push({ type: 'notes' });
+    }
+
     return pages;
+  }
+
+  /* Feature E packing: the 52 Quranic duas vary in length, so
+   * collection pages are packed by a conservative height model
+   * (the same constants test_layout.js asserts with): A4's inner
+   * width (the narrower sheet -> the most wrapped lines) and a
+   * Letter-sized entry budget (the shorter sheet). A page holds
+   * at most 5 duas (long ones: 3–4); the first page also carries
+   * the section intro. */
+  function quranDuaEntryH(dua) {
+    var inner = 647;                       // A4 content width - block padding
+    var h = 20 + 23;                       // block padding + reference line
+    h += Math.ceil(dua.ar.length * 8.2 / inner) * (16 * 1.703);
+    h += 5 + Math.ceil(dua.en.length * 6.0 / inner) * (13 * 1.45);
+    return h + 10;                         // block margin
+  }
+  function packQuranDuas(duas) {
+    var chunks = [], cur = [], used = 0;
+    var FIRST = 700, REST = 750;           // entry budgets (Letter body minus head/intro)
+    duas.forEach(function (dua) {
+      var h = quranDuaEntryH(dua);
+      var budget = chunks.length === 0 ? FIRST : REST;
+      if (cur.length && (used + h > budget || cur.length >= 5)) {
+        chunks.push(cur); cur = []; used = 0;
+      }
+      cur.push(dua); used += h;
+    });
+    if (cur.length) chunks.push(cur);
+    return chunks;
   }
 
   function pageCount(spec) { return buildPages(spec).length; }
