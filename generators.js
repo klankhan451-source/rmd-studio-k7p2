@@ -85,20 +85,31 @@
   function toISO(date) { return date.y + '-' + pad2(date.m) + '-' + pad2(date.d); }
 
   /* 'Monday, 8 February 2027' (lang 'en') or the Arabic equivalent.
-     Numerals follow the chosen system in both languages. */
+     Numerals follow the chosen system in both languages. The six
+     added languages (bn/ur/tr/ms/id/fr) follow the English pattern
+     with their own month/weekday tables from data.js. */
   function formatDate(date, lang, numerals) {
     var wd = weekdayOf(date);
     if (lang === 'ar') {
       return DATA.WEEKDAYS_AR[wd] + '، ' + num(date.d, numerals) + ' ' +
         DATA.MONTHS_AR[date.m - 1] + ' ' + num(date.y, numerals);
     }
+    if (lang !== 'en' && DATA.WEEKDAYS[lang] && DATA.MONTHS[lang]) {
+      return DATA.WEEKDAYS[lang][wd] + ', ' + num(date.d, numerals) + ' ' +
+        DATA.MONTHS[lang][date.m - 1] + ' ' + num(date.y, numerals);
+    }
     return DATA.WEEKDAYS_EN[wd] + ', ' + num(date.d, numerals) + ' ' +
       DATA.MONTHS_EN[date.m - 1] + ' ' + num(date.y, numerals);
   }
 
-  /* Short date for grids: '8 Feb' / '٨ فبراير'. */
+  /* Short date for grids: '8 Feb' / '٨ فبراير'. New languages use
+     their explicit short-month tables (never a blind slice — that
+     would cut Bengali conjuncts in half). */
   function formatDateShort(date, lang, numerals) {
     if (lang === 'ar') return num(date.d, numerals) + ' ' + DATA.MONTHS_AR[date.m - 1];
+    if (lang !== 'en' && DATA.MONTHS_SHORT[lang]) {
+      return num(date.d, numerals) + ' ' + DATA.MONTHS_SHORT[lang][date.m - 1];
+    }
     return num(date.d, numerals) + ' ' + DATA.MONTHS_EN[date.m - 1].slice(0, 3);
   }
 
@@ -224,7 +235,7 @@
     var extras = spec.extras || {};
     return {
       startDate: start,
-      lang: ['ar', 'en', 'bi'].indexOf(spec.lang) !== -1 ? spec.lang : 'bi',
+      lang: ['ar', 'en', 'bi', 'bn', 'ur', 'tr', 'ms', 'id', 'fr'].indexOf(spec.lang) !== -1 ? spec.lang : 'bi',
       numerals: spec.numerals === 'east' ? 'east' : 'west',
       paper: spec.paper === 'a4' ? 'a4' : 'letter',
       coverTheme: migrateCoverTheme(spec.coverTheme),
@@ -311,7 +322,7 @@
       }
     }
     if (spec.extras.quranDuas) {
-      packQuranDuas(DATA.QURAN_DUAS).forEach(function (chunkDuas, ci) {
+      packQuranDuas(DATA.QURAN_DUAS, spec.lang).forEach(function (chunkDuas, ci) {
         pages.push({ type: 'quranduas', chunk: ci, duas: chunkDuas });
       });
     }
@@ -339,18 +350,26 @@
    * Letter-sized entry budget (the shorter sheet). A page holds
    * at most 5 duas (long ones: 3–4); the first page also carries
    * the section intro. */
-  function quranDuaEntryH(dua) {
+  /* Per-language average char width for the translation line in
+   * the packing model below. en/ar/bi books model the English text
+   * exactly as before (6.0); the added languages model their own
+   * translation text — Arabic-script Urdu and Bengali (conjuncts)
+   * run wider per character, so they get conservative widths. */
+  var QD_CHAR_W = { bn: 6.8, ur: 7.5, tr: 6.0, ms: 6.0, id: 6.0, fr: 6.0 };
+  function quranDuaEntryH(dua, lang) {
     var inner = 647;                       // A4 content width - block padding
     var h = 20 + 23;                       // block padding + reference line
     h += Math.ceil(dua.ar.length * 8.2 / inner) * (16 * 1.703);
-    h += 5 + Math.ceil(dua.en.length * 6.0 / inner) * (13 * 1.45);
+    var trText = (lang && QD_CHAR_W[lang] && dua[lang]) ? dua[lang] : dua.en;
+    var trW = (lang && QD_CHAR_W[lang] && dua[lang]) ? QD_CHAR_W[lang] : 6.0;
+    h += 5 + Math.ceil(trText.length * trW / inner) * (13 * 1.45);
     return h + 10;                         // block margin
   }
-  function packQuranDuas(duas) {
+  function packQuranDuas(duas, lang) {
     var chunks = [], cur = [], used = 0;
     var FIRST = 700, REST = 750;           // entry budgets (Letter body minus head/intro)
     duas.forEach(function (dua) {
-      var h = quranDuaEntryH(dua);
+      var h = quranDuaEntryH(dua, lang);
       var budget = chunks.length === 0 ? FIRST : REST;
       if (cur.length && (used + h > budget || cur.length >= 5)) {
         chunks.push(cur); cur = []; used = 0;
