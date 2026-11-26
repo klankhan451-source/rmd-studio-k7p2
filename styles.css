@@ -281,6 +281,8 @@ body {
 .bi-ar, .bi-en { display: block; }
 .bi-en { font-size: 0.85em; }
 .intro-line { font-size: 13.5px; line-height: 1.45; color: #48626e; margin: 0 0 8px; }
+/* Parental-guidance line on the Kids' star chart (audit fix 2026-11-26) */
+.kids-note { font-size: 12px; font-style: italic; line-height: 1.4; color: #48626e; margin: 0 0 8px; }
 .blk { margin-top: 8px; }
 .blk-title { font-size: 15px; margin: 0 0 6px; color: var(--theme-title, #0f2027); }
 .cb {
@@ -774,6 +776,15 @@ body {
 }
 .book-note { margin: 16px 0 0; }
 .cover-brand { margin-top: 30px; letter-spacing: 4px; font-weight: 800; color: var(--cover-accent, #b98a1d); font-size: 15px; }
+
+/* ---------- Closing back cover (audit fix 2026-11-26) ---------- */
+.back-sub { font-size: 16px; line-height: 1.5; color: var(--cover-sub, #48626e); margin: 4px 8% 18px; }
+.back-contents-title { font-size: 15px; font-weight: 800; letter-spacing: 2px; color: var(--cover-accent, #b98a1d); margin: 10px 0 8px; }
+.back-list { list-style: none; margin: 0 10% 20px; padding: 0; }
+.back-list li { font-size: 14px; line-height: 1.5; color: var(--cover-title, #0f2027); padding: 5px 0; border-bottom: 1px dashed var(--theme-line, #d9c9a3); }
+.back-list li:last-child { border-bottom: none; }
+.back-inner .moon-note { margin: 6px 8% 18px; text-align: center; }
+.back-close { font-size: 15px; font-weight: 700; color: var(--cover-title, #0f2027); margin: 0 8%; }
 
 /* ---------- Hero scene covers (2026-11-17) ---------- */
 .cover-scene {
