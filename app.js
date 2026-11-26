@@ -170,7 +170,7 @@ if (typeof module !== 'undefined' && module.exports) {
   }
 
   /* Live page count under the extras toggles: the default book
-     is 56 pages (44 without the Kids' Pack); each extra adds its
+     is 57 pages (45 without the Kids' Pack); each extra adds its
      pages, and the count follows every toggle immediately. The
      header "What you get" pill shows the same live number. */
   function updatePageCount() {
