@@ -71,7 +71,10 @@
     if (ctx.lang !== 'bi') return esc(fill(T(ctx, s), vars));
     var en = fill(s.en, vars), ar = fill(s.ar, vars);
     if (ar === en) return esc(en); // language-neutral text (e.g. the brand) prints once
-    return '<span class="l-ar">' + esc(ar) + '</span> <span class="l-en">' + esc(en) + '</span>';
+    // Direction isolation (audit fix 2026-11-26): without dir attributes
+    // the bidi algorithm lets the English run's terminal punctuation
+    // jump next to the Arabic fragment in RTL books.
+    return '<span class="l-ar" dir="rtl" lang="ar">' + esc(ar) + '</span> <span class="l-en" dir="ltr">' + esc(en) + '</span>';
   }
 
   /* Bilingual DISPLAY lines (cover, kids divider, certificate): the
@@ -105,9 +108,9 @@
     if (ctx.lang !== 'bi') return esc(T(ctx, item));
     if (stacked) {
       return '<span class="card-ar" dir="rtl">' + esc(item.ar) + '</span>' +
-        '<span class="card-en">' + esc(item.en) + '</span>';
+        '<span class="card-en" dir="ltr">' + esc(item.en) + '</span>';
     }
-    return '<span class="l-ar">' + esc(item.ar) + '</span> <span class="l-en">' + esc(item.en) + '</span>';
+    return '<span class="l-ar" dir="rtl" lang="ar">' + esc(item.ar) + '</span> <span class="l-en" dir="ltr">' + esc(item.en) + '</span>';
   }
 
   /* A dua's translation paragraph (the Arabic original is printed
@@ -2239,11 +2242,23 @@
     return h + '</div>';
   }
 
+  /* Printed source line for a dua (audit fix 2026-11-26): Qur'anic
+   * duas always show surah name + verse in one consistent format
+   * ("Qur'an 2:201 — Surah Al-Baqara"); hadith sources print as
+   * stored in the data (collection + verified hadith number). The
+   * data itself keeps the short "Qur'an n:v" form. */
+  function srcText(dua) {
+    var m = /^Qur'an (\d+):/.exec(dua.src || '');
+    if (!m) return dua.src;
+    var s = DATA.SURAHS[parseInt(m[1], 10) - 1];
+    return s ? dua.src + ' — Surah ' + s.en : dua.src;
+  }
+
   function duaBlock(ctx, dua, titleKey) {
     var h = '<section class="blk dua-blk">' + blkTitle(ctx, titleKey || 'duaOfDay');
     h += '<p class="dua-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
     h += duaPara(ctx, dua, '');
-    h += '<p class="dua-src">' + esc(dua.src) + '</p></section>';
+    h += '<p class="dua-src">' + esc(srcText(dua)) + '</p></section>';
     return h;
   }
 
@@ -2435,6 +2450,7 @@
   function kidsChartBody(page, ctx) {
     var h = pageHead(ctx, L(ctx, 'kidsChartTitle'));
     h += '<p class="intro-line">' + L(ctx, 'kidsChartIntro') + '</p>';
+    h += '<p class="kids-note">' + L(ctx, 'kidsChartNote') + '</p>';
     h += '<table class="kids-table"><thead><tr><th class="k-day">' + L(ctx, 'day') + '</th><th>' +
       L(ctx, 'fasting') + '</th><th>' + L(ctx, 'prayers') + '</th><th>' +
       L(ctx, 'goodDeedToday') + '</th><th>' + L(ctx, 'quran') + '</th></tr></thead><tbody>';
@@ -2469,7 +2485,7 @@
     h += coloringSVG(page.designId);
     h += '<div class="field coloring-field"><span class="flabel">' +
       (ctx.lang === 'en' ? 'Name' : ctx.lang === 'ar' ? 'الاسم'
-        : ctx.lang === 'bi' ? '<span class="l-ar">الاسم</span> <span class="l-en">Name</span>'
+        : ctx.lang === 'bi' ? '<span class="l-ar" dir="rtl" lang="ar">الاسم</span> <span class="l-en" dir="ltr">Name</span>'
         : esc(NAME_LABEL[ctx.lang] || 'Name')) +
       '</span>' + wline() + '</div>';
     return h;
@@ -2499,7 +2515,7 @@
       L(ctx, 'duaCardDay', { n: N(ctx, day) }) + '</div>';
     h += '<p class="dua-ar card-dua-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
     h += duaPara(ctx, dua, 'card-dua-en');
-    h += '<p class="dua-src">' + esc(dua.src) + '</p></div>';
+    h += '<p class="dua-src">' + esc(srcText(dua)) + '</p></div>';
     return h;
   }
 
@@ -2557,7 +2573,7 @@
     var h = pageHead(ctx, L(ctx, 'quranDuasTitle'));
     if (page.chunk === 0) h += '<p class="intro-line">' + L(ctx, 'quranDuasIntro') + '</p>';
     page.duas.forEach(function (dua) {
-      h += '<div class="qd-blk"><p class="qd-ref">' + esc(dua.src) + '</p>';
+      h += '<div class="qd-blk"><p class="qd-ref">' + esc(srcText(dua)) + '</p>';
       h += '<p class="dua-ar qd-ar" dir="rtl" lang="ar">' + esc(dua.ar) + '</p>';
       h += duaPara(ctx, dua, 'qd-en');
       h += '</div>';
@@ -2640,8 +2656,30 @@
     return h;
   }
 
+  /* Closing back cover (audit fix 2026-11-26): the designed final
+   * page of every book — thank-you, a recap of what the planner
+   * holds (the Kids line only when the Kids' Pack is in the book),
+   * the moon-sighting reminder, and the publisher line. */
+  function backCoverBody(page, ctx) {
+    var items = ['backItemDays', 'backItemTrackers', 'backItemLastTen', 'backItemEid'];
+    if (page.includeKids) items.push('backItemKids');
+    var h = '<div class="cover-inner back-inner">';
+    h += decoSVG();
+    h += '<h1 class="cover-title">' + LStack(ctx, 'backCoverTitle') + '</h1>';
+    h += '<p class="back-sub">' + LStack(ctx, 'backCoverSub') + '</p>';
+    h += '<p class="back-contents-title">' + LStack(ctx, 'backContentsTitle') + '</p>';
+    h += '<ul class="back-list">';
+    items.forEach(function (k) { h += '<li>' + L(ctx, k) + '</li>'; });
+    h += '</ul>';
+    h += '<div class="a-moon-note moon-note">' + LStack(ctx, 'moonNote') + '</div>';
+    h += '<p class="back-close">' + LStack(ctx, 'backClose') + '</p>';
+    h += '<p class="cover-brand">' + LStack(ctx, 'brand') + '</p>';
+    return h + '</div>';
+  }
+
   var BODIES = {
-    cover: coverBody, overview: overviewBody, daily: dailyBody,
+    cover: coverBody, backcover: backCoverBody,
+    overview: overviewBody, daily: dailyBody,
     weekly: weeklyBody, khatma: khatmaBody, lastten: lastTenBody,
     deeds: deedsBody, meals: mealsBody, shopping: shoppingBody,
     eidprep: eidPrepBody, eidday: eidDayBody,
