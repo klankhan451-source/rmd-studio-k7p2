@@ -366,6 +366,10 @@
     if (spec.extras.prepChecklist) pages.push({ type: 'prep' });
     if (spec.extras.readingPlan) pages.push({ type: 'readplan' });
 
+    /* Closing back cover (audit fix 2026-11-26): always the very
+       last page of the book, after every extra. */
+    pages.push({ type: 'backcover', includeKids: !!spec.includeKids, extras: spec.extras });
+
     return pages;
   }
 
