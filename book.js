@@ -47,7 +47,7 @@
 
     var out = pages.map(function (page, idx) {
       var cls = 'book-page' +
-        (page.type === 'cover' || page.type === 'kidsdivider' ? ' cover-page' : '') +
+        (page.type === 'cover' || page.type === 'kidsdivider' || page.type === 'backcover' ? ' cover-page' : '') +
         /* the chosen cover design colours page 1 only (styles.css
            cover-theme-* variables); the kids divider shares the
            cover-page layout class but keeps the default design */
@@ -69,8 +69,8 @@
         Render.esc(Render.S(ctx, 'footerBrand')) + ' · ' +
         Render.esc(Render.S(ctx, 'pageOf', { n: Render.N(ctx, idx + 1) })) +
         ' / ' + Render.N(ctx, total) + '</p>';
-      /* the cover carries its own branding instead of a footer */
-      if (page.type === 'cover') footer = '';
+      /* the covers carry their own branding instead of a footer */
+      if (page.type === 'cover' || page.type === 'backcover') footer = '';
       return '<div class="' + cls + '" dir="' + ctx.dir + '" style="' + ps + '">' +
         '<div class="page-body">' + Render.pageHTML(page, ctx) + '</div>' +
         footer + '</div>';
